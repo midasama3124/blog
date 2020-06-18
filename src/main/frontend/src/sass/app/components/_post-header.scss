@@ -1,0 +1,84 @@
+.post-header {
+    width: 100%;
+    min-height: $post-header-height;
+    background-image: url(/image/post_background3.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.post-header:before {
+    content: '';
+    width: 100%;
+    min-height: $post-header-height;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: linear-gradient(60deg, $header-background1, $header-background2);
+}
+
+.post-text-header {
+    min-height: $post-header-height;
+    color: $primary;
+    //font-family: $app-font-serif;
+}
+
+.post-text-header h1 {
+    font-family: $blog-title-font;
+    font-size: 4em;
+    margin-bottom: .4em;
+}
+
+.post-text-header p {
+    font-size: 1.1em;
+    margin-bottom: 1em;
+}
+
+.post-text-header span {
+    //font-family: $app-font-serif;
+    font-weight: 600;
+}
+
+.post-tags {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.tags-icon {
+    padding: 0 .4em;
+    font-size: 1.5em;
+}
+
+.tag-anchor {
+    margin: 0 .4em;
+    padding: .2em .5em;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 500;
+    color: $custom-green;
+    background-color: $primary;
+}
+
+.tag-anchor:hover {
+    color: $custom-green-soft;
+}
+
+@media (max-width: 426px) {
+    .post-text-header h1 {
+        font-size: 2.5em;
+    }
+
+    .post-text-header p {
+        font-size: .9em;
+    }
+
+    .tag-anchor {
+        font-size: .9em;
+    }
+
+    .tags-icon {
+        font-size: 1.3em;
+    }
+}

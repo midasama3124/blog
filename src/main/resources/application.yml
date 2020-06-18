@@ -1,0 +1,9 @@
+app:
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/blog_test
+    username: postgres
+    password: postgres
+    pool-size: 30
+    sql-script-encoding: UTF-8
+    continue-on-error: true
+    jndi-name: java:/PostgresDS

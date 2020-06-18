@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+// Fonts
+$app-cursive-font: 'Dancing Script';
+$app-primary-font: 'Noto Serif';
+$app-secondary-font: 'Mukta';
+$blog-title-font: 'Lobster';
+$blog-content-font: 'Lora';
+
+// Colors
+$primary-soft: rgba(43, 48, 58, .7);
+$secondary-soft: rgba(161, 198, 234, .18);
+$tertiary-soft: rgba(215, 218, 229, .4);
+$custom-green: rgba(27, 153, 139, 1);
+$custom-green-soft: rgba(27, 153, 139, .8);
+$blog-background: rgba(215, 232, 186, .1);
+$header-background1: rgba(161, 198, 234, .1);
+$header-background2: rgba(215, 218, 229, .5);
+$header-background2-soft: rgba(215, 218, 229, .1);
+
+// Dimensions
+$post-header-height: 95vh;
