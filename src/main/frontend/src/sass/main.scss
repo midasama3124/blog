@@ -1,0 +1,41 @@
+/*!
+* Bellas Palabras - Free Responsive Bootstrap Blog Website
+* Author: Miguel Manchola
+* https://www.linkedin.com/in/miguel-manchola/
+* Version: 0.1
+* Description: This blog website is a fully responsive admin template based off 
+* of Bootstrap 4.  
+*/
+
+// Bootstrap
+@import "_vars.scss";
+@import "_customize-bootstrap.scss";
+@import "~bootstrap/scss/bootstrap";
+
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/regular.scss";
+@import "~@fortawesome/fontawesome-free/scss/brands.scss";
+@import "~@fortawesome/fontawesome-free/scss/solid.scss";
+
+// App Layout
+@import 'app/components/app';
+@import 'app/components/app-header';
+@import 'app/components/app-content';
+@import 'app/components/app-footer';
+@import 'app/components/post-header';
+@import 'app/components/post-content';
+
+html { 
+  font-size: 100%;    // 16px
+  font-family: $app-primary-font $app-secondary-font;
+} 
+h1 { font-size: 2.074em; }
+h2 { font-size: 1.728em; }
+h3 { font-size: 1.44em; }
+h4 { font-size: 1.2em; }
+small { font-size: 0.833em; }
+.box { padding: 1.25em; }
+@media screen and (min-width: 1400px) {
+  html { font-size: 125%; } /*20px*/
+}
