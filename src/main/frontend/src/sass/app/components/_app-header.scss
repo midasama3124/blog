@@ -1,0 +1,87 @@
+.app-header {
+    width: 100%;
+    min-height: 100vh;
+    background-image: url(/image/header_background.jpg);
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: cover;
+}
+
+.app-header:before {
+    content: '';
+    width: 100%;
+    min-height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: linear-gradient(75deg, $header-background1, $header-background2);
+}
+
+.navbar {
+    padding: 0 10vw 0 10vw;
+}
+
+.navbar-container.scrolled {
+    background-color: #fff !important;
+    transition: background-color 200ms linear;
+}
+
+.bg-light {
+    position: fixed;
+    z-index: 20;
+    width: 100%;
+}
+
+@media (min-width: 770px) {
+    .bg-light {
+        background-color: transparent!important;
+    }
+}
+
+.navbar-nav a {
+    color: $primary!important;
+    font-family: $app-primary-font;
+    padding: 10px, 25px;
+    text-align: center;
+}
+
+.navbar-nav a:hover {
+    color: $custom-green!important;
+}
+
+.text-header {
+    min-height: 100vh;
+    color: $primary;
+    font-family: $app-primary-font;
+}
+
+.text-header h1 {
+    font-family: $app-cursive-font;
+    font-size: 3em;
+}
+
+.text-header span {
+    font-size: 1.5em;
+    font-family: $app-primary-font $app-secondary-font;
+    margin: 0 0 0 5px;
+}
+
+.text-header p {
+    font-size: 1.23em;
+    margin-bottom: 3.5em;
+}
+
+.custom-btn {
+    padding: 7px 12px;
+    color: $custom-green;
+    background-color: $primary;
+}
+
+.custom-btn:hover {
+    color: $primary;
+    background-color: $custom-green-soft;
+}
+
+.nav-item {
+    font-size: 1.2rem;
+}

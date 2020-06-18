@@ -1,0 +1,38 @@
+.app-footer {
+    background-color: $custom-green-soft;
+    padding: 20px 40px;
+}
+
+.social-media {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.social-media-icons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-grow: 4;
+}
+
+.social-media-icon {
+    padding: 0 2em;
+}
+
+.social-media-icon:hover {
+    color: $primary-soft;
+}
+
+.privacy-policy {
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.privacy-policy > a {
+    color: $secondary;
+    text-decoration: underline;
+}
+
+.privacy-policy > a:hover {
+    color: $primary-soft;
+}
