@@ -1,11 +1,12 @@
-.app-header {
-    width: 100%;
-    min-height: 100vh;
-    background-image: url(/image/header_background.jpg);
-    background-repeat: no-repeat;
-    background-position: right;
-    background-size: cover;
-}
+// Included in HTML file to find relative path to background image using Thymeleaf
+// .app-header {
+//     width: 100%;
+//     min-height: 100vh;
+// 	background-image: url(/image/header_background.jpg});
+//     background-repeat: no-repeat;
+//     background-position: right;
+//     background-size: cover;
+// }
 
 .app-header:before {
     content: '';
