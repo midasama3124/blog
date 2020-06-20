@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PersonController {
   private final PersonService personService;
 
-  @Autowired
+@Autowired
   public PersonController(PersonService personService) {
     this.personService = personService;
   }
