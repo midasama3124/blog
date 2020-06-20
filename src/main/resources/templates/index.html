@@ -1,60 +1,62 @@
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Bellas Palabras - Responsive Bootstrap Blog Website</title>
-    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" th:href="@{/dist/css/app.css}">
 </head>
 
 <body class="app">
   <!-- Blog website header -->
-  <header class="app-header">
-      <div class="bg-light navbar-container">
-          <div class="container">
-              <nav class="navbar navbar-expand-lg navbar-light">
-                  <a class="navbar-brand" href="/">
-                    <img src="image/logo_bp.svg" width="150" height="50" alt="Blog logo">
-                  </a>
-                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                  </button>
-                  <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav w-100 justify-content-end">
-                      <li class="nav-item active">
-                        <a class="nav-link" href="#">Inicio</a>
+  <header class="app-header" th:style="
+    'width: 100%; min-height: 100vh; background:url(' + @{dist/image/header_background.jpg} +'); background-repeat: no-repeat; background-position: right; background-size: cover;'
+    ">
+    <div class="bg-light navbar-container">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <a class="navbar-brand" href="/">
+                  <img th:src=@{dist/image/logo_bp.svg} width="150" height="50" alt="Blog logo">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                  <ul class="navbar-nav w-100 justify-content-end">
+                    <li class="nav-item active">
+                      <a class="nav-link" href="#">Inicio</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Posts
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                          <a class="dropdown-item" href="#">Maternidad</a>
+                          <a class="dropdown-item" href="#">Vida de Pareja</a>
+                          <a class="dropdown-item" href="#">Comida Hecha en Casa</a>
+                        </div>
                       </li>
-                      <li class="nav-item dropdown">
-                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Posts
-                          </a>
-                          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="#">Maternidad</a>
-                            <a class="dropdown-item" href="#">Vida de Pareja</a>
-                            <a class="dropdown-item" href="#">Comida Hecha en Casa</a>
-                          </div>
-                        </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">Contáctanos</a>
-                      </li>
-                    </ul>
-                  </div>
-              </nav>
-          </div>
-      </div>
-      <div class="text-header d-flex align-items-center">
-          <div class="container">
-              <div class="row">
-                  <div class="col-sm-4"></div>
-                  <div class="col-sm-8 text-right">
-                      <h1>Bellas Palabras</h1>
-                      <p>El blog de una mamá al rescate del mundo</p>
-                      <button class="btn btn-primary custom-btn"><span>Leer último post</span></button>
-                  </div>
-              </div>
-          </div>
-      </div>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Contáctanos</a>
+                    </li>
+                  </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="text-header d-flex align-items-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-8 text-right">
+                    <h1>Bellas Palabras</h1>
+                    <p>El blog de una mamá al rescate del mundo</p>
+                    <button class="btn btn-primary custom-btn"><span>Leer último post</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
   </header>
 
   <!-- Blog website content -->
@@ -62,7 +64,7 @@
     <div class="row blog-cards">
       <div class="col-lg-4 col-md-6">
         <div class="card">
-          <a href="/post.html"><img class="card-img-top" src="image/blog_post_img1.jpg" alt="Blog post image 1"></a>
+          <a href="/post.html"><img class="card-img-top" th:src=@{dist/image/blog_post_img1.jpg} alt="Blog post image 1"></a>
           <div class="card-body">
             <h5 class="card-title">Título de Post</h5>
             <p class="card-text">
@@ -76,7 +78,7 @@
       </div>
       <div class="col-lg-4 col-md-6">
         <div class="card">
-          <a href="/post.html"><img class="card-img-top" src="image/blog_post_img2.jpg" alt="Card image cap"></a>
+          <a href="/post.html"><img class="card-img-top" th:src=@{dist/image/blog_post_img2.jpg} alt="Card image cap"></a>
           <div class="card-body">
             <h5 class="card-title">Título de Post</h5>
             <p class="card-text">
@@ -90,7 +92,7 @@
       </div>
       <div class="col-lg-4 col-md-6">
         <div class="card">
-          <a href="/post.html"><img class="card-img-top" src="image/blog_post_img3.jpg" alt="Card image cap"></a>
+          <a href="/post.html"><img class="card-img-top" th:src=@{dist/image/blog_post_img3.jpg} alt="Card image cap"></a>
           <div class="card-body">
             <h5 class="card-title">Título de Post</h5>
             <p class="card-text">
@@ -104,7 +106,7 @@
       </div>
       <div class="col-lg-4 col-md-6">
         <div class="card">
-          <a href="/post.html"><img class="card-img-top" src="image/blog_post_img4.jpg" alt="Card image cap"></a>
+          <a href="/post.html"><img class="card-img-top" th:src=@{dist/image/blog_post_img4.jpg} alt="Card image cap"></a>
           <div class="card-body">
             <h5 class="card-title">Título de Post</h5>
             <p class="card-text">
@@ -118,7 +120,7 @@
       </div>
       <div class="col-lg-4 col-md-6">
         <div class="card">
-          <a href="/post.html"><img class="card-img-top" src="image/blog_post_img5.jpg" alt="Card image cap"></a>
+          <a href="/post.html"><img class="card-img-top" th:src=@{dist/image/blog_post_img5.jpg} alt="Card image cap"></a>
           <div class="card-body">
             <h5 class="card-title">Título de Post</h5>
             <p class="card-text">
@@ -132,7 +134,7 @@
       </div>
       <div class="col-lg-4 col-md-6">
         <div class="card">
-          <a href="/post.html"><img class="card-img-top" src="image/blog_post_img6.jpg" alt="Card image cap"></a>
+          <a href="/post.html"><img class="card-img-top" th:src=@{dist/image/blog_post_img6.jpg} alt="Card image cap"></a>
           <div class="card-body">
             <h5 class="card-title">Título de Post</h5>
             <p class="card-text">
@@ -149,7 +151,7 @@
 
   <!-- Blog website footer -->
   <footer class="app-footer">
-    <img class="img-fluid mx-auto d-block" src="image/logo_bp.svg" width="150" height="150" alt="Blog website logo">
+    <img class="img-fluid mx-auto d-block" th:src=@{dist/image/logo_bp.svg} width="150" height="150" alt="Blog website logo">
     <div class="social-media">
       <h5 class="text-center">Redes Sociales</h5>
       <div class="social-media-icons">
@@ -164,7 +166,7 @@
     <p class="privacy-policy">&copy 2020 Bellas Palabras. <a href="#">Política de Privacidad</a></p>
   </footer>
 
-  <script src="/js/app.js"></script>
+  <script th:src=@{dist/js/app.js}></script>
 </body>
 
 </html>
