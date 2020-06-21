@@ -3,6 +3,7 @@
 @import url(https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap);
 @import url(https://fonts.googleapis.com/css2?family=Lora&display=swap);
 @import url(https://fonts.googleapis.com/css2?family=Lobster&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Poppins:200i,400&display=swap);
 /*!
 * Bellas Palabras - Free Responsive Bootstrap Blog Website
 * Author: Miguel Manchola
@@ -11814,7 +11815,7 @@ readers do not read off random characters that represent icons */
   background-image: linear-gradient(75deg, rgba(161, 198, 234, 0.1), rgba(215, 218, 229, 0.5)); }
 
 .navbar {
-  padding: 0 10vw 0 10vw; }
+  padding: 0; }
 
 .navbar-container.scrolled {
   background-color: #fff !important;
@@ -11867,6 +11868,14 @@ readers do not read off random characters that represent icons */
 
 .nav-item {
   font-size: 1.2rem; }
+
+@media (min-width: 769px) {
+  .header-icon {
+    font-size: .9em; }
+  .register {
+    margin-left: 13vw; }
+  .register a, .login a {
+    font-size: .8em; } }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
   .card-columns {
@@ -12096,6 +12105,144 @@ readers do not read off random characters that represent icons */
   .post-sidebar {
     padding-left: .8em;
     padding-right: .8em; } }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box; }
+
+.member-body {
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #f3f3f3;
+  margin: 0; }
+
+/* mobile friendly alternative to using background-attachment: fixed */
+.member-body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  background: #1b1b32;
+  background-image: linear-gradient(115deg, rgba(58, 58, 158, 0.8), rgba(136, 136, 206, 0.7)), url(/image/login_background.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; }
+
+.member-title {
+  font-family: "Dancing Script";
+  font-weight: 400;
+  line-height: 1.2; }
+
+.member-description {
+  font-size: 1.125rem;
+  font-style: italic;
+  font-weight: 200;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4); }
+
+.member-title,
+.member-description {
+  margin-top: 0;
+  margin-bottom: 0.5rem; }
+
+label {
+  display: flex;
+  align-items: center;
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem; }
+
+.member-container {
+  width: 100%;
+  margin: 3.125rem auto 0 auto; }
+
+@media (min-width: 576px) {
+  .member-container {
+    max-width: 540px; } }
+
+@media (min-width: 768px) {
+  .member-container {
+    max-width: 720px; } }
+
+.member-header {
+  padding: 0 0.625rem;
+  margin-bottom: 0.75rem; }
+
+.clue {
+  margin-left: 0.25rem;
+  font-size: 0.9rem;
+  color: #e4e4e4; }
+
+/* form */
+.member-form {
+  background: rgba(27, 27, 50, 0.8);
+  padding: 2.5rem 0.625rem;
+  border-radius: 0.25rem; }
+
+@media (min-width: 480px) {
+  .member-form {
+    padding: 2.5rem; } }
+
+.form-group {
+  margin: 0 auto 0.5rem auto;
+  padding: 0.25rem; }
+
+.auth-buttons {
+  margin: 0; }
+
+.form-control {
+  display: block;
+  width: 100%;
+  height: 2.375rem;
+  padding: 0.375rem 0.75rem;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  margin-bottom: 0.5rem; }
+
+.form-control:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
+
+.input-checkbox {
+  display: inline-block;
+  margin-right: 0.625rem;
+  min-height: 1.25rem;
+  min-width: 1.25rem; }
+
+.login-btn {
+  background: rgba(55, 175, 101, 0.5); }
+
+.signup-btn {
+  background: rgba(181, 68, 110, 0.5); }
+
+.login-btn, .signup-btn {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  color: inherit;
+  border-radius: 2px;
+  cursor: pointer; }
+
+.login-btn:hover {
+  background: #37af65; }
+
+.signup-btn:hover {
+  background: #b5446e;
+  color: #f3f3f3;
+  text-decoration: none; }
+
+@media (max-width: 426px) {
+  .signup-btn {
+    margin-top: 1.25rem; } }
 
 html {
   font-size: 100%;

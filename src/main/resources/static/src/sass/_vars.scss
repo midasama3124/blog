@@ -3,6 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Poppins:200i,400&display=swap');
 
 // Fonts
 $app-cursive-font: 'Dancing Script';
@@ -10,6 +11,7 @@ $app-primary-font: 'Noto Serif';
 $app-secondary-font: 'Mukta';
 $blog-title-font: 'Lobster';
 $blog-content-font: 'Lora';
+$login-font: 'Poppins';
 
 // Colors
 $primary-soft: rgba(43, 48, 58, .7);
@@ -21,6 +23,13 @@ $blog-background: rgba(215, 232, 186, .1);
 $header-background1: rgba(161, 198, 234, .1);
 $header-background2: rgba(215, 218, 229, .5);
 $header-background2-soft: rgba(215, 218, 229, .1);
+$login-white: #f3f3f3;
+$login-darkblue: #1b1b32;
+$login-darkblue-alpha: rgba(27, 27, 50, 0.8);
+$login-green: rgba(55, 175, 101, 1);
+$login-green-soft: rgba(55, 175, 101, .5);
+$login-purple: rgba(181, 68, 110, 1);
+$login-purple-soft: rgba(181, 68, 110, .5);
 
 // Dimensions
 $post-header-height: 95vh;

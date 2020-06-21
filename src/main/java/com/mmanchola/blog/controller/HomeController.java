@@ -1,4 +1,4 @@
-package com.mmanchola.blog.api;
+package com.mmanchola.blog.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
