@@ -12150,7 +12150,7 @@ readers do not read off random characters that represent icons */
   margin-top: 0;
   margin-bottom: 0.5rem; }
 
-label {
+label, .label-alone {
   display: flex;
   align-items: center;
   font-size: 1.125rem;
@@ -12173,9 +12173,8 @@ label {
   margin-bottom: 0.75rem; }
 
 .clue {
-  margin-left: 0.25rem;
-  font-size: 0.9rem;
-  color: #e4e4e4; }
+  font-size: 1.2rem;
+  color: #b5446e; }
 
 /* form */
 .member-form {
@@ -12212,7 +12211,7 @@ label {
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
 
-.input-checkbox {
+.input-radio, .input-checkbox {
   display: inline-block;
   margin-right: 0.625rem;
   min-height: 1.25rem;
