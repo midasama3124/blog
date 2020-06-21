@@ -19,7 +19,7 @@
 }
 
 .navbar {
-    padding: 0 10vw 0 10vw;
+    padding: 0;
 }
 
 .navbar-container.scrolled {
@@ -85,4 +85,16 @@
 
 .nav-item {
     font-size: 1.2rem;
+}
+
+@media (min-width: 769px) {
+    .header-icon  {
+        font-size: .9em;
+    }
+    .register {
+        margin-left: 13vw;
+    }
+    .register a, .login a {
+        font-size: .8em;
+    }
 }
