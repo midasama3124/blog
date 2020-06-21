@@ -18,8 +18,8 @@ truncateText('.card-text', 150);
 
 /* Show password if checkbox input is checked */
 // Gather our DOM references.
-var password = document.querySelector( "#password" );
-var pswToggle = document.querySelector( "#show-password" );
+var password = document.querySelector( ".password" );
+var pswToggle = document.querySelector( ".show-password" );
 
 // NOTE: The "(input)" event doesn't work on checkboxes in Safari or IE. As such,
 // I'm using the "(click)" event to make this works cross-browser.
