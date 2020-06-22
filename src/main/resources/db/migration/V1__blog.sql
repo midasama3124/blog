@@ -7,13 +7,11 @@ CREATE TABLE person (
     last_name VARCHAR(50),
     gender VARCHAR(10),
     age SMALLINT,
-    username VARCHAR(50) NOT NULL,
     email VARCHAR(50),
-    password_hash VARCHAR(32) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
     registered_at TIMESTAMP NOT NULL,
     last_login TIMESTAMP NULL DEFAULT NULL,
     UNIQUE (email),
-    UNIQUE (username),
     CONSTRAINT proper_email CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$') );
 
 /* Role table */
