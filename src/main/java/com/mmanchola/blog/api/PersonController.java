@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/v1/person")
 public class PersonController {
-  private final PersonService personService;
+  private PersonService personService;
 
-@Autowired
+  @Autowired
   public PersonController(PersonService personService) {
     this.personService = personService;
   }
@@ -33,9 +33,9 @@ public class PersonController {
   @GetMapping
   public List<Person> getAllPeople() { return personService.getAllPeople(); }
 
-  @GetMapping(path = "{personId}")
-  public Person getPersonById(@PathVariable("personId") UUID id) {
-    return personService.getPersonById(id)
+  @GetMapping(path = "{email}")
+  public Person getPersonByEmail(@PathVariable("email") String email) {
+    return personService.getPersonByEmail(email)
         .orElse(null);
   }
 

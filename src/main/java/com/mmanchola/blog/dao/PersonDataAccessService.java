@@ -12,13 +12,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository("postgres")
 public class PersonDataAccessService implements PersonDao {
-  private final JdbcTemplate jdbcTemplate;
+  private JdbcTemplate jdbcTemplate;
 
   @Autowired
   public PersonDataAccessService(JdbcTemplate jdbcTemplate) { this.jdbcTemplate = jdbcTemplate; }
 
   @Override
-  public int create(UUID id, Person person) {
+  public int save(Person person) {
+    UUID id = UUID.randomUUID();
     Timestamp current = new Timestamp(System.currentTimeMillis());
     String sqlQuery = "INSERT INTO person ("
         + "id, "
@@ -26,27 +27,26 @@ public class PersonDataAccessService implements PersonDao {
         + "last_name, "
         + "gender, "
         + "age, "
-        + "username, "
         + "email, "
         + "password_hash, "
         + "registered_at, "
         + "last_login) "
-        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     // Issue a single SQL update operation (such as an insert, update or delete statement)
+    // Returns number of rows affected
     return jdbcTemplate.update(sqlQuery, id, person.getFirstName(), person.getLastName(),
-        person.getGender().toUpperCase(), person.getAge(), person.getUsername(), person.getEmail(),
+        person.getGender().toUpperCase(), person.getAge(), person.getEmail(),
         person.getPasswordHash(), current, current);
   }
 
   @Override
-  public List<Person> readAll() {
+  public List<Person> findAll() {
     String sqlQuery = "SELECT "
         + "id, "
         + "first_name, "
         + "last_name, "
         + "gender, "
         + "age, "
-        + "username, "
         + "email, "
         + "password_hash, "
         + "registered_at, "
@@ -56,11 +56,23 @@ public class PersonDataAccessService implements PersonDao {
   }
 
   @Override
-  public Optional<Person> readById(UUID id) {
-    String sqlQuery = "SELECT * FROM person WHERE id = ?";
+  public Optional<Person> findByEmail(String email) {
+    String sqlQuery = "SELECT * FROM person WHERE email = ?";
     // Retrieve a single object
     return Optional.ofNullable(
-        jdbcTemplate.queryForObject(sqlQuery, new Object[] {id}, new PersonMapper())
+        jdbcTemplate.queryForObject(sqlQuery, new Object[] {email}, new PersonMapper())
+    );
+  }
+
+  @Override
+  public UUID findIdByEmail(String email) {
+    String sqlQuery = "SELECT 1 FROM person "
+        + "WHERE email = ?"
+        + ")";
+    // Retrieve a single object
+    return jdbcTemplate.queryForObject(
+        sqlQuery,
+        (resultSet, i) -> UUID.fromString(resultSet.getString("id"))
     );
   }
 
@@ -99,15 +111,6 @@ public class PersonDataAccessService implements PersonDao {
         + "WHERE id = ?";
     // Issue a single SQL update operation (such as an insert, update or delete statement)
     return jdbcTemplate.update(sqlQuery, age, id);
-  }
-
-  @Override
-  public int updateUsername(UUID id, String username) {
-    String sqlQuery = "UPDATE person SET "
-        + "username = ? "
-        + "WHERE id = ?";
-    // Issue a single SQL update operation (such as an insert, update or delete statement)
-    return jdbcTemplate.update(sqlQuery, username, id);
   }
 
   @Override
@@ -169,33 +172,6 @@ public class PersonDataAccessService implements PersonDao {
     return jdbcTemplate.queryForObject(
         sqlQuery,
         new Object[] {id, email},
-        (resultSet, i) -> resultSet.getBoolean(1));
-  }
-
-  @Override
-  public boolean isUsernameTaken(String username) {
-    String sqlQuery = "SELECT EXISTS ("
-        + "SELECT 1 FROM person "
-        + "WHERE username = ?"
-        + ")";
-    // Retrieve a single object
-    return jdbcTemplate.queryForObject(
-        sqlQuery,
-        new Object[] {username},
-        (resultSet, i) -> resultSet.getBoolean(1)
-    );
-  }
-
-  @Override
-  public boolean isUsernameTakenBySomeoneElse(UUID id, String username) {
-    String sqlQuery = "SELECT EXISTS ("
-        + "SELECT 1 FROM person "
-        + "WHERE id <> ? "
-        + "AND username = ?"
-        + ")";
-    return jdbcTemplate.queryForObject(
-        sqlQuery,
-        new Object[] {id, username},
         (resultSet, i) -> resultSet.getBoolean(1));
   }
 }

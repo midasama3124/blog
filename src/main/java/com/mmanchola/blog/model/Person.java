@@ -11,7 +11,6 @@ public class Person {
   private final String lastName;
   private final String gender;
   private final short age;
-  private final String username;
   private final String email;
   private final String passwordHash;
   private final Timestamp registeredAt;
@@ -22,7 +21,6 @@ public class Person {
                 @JsonProperty("last_name") String lastName,
                 @JsonProperty("gender") String gender,
                 @JsonProperty("age") short age,
-                @JsonProperty("username") String username,
                 @JsonProperty("email") String email,
                 @JsonProperty("password") String passwordHash,
                 @JsonProperty("registered_at") Timestamp registeredAt,
@@ -32,7 +30,6 @@ public class Person {
     this.lastName = lastName;
     this.gender = gender;
     this.age = age;
-    this.username = username;
     this.email = email;
     this.passwordHash = passwordHash;
     this.registeredAt = registeredAt;
@@ -59,10 +56,6 @@ public class Person {
     return age;
   }
 
-  public String getUsername() {
-    return username;
-  }
-
   public String getEmail() {
     return email;
   }
@@ -79,4 +72,15 @@ public class Person {
     return lastLogin;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (o == this)
+      return true;
+    if (!(o instanceof Person))
+      return false;
+    Person other = (Person)o;
+    return this.id == other.getId() &&
+        this.email == other.getEmail() &&
+        this.passwordHash == other.getPasswordHash();
+  }
 }
