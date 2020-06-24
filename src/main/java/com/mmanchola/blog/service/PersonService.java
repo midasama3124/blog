@@ -56,7 +56,9 @@ public class PersonService implements UserDetailsService {
 
   public Optional<Person> getPersonByEmail(String email) { return dataAccessService.findByEmail(email); }
 
-  public void updatePerson(UUID id, Person person) {
+  public void update(String username, Person person) {
+    // Retrieve id from database
+    UUID id = dataAccessService.findIdByEmail(username);
     // Check first name
     Optional.ofNullable(person.getFirstName())
         .filter(name -> !StringUtils.isEmpty(name))
@@ -124,7 +126,7 @@ public class PersonService implements UserDetailsService {
       );
   }
 
-  public int deletePersonById(UUID id) { return dataAccessService.deleteById(id); }
+  public int deleteByEmail(String email) { return dataAccessService.deleteByEmail(email); }
 
   /* Security-related methods */
   @Override

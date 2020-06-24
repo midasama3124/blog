@@ -1,4 +1,4 @@
-package com.mmanchola.blog.datasource;
+package com.mmanchola.blog.config.datasource;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,5 +1,7 @@
 package com.mmanchola.blog.security;
 
+import static com.mmanchola.blog.security.ApplicationUserRole.ADMIN;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -26,13 +28,19 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable();
     http
-        .authorizeRequests()
-        .anyRequest()
-        .authenticated()
+      .authorizeRequests()
+        .antMatchers("/", "/home", "/dist/**", "/register").permitAll()
+        .antMatchers("/api/**").hasRole(ADMIN.name())
+        .anyRequest().authenticated()
         .and()
-        .httpBasic();
+//        .httpBasic();
+        .formLogin()
+        .loginPage("/login")
+        .permitAll()
+        .and()
+      .logout()
+        .permitAll();
   }
 
   @Override
