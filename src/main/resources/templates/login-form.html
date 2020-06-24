@@ -1,4 +1,6 @@
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
     
 <head>
   <meta charset="UTF-8">
@@ -16,12 +18,18 @@
         Por favor ingresa tus datos si eres un usuario registrado
       </p>
     </header>
-    <form class="member-form">
+    <div th:if="${param.error}">
+      Invalid username and password.
+    </div>
+    <div th:if="${param.logout}">
+      You have been logged out.
+    </div>
+    <form th:action="@{/login}" class="member-form">
       <div class="form-group">
         <label id="email-label" for="email">Email</label>
         <input
           type="email"
-          name="email"
+          name="username"
           id="email"
           class="form-control"
           placeholder="Ingresa tu dirección de correo electrónico"
@@ -32,7 +40,8 @@
         <label id="password-label" for="password">Contraseña</label>
         <input 
           type="password" 
-          name="password" 
+          name="password"
+          id="password"
           class="form-control password" 
           placeholder="Ingresa tu contraseña" 
           required

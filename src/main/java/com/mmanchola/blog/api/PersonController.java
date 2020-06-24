@@ -3,7 +3,6 @@ package com.mmanchola.blog.api;
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.service.PersonService;
 import java.util.List;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,14 +38,14 @@ public class PersonController {
         .orElse(null);
   }
 
-  @PutMapping(path = "{personId}")
-  public void updatePersonById(@PathVariable("personId") UUID id,
+  @PutMapping(path = "{email}")
+  public void updatePersonById(@PathVariable("email") String email,
       @RequestBody @Validated Person person) {
-    personService.updatePerson(id, person);
+    personService.update(email, person);
   }
 
-  @DeleteMapping(path = "{personId}")
-  public void deletePerson(@PathVariable("personId") UUID id) {
-    personService.deletePersonById(id);
+  @DeleteMapping(path = "{email}")
+  public void deletePerson(@PathVariable("email") String email) {
+    personService.deleteByEmail(email);
   }
 }
