@@ -66,12 +66,12 @@ public class PersonDataAccessService implements PersonDao {
 
   @Override
   public UUID findIdByEmail(String email) {
-    String sqlQuery = "SELECT 1 FROM person "
-        + "WHERE email = ?"
-        + ")";
+    String sqlQuery = "SELECT * FROM person "
+        + "WHERE email = ?";
     // Retrieve a single object
     return jdbcTemplate.queryForObject(
         sqlQuery,
+        new Object[] {email},
         (resultSet, i) -> UUID.fromString(resultSet.getString("id"))
     );
   }
@@ -141,11 +141,12 @@ public class PersonDataAccessService implements PersonDao {
   }
 
   @Override
-  public int deleteById(UUID id) {
+  public int deleteByEmail(String email) {
+    UUID id = findIdByEmail(email);
     String sqlQuery = "DELETE FROM person "
         + "WHERE id = ?";
     // Issue a single SQL update operation (such as an insert, update or delete statement)
-    return jdbcTemplate.update(sqlQuery, id);
+    return jdbcTemplate.update(sqlQuery, new Object[] {id});
   }
 
   @Override

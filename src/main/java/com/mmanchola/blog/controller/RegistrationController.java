@@ -4,33 +4,31 @@ import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class MemberController {
+@RequestMapping("/register")
+public class RegistrationController {
   private PersonService personService;
 
   @Autowired
-  public MemberController(PersonService personService) {
+  public RegistrationController(PersonService personService) {
     this.personService = personService;
   }
 
-  @GetMapping("/login")
-  public String showLoginForm() {
-    return "login-form";
-  }
-
-  @GetMapping("/register")
-  public String showRegisterForm() {
+  @GetMapping
+  public String showRegistrationForm(Model model) {
+    model.addAttribute("person", new Person());
     return "register-form";
   }
 
-  @PostMapping("/register")
-  public String registerMember(@Validated Person person){
+  @PostMapping
+  public String addNewUser(Person person, Model model) {
+    model.addAttribute("person", person);
     personService.addNewPerson(person);
-    return "login-form";
+    return "index";
   }
-
 }

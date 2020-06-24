@@ -1,4 +1,6 @@
-<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
 
 <head>
     <meta charset="UTF-8">
@@ -41,10 +43,10 @@
                       <a class="nav-link" href="#">Contáctanos</a>
                     </li>
                     <li class="nav-item register">
-                      <a class="nav-link" href="/register"><i class="fa fa-user header-icon"></i> Regístrate</a>
+                      <a class="nav-link" th:href="@{/register}"><i class="fa fa-user header-icon"></i> Regístrate</a>
                     </li>
                     <li class="nav-item login">
-                      <a class="nav-link" href="/login"><i class="fas fa-sign-in-alt header-icon"></i> Ingresa</a>
+                      <a class="nav-link" th:href="@{/login}"><i class="fas fa-sign-in-alt header-icon"></i> Ingresa</a>
                     </li>
                   </ul>
                 </div>
@@ -116,7 +118,7 @@
           <div class="card-body">
             <h5 class="card-title">Título de Post</h5>
             <p class="card-text">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic itaque ducimus dolorem, error molestias facere deserunt cum, quae incidunt omnis eos sit fugit reprehenderit nihil architecto est possimus, tempore non.  
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic itaque ducimus dolorem, error molestias facere deserunt cum, quae incidunt omnis eos sit fugit reprehenderit nihil architecto est possimus, tempore non.
             </p>
           </div>
           <div class="card-footer">
@@ -130,7 +132,7 @@
           <div class="card-body">
             <h5 class="card-title">Título de Post</h5>
             <p class="card-text">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad, laborum suscipit incidunt accusantium fuga alias, ipsum deserunt sunt nesciunt voluptate eligendi sed unde quos et ipsa quas, eius reprehenderit id.  
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad, laborum suscipit incidunt accusantium fuga alias, ipsum deserunt sunt nesciunt voluptate eligendi sed unde quos et ipsa quas, eius reprehenderit id.
             </p>
           </div>
           <div class="card-footer">
