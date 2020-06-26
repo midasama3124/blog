@@ -28,7 +28,7 @@ public class RegistrationController {
   @PostMapping
   public String addNewUser(Person person, Model model) {
     model.addAttribute("person", person);
-    personService.addNewPerson(person);
+    personService.add(person);
     return "index";
   }
 }
