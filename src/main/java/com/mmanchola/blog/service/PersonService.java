@@ -1,30 +1,20 @@
 package com.mmanchola.blog.service;
 
-import static com.mmanchola.blog.security.ApplicationUserRole.ADMIN;
-import static com.mmanchola.blog.security.ApplicationUserRole.READER;
-
 import com.mmanchola.blog.dao.PersonDataAccessService;
 import com.mmanchola.blog.exception.ApiRequestException;
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.util.EmailValidator;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
-public class PersonService implements UserDetailsService {
+public class PersonService {
   private final PersonDataAccessService dataAccessService;
   private final EmailValidator emailValidator;
   private final PasswordEncoder passwordEncoder;
@@ -38,23 +28,29 @@ public class PersonService implements UserDetailsService {
     this.passwordEncoder = passwordEncoder;
   }
 
-  public int addNewPerson(Person person) {
+  // Add new person to database
+  public int add(Person person) {
 
-    // Check Email
+    // TODO: Check other fields before saving them into database
+    // Check email correctness
     if (!emailValidator.test(person.getEmail())) {
       throw new ApiRequestException(person.getEmail() + " is not valid");
     }
 
+    // Check email availability
     if (dataAccessService.isEmailTaken(person.getEmail())) {
       throw new ApiRequestException(person.getEmail() + " is already taken");
     }
+
+    // Encrypt password
+    person.setPasswordHash(passwordEncoder.encode(person.getPasswordHash()));
 
     return dataAccessService.save(person);
   }
 
   public List<Person> getAllPeople() { return dataAccessService.findAll(); }
 
-  public Optional<Person> getPersonByEmail(String email) { return dataAccessService.findByEmail(email); }
+  public Optional<Person> getByEmail(String email) { return dataAccessService.findByEmail(email); }
 
   public void update(String username, Person person) {
     // Retrieve id from database
@@ -126,20 +122,6 @@ public class PersonService implements UserDetailsService {
       );
   }
 
-  public int deleteByEmail(String email) { return dataAccessService.deleteByEmail(email); }
+  public int delete(String email) { return dataAccessService.deleteByEmail(email); }
 
-  /* Security-related methods */
-  @Override
-  public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-    Person person = dataAccessService.findByEmail(s).get();
-
-    // TODO: Retrieve corresponding roles from database
-    List<GrantedAuthority> roles = new ArrayList<>();
-    roles.add(new SimpleGrantedAuthority(ADMIN.name()));
-    roles.add(new SimpleGrantedAuthority(READER.name()));
-
-    UserDetails userDetails = new User(person.getEmail(), person.getPasswordHash(), roles);
-
-    return userDetails;
-  }
 }

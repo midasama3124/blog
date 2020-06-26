@@ -17,14 +17,14 @@
       <p id="member-description" class="member-description text-center">
         Por favor ingresa tus datos si eres un usuario registrado
       </p>
+      <p class="member-description text-center" th:if="${param.error}" style="color: rgb(181, 68, 110); font-weight: 800;">
+        Usuario o contraseña inválida
+      </p>
+      <p class="member-description text-center" th:if="${param.logout}">
+        Usted ha salido de la sesión
+      </p>
     </header>
-    <div th:if="${param.error}">
-      Invalid username and password.
-    </div>
-    <div th:if="${param.logout}">
-      You have been logged out.
-    </div>
-    <form th:action="@{/login}" class="member-form">
+    <form th:action="@{/login}" method="post" class="member-form">
       <div class="form-group">
         <label id="email-label" for="email">Email</label>
         <input
