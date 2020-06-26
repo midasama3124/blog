@@ -26,7 +26,7 @@ public class PersonController {
 
   @PostMapping
   public void addPerson(@RequestBody @Validated Person person) {
-    personService.addNewPerson(person);
+    personService.add(person);
   }
 
   @GetMapping
@@ -34,7 +34,7 @@ public class PersonController {
 
   @GetMapping(path = "{email}")
   public Person getPersonByEmail(@PathVariable("email") String email) {
-    return personService.getPersonByEmail(email)
+    return personService.getByEmail(email)
         .orElse(null);
   }
 
@@ -46,6 +46,6 @@ public class PersonController {
 
   @DeleteMapping(path = "{email}")
   public void deletePerson(@PathVariable("email") String email) {
-    personService.deleteByEmail(email);
+    personService.delete(email);
   }
 }
