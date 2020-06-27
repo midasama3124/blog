@@ -3,13 +3,9 @@ package com.mmanchola.blog.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 
-@Entity
 public class Person {
 
-  @Id
   private UUID id;
   private String firstName;
   private String lastName;
