@@ -4,6 +4,7 @@ import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.service.PersonService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,13 +26,16 @@ public class PersonController {
   }
 
   @PostMapping
+  @PreAuthorize("hasAnyRole()")
   public void addPerson(@RequestBody @Validated Person person) {
     personService.add(person);
   }
 
   @GetMapping
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
   public List<Person> getAllPeople() { return personService.getAllPeople(); }
 
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
   @GetMapping(path = "{email}")
   public Person getPersonByEmail(@PathVariable("email") String email) {
     return personService.getByEmail(email)
@@ -39,12 +43,14 @@ public class PersonController {
   }
 
   @PutMapping(path = "{email}")
+  @PreAuthorize("hasAuthority('post:write')")
   public void updatePersonById(@PathVariable("email") String email,
       @RequestBody @Validated Person person) {
     personService.update(email, person);
   }
 
   @DeleteMapping(path = "{email}")
+  @PreAuthorize("hasAuthority('post:write')")
   public void deletePerson(@PathVariable("email") String email) {
     personService.delete(email);
   }
