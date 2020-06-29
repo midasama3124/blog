@@ -20,11 +20,11 @@ public class PersonServiceTest {
   public void canPerformCrudWhenValidUser() {
     // Create
     Person person = new Person();
-    person.setFirstName("Miguel");
-    person.setLastName("Manchola");
-    person.setEmail("midasama3124@gmail.com");
+    person.setFirstName("James");
+    person.setLastName("Bond");
+    person.setEmail("james-bond@gmail.com");
     person.setGender("MALE");
-    person.setAge((short)24);
+    person.setAge((short)45);
     person.setPasswordHash("123");
     int rowsAffected = personService.add(person);
     assertEquals(1, rowsAffected);
@@ -35,18 +35,18 @@ public class PersonServiceTest {
 
     // Update
     String prevEmail = person.getEmail();
-    person.setFirstName("Angela");
-    person.setLastName("Sanchez");
-    person.setEmail("angela-sanchez@hotmail.com");
+    person.setFirstName("Katharina");
+    person.setLastName("Nielsen");
+    person.setEmail("katha_nielsen@hotmail.com");
     person.setGender("OTHER");
-    person.setAge((short)32);
+    person.setAge((short)38);
     person.setPasswordHash("345");
     personService.update(prevEmail, person);
     personRetrieved = personService.getByEmail(person.getEmail()).orElse(null);
     assert person.equals(personRetrieved);
 
     // Delete
-    rowsAffected = personService.delete(person.getEmail());
+    rowsAffected = personService.deleteByEmail(person.getEmail());
     assertEquals(1, rowsAffected);
   }
 

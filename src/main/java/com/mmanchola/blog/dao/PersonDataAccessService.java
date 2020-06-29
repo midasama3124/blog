@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-@Repository("postgres")
+@Repository
 public class PersonDataAccessService implements PersonDao {
   private JdbcTemplate jdbcTemplate;
 
@@ -141,8 +141,7 @@ public class PersonDataAccessService implements PersonDao {
   }
 
   @Override
-  public int deleteByEmail(String email) {
-    UUID id = findIdByEmail(email);
+  public int delete(UUID id) {
     String sqlQuery = "DELETE FROM person "
         + "WHERE id = ?";
     // Issue a single SQL update operation (such as an insert, update or delete statement)
