@@ -23,15 +23,15 @@ public class PersonDataAccessServiceTest {
 
   @Test
   public void canPerformCRUDWithValidEntries() {
-    String email = "midasama3124@hotmail.com";
+    String email = "test@gmail.com";
     String password = passwordEncoder.encode("123");
     UUID id = UUID.randomUUID();
     Person person = new Person(
         id,
-        "Miguel",
-        "Manchola",
-        "MALE",
-        (short)24,
+        "Random",
+        "User",
+        "FEMALE",
+        (short)21,
         email,
         password,
         new Timestamp(System.currentTimeMillis()),
@@ -50,11 +50,11 @@ public class PersonDataAccessServiceTest {
     UUID databaseId = dataAccessService.findIdByEmail(email);
     Person newPerson = new Person(
         id,
-        "David",
-        "Sanchez",
-        "FEMALE",
-        (short)32,
-        "midasama3124@gmail.com",
+        "Freaky",
+        "User",
+        "MALE",
+        (short)88,
+        "freky_user@yahoo.com",
         "adminpsw",
         new Timestamp(System.currentTimeMillis()),
         new Timestamp(System.currentTimeMillis())
@@ -70,7 +70,8 @@ public class PersonDataAccessServiceTest {
     assert personUpdated.equals(newPerson);
 
     // Delete
-    int deleteRes = dataAccessService.deleteByEmail(newPerson.getEmail());
+    id = dataAccessService.findIdByEmail(newPerson.getEmail());
+    int deleteRes = dataAccessService.delete(id);
     assertEquals(1, deleteRes);
   }
 
