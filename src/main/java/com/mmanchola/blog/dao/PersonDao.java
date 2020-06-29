@@ -25,7 +25,7 @@ public interface PersonDao {
   int updateLastLogin(UUID id, Timestamp lastLogin);
 
   // D: Delete
-  int deleteByEmail(String email);
+  int delete(UUID id);
 
   // Check constraints
   boolean isEmailTaken(String email);

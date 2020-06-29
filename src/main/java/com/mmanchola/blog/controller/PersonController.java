@@ -1,4 +1,4 @@
-package com.mmanchola.blog.api;
+package com.mmanchola.blog.controller;
 
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.service.PersonService;
@@ -35,13 +35,6 @@ public class PersonController {
   @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
   public List<Person> getAllPeople() { return personService.getAllPeople(); }
 
-  @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-  @GetMapping(path = "{email}")
-  public Person getPersonByEmail(@PathVariable("email") String email) {
-    return personService.getByEmail(email)
-        .orElse(null);
-  }
-
   @PutMapping(path = "{email}")
   @PreAuthorize("hasAuthority('post:write')")
   public void updatePersonById(@PathVariable("email") String email,
@@ -52,6 +45,13 @@ public class PersonController {
   @DeleteMapping(path = "{email}")
   @PreAuthorize("hasAuthority('post:write')")
   public void deletePerson(@PathVariable("email") String email) {
-    personService.delete(email);
+    personService.deleteByEmail(email);
+  }
+
+  @GetMapping(path = "{email}")
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+  public Person getPersonByEmail(@PathVariable("email") String email) {
+    return personService.getByEmail(email)
+        .orElse(null);
   }
 }

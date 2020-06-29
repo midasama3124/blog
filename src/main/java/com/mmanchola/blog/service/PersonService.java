@@ -30,27 +30,55 @@ public class PersonService {
 
   // Add new person to database
   public int add(Person person) {
+    // Check first name
+    Optional.ofNullable(person.getFirstName())
+        .filter(name -> !StringUtils.isEmpty(name))
+        .map(StringUtils::capitalize)
+        .ifPresent(firstName -> person.setFirstName(firstName));
 
-    // TODO: Check other fields before saving them into database
-    // Check email correctness
-    if (!emailValidator.test(person.getEmail())) {
-      throw new ApiRequestException(person.getEmail() + " is not valid");
-    }
+    // Check last name
+    Optional.ofNullable(person.getLastName())
+        .filter(name -> !StringUtils.isEmpty(name))
+        .map(StringUtils::capitalize)
+        .ifPresent(lastName -> person.setLastName(lastName));
 
-    // Check email availability
-    if (dataAccessService.isEmailTaken(person.getEmail())) {
-      throw new ApiRequestException(person.getEmail() + " is already taken");
-    }
+    // Check gender
+    Optional.ofNullable(person.getGender())
+        .filter(gender -> !StringUtils.isEmpty(gender))
+        .ifPresent(gender -> {
+          gender = gender.toUpperCase();
+          if (gender.equals("MALE")) person.setGender("MALE");
+          else if (gender.equals("FEMALE")) person.setGender("FEMALE");
+          else person.setGender("OTHER");
+        });
 
-    // Encrypt password
-    person.setPasswordHash(passwordEncoder.encode(person.getPasswordHash()));
+    // Check email
+    Optional.ofNullable(person.getEmail())
+        .filter(email -> !StringUtils.isEmpty(email))
+        .ifPresent(email -> {
+          if (!emailValidator.test(email)) {
+            throw new ApiRequestException(email + " is not valid");
+          }
+          boolean taken = dataAccessService.isEmailTaken(email);
+          if (taken) throw new ApiRequestException(email + " is already taken");
+        });
+
+    // Check password hash
+    Optional.ofNullable(person.getPasswordHash())
+        .filter(password -> !StringUtils.isEmpty(password))
+        .ifPresent(passwordHash ->
+            // Encrypt password
+            person.setPasswordHash(passwordEncoder.encode(passwordHash)
+        ));
 
     return dataAccessService.save(person);
   }
 
   public List<Person> getAllPeople() { return dataAccessService.findAll(); }
 
-  public Optional<Person> getByEmail(String email) { return dataAccessService.findByEmail(email); }
+  public Optional<Person> getByEmail(String email) {
+    return dataAccessService.findByEmail(email);
+  }
 
   public void update(String username, Person person) {
     // Retrieve id from database
@@ -122,6 +150,9 @@ public class PersonService {
       );
   }
 
-  public int delete(String email) { return dataAccessService.deleteByEmail(email); }
+  public int deleteByEmail(String email) {
+    UUID id = dataAccessService.findIdByEmail(email);
+    return dataAccessService.delete(id);
+  }
 
 }
