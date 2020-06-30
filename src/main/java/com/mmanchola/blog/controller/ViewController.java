@@ -10,22 +10,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/register")
-public class RegistrationController {
+@RequestMapping("/")
+public class ViewController {
   private PersonService personService;
 
   @Autowired
-  public RegistrationController(PersonService personService) {
+  public ViewController(PersonService personService) {
     this.personService = personService;
   }
 
-  @GetMapping
+  @GetMapping(value = {"home", ""})
+  public String showHome() {
+    return "index";
+  }
+
+  @GetMapping("login")
+  public String showLoginForm() {
+    return "login-form";
+  }
+
+  @GetMapping("register")
   public String showRegistrationForm(Model model) {
     model.addAttribute("person", new Person());
     return "register-form";
   }
 
-  @PostMapping
+  @PostMapping("register")
   public String addNewUser(Person person, Model model) {
     model.addAttribute("person", person);
     personService.add(person);

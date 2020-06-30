@@ -49,7 +49,7 @@
                       <a class="nav-link" th:href="@{/login}" sec:authorize="!isAuthenticated()"><i class="fas fa-sign-in-alt header-icon"></i> Ingresa</a>
                     </li>
                     <li class="nav-item login">
-                      <form th:action="@{/logout}" method="post" th:if="${#authorization.expression('isAuthenticated()')}">
+                      <form th:action="@{/logout}" method="get" th:if="${#authorization.expression('isAuthenticated()')}">
                         <button class="custom-btn" type="submit">
                           <i class="fas fa-sign-out-alt header-icon"></i> Cerrar sesión</a>
                         </button>

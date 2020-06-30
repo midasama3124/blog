@@ -1,6 +1,7 @@
 package com.mmanchola.blog.security;
 
-import com.mmanchola.blog.service.UserService;
+import com.mmanchola.blog.auth.ApplicationUserService;
+import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,18 +10,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private UserService userDetailsService;
+  private ApplicationUserService userDetailsService;
   private PasswordEncoder passwordEncoder;
 
   @Autowired
   public ApplicationSecurityConfig(
-      UserService userDetailsService,
+      ApplicationUserService userDetailsService,
       PasswordEncoder passwordEncoder) {
     this.userDetailsService = userDetailsService;
     this.passwordEncoder = passwordEncoder;
@@ -42,12 +44,25 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 //        .httpBasic();
       .formLogin()
         .loginPage("/login")
-        .defaultSuccessUrl("/home", true)
         .permitAll()
+        .defaultSuccessUrl("/home", true)
+        .usernameParameter("username")    // Explicit declaration. Default: username
+        .passwordParameter("password")    // Explicit declaration. Default: password
+        .and()
+      .rememberMe()   // Default: 2 months
+//        .tokenRepository()    // Retrieved from database
+        .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(120))
+        .key("r3$34rch")
+        .rememberMeParameter("remember-me")    // Explicit declaration. Default: remember-me
         .and()
       .logout()
-        .logoutSuccessUrl("/home")
-        .permitAll();
+        .logoutUrl("/logout")    // Explicit declaration. Default: /logout
+        // Change to POST method if csrf is enabled (i.e., POST is better practice for csrf)
+        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+        .clearAuthentication(true)
+        .invalidateHttpSession(true)
+        .deleteCookies("JSESSIONID", "remember-me")
+        .logoutSuccessUrl("/home");
   }
 
   @Override
