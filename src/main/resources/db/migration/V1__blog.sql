@@ -59,9 +59,10 @@ CREATE TABLE post (
     metatitle VARCHAR(100),
     slug VARCHAR(100) NOT NULL,
     status VARCHAR(10) NOT NULL,
-    published_at TIMESTAMP NOT NULL,
+    published_at TIMESTAMP,
     updated_at TIMESTAMP,
     content TEXT,
+    UNIQUE (slug),
     FOREIGN KEY (person_id) REFERENCES person (id),
     CONSTRAINT proper_status CHECK (status IN ('draft', 'published', 'outdated')) );
 
