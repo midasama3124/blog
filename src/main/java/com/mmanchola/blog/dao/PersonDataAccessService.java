@@ -19,10 +19,8 @@ public class PersonDataAccessService implements PersonDao {
 
   @Override
   public int save(Person person) {
-    UUID id = UUID.randomUUID();
     Timestamp current = new Timestamp(System.currentTimeMillis());
     String sqlQuery = "INSERT INTO person ("
-        + "id, "
         + "first_name, "
         + "last_name, "
         + "gender, "
@@ -31,10 +29,10 @@ public class PersonDataAccessService implements PersonDao {
         + "password_hash, "
         + "registered_at, "
         + "last_login) "
-        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     // Issue a single SQL update operation (such as an insert, update or delete statement)
     // Returns number of rows affected
-    return jdbcTemplate.update(sqlQuery, id, person.getFirstName(), person.getLastName(),
+    return jdbcTemplate.update(sqlQuery, person.getFirstName(), person.getLastName(),
         person.getGender().toUpperCase(), person.getAge(), person.getEmail(),
         person.getPasswordHash(), current, current);
   }

@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,44 +33,44 @@ public class PersonService {
   public int add(Person person) {
     // Check first name
     Optional.ofNullable(person.getFirstName())
-        .filter(name -> !StringUtils.isEmpty(name))
+        .filter(Predicate.not(String::isEmpty))
         .map(StringUtils::capitalize)
-        .ifPresent(firstName -> person.setFirstName(firstName));
+        .ifPresent(person::setFirstName);
 
     // Check last name
     Optional.ofNullable(person.getLastName())
-        .filter(name -> !StringUtils.isEmpty(name))
+        .filter(Predicate.not(String::isEmpty))
         .map(StringUtils::capitalize)
-        .ifPresent(lastName -> person.setLastName(lastName));
+        .ifPresent(person::setLastName);
 
     // Check gender
     Optional.ofNullable(person.getGender())
-        .filter(gender -> !StringUtils.isEmpty(gender))
+        .filter(Predicate.not(String::isEmpty))
+        .map(String::toUpperCase)
         .ifPresent(gender -> {
-          gender = gender.toUpperCase();
-          if (gender.equals("MALE")) person.setGender("MALE");
-          else if (gender.equals("FEMALE")) person.setGender("FEMALE");
-          else person.setGender("OTHER");
+          if (gender.equals("MALE") || gender.equals("FEMALE"))
+            person.setGender(gender);
+          else
+            person.setGender("OTHER");
         });
 
     // Check email
     Optional.ofNullable(person.getEmail())
-        .filter(email -> !StringUtils.isEmpty(email))
-        .ifPresent(email -> {
-          if (!emailValidator.test(email)) {
+        .filter(Predicate.not(String::isEmpty))
+        .ifPresentOrElse(email -> {
+          if (!emailValidator.test(email))
             throw new ApiRequestException(email + " is not valid");
-          }
-          boolean taken = dataAccessService.isEmailTaken(email);
-          if (taken) throw new ApiRequestException(email + " is already taken");
-        });
+          if (dataAccessService.isEmailTaken(email))
+            throw new ApiRequestException(email + " is already taken");
+        }, IllegalStateException::new);
 
     // Check password hash
     Optional.ofNullable(person.getPasswordHash())
-        .filter(password -> !StringUtils.isEmpty(password))
-        .ifPresent(passwordHash ->
+        .filter(Predicate.not(String::isEmpty))
+        .ifPresentOrElse(passwordHash ->
             // Encrypt password
             person.setPasswordHash(passwordEncoder.encode(passwordHash)
-        ));
+        ), IllegalStateException::new);
 
     return dataAccessService.save(person);
   }
@@ -85,23 +86,23 @@ public class PersonService {
     UUID id = dataAccessService.findIdByEmail(username);
     // Check first name
     Optional.ofNullable(person.getFirstName())
-        .filter(name -> !StringUtils.isEmpty(name))
+        .filter(Predicate.not(String::isEmpty))
         .map(StringUtils::capitalize)
-        .ifPresent(firstName ->dataAccessService.updateFirstName(id, firstName));
+        .ifPresent(firstName -> dataAccessService.updateFirstName(id, firstName));
 
     // Check last name
     Optional.ofNullable(person.getLastName())
-        .filter(name -> !StringUtils.isEmpty(name))
+        .filter(Predicate.not(String::isEmpty))
         .map(StringUtils::capitalize)
-        .ifPresent(lastName ->dataAccessService.updateLastName(id, lastName));
+        .ifPresent(lastName -> dataAccessService.updateLastName(id, lastName));
 
     // Check gender
     Optional.ofNullable(person.getGender())
-        .filter(gender -> !StringUtils.isEmpty(gender))
+        .filter(Predicate.not(String::isEmpty))
+        .map(String::toUpperCase)
         .ifPresent(gender -> {
-          gender = gender.toUpperCase();
-          if (gender.equals("MALE")) dataAccessService.updateGender(id, "MALE");
-          else if (gender.equals("FEMALE")) dataAccessService.updateGender(id, "FEMALE");
+          if (gender.equals("MALE") || gender.equals("FEMALE"))
+            dataAccessService.updateGender(id, gender);
           else dataAccessService.updateGender(id, "OTHER");
         });
 
@@ -111,10 +112,10 @@ public class PersonService {
 
     // Check username
 //    Optional.ofNullable(person.getUsername())
-//        .filter(username -> !StringUtils.isEmpty(username))
+//        .filter(Predicate.not(String::isEmpty))
 //        .map(String::toLowerCase)
+//        .map(username -> StringUtils.replace(username, " ", "_"))
 //        .ifPresent(username -> {
-//          username = username.replaceAll("\\s", "");  // Remove white spaces from username
 //          if (dataAccessService.isUsernameTakenBySomeoneElse(id, username)) {
 //            throw new ApiRequestException(username + " is already taken");
 //          }
@@ -123,23 +124,21 @@ public class PersonService {
 
     // Check email
     Optional.ofNullable(person.getEmail())
-        .filter(email -> !StringUtils.isEmpty(email))
+        .filter(Predicate.not(String::isEmpty))
         .ifPresent(email -> {
           if (!emailValidator.test(email)) {
             throw new ApiRequestException(email + " is not valid");
           }
           boolean taken = dataAccessService.isEmailTakenBySomeoneElse(person.getId(), email);
-          if (!taken) {
-            dataAccessService.updateEmail(id, email);
-          }
+          if (!taken) dataAccessService.updateEmail(id, email);
         });
 
     // Check password hash
     Optional.ofNullable(person.getPasswordHash())
-        .filter(password -> !StringUtils.isEmpty(password))
+        .filter(Predicate.not(String::isEmpty))
         .ifPresent(passwordHash ->
-            dataAccessService.updatePasswordHash(id, passwordEncoder.encode(passwordHash)
-    ));
+            dataAccessService.updatePasswordHash(id, passwordEncoder.encode(passwordHash))
+        );
   }
 
   public void updateLastLogin(UUID id, Timestamp lastLogin) {
