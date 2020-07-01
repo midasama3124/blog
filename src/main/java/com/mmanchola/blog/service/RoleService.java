@@ -3,9 +3,9 @@ package com.mmanchola.blog.service;
 import com.mmanchola.blog.dao.RoleDataAccessService;
 import com.mmanchola.blog.model.Role;
 import java.util.Optional;
+import java.util.function.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 public class RoleService {
@@ -19,10 +19,9 @@ public class RoleService {
   public int add(Role role) {
     // Check name
     Optional.ofNullable(role.getName())
-        .filter(name -> !StringUtils.isEmpty(name))
-        .ifPresent(name -> {
-          role.setName(name.toUpperCase());;
-        });
+        .filter(Predicate.not(String::isEmpty))
+        .map(String::toUpperCase)
+        .ifPresentOrElse(role::setName, IllegalStateException::new);
 
     return dataAccessService.save(role);
   }
@@ -36,13 +35,13 @@ public class RoleService {
 
     // Check name
     Optional.ofNullable(role.getName())
-        .filter(n -> !StringUtils.isEmpty(n))
-        .ifPresent(n -> {
-          dataAccessService.updateName(id, n.toUpperCase());
-        });
+        .filter(Predicate.not(String::isEmpty))
+        .map(String::toUpperCase)
+        .ifPresent(r -> dataAccessService.updateName(id, r));
 
     // Check description
     Optional.ofNullable(role.getDescription())
+        .filter(Predicate.not(String::isEmpty))
         .ifPresent(desc -> dataAccessService.updateDescription(id, desc));
   }
 
