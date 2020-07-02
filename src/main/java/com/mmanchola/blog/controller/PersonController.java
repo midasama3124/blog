@@ -33,7 +33,7 @@ public class PersonController {
 
   @GetMapping
   @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-  public List<Person> getAllPeople() { return personService.getAllPeople(); }
+  public List<Person> getAllPeople() { return personService.getAll(); }
 
   @PutMapping(path = "{email}")
   @PreAuthorize("hasAuthority('post:write')")

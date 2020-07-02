@@ -18,7 +18,6 @@ public class PersonServiceTest {
 
   @Test
   public void canPerformCrudWhenValidUser() {
-    // Create
     Person person = new Person();
     person.setFirstName("James");
     person.setLastName("Bond");
@@ -26,6 +25,8 @@ public class PersonServiceTest {
     person.setGender("MALE");
     person.setAge((short)45);
     person.setPasswordHash("123");
+
+    // Create
     int rowsAffected = personService.add(person);
     assertEquals(1, rowsAffected);
 

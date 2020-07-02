@@ -22,7 +22,7 @@ public class PersonRoleDataAccessServiceTest {
 
   @Test
   public void canPerformCrudWhenValidIds() {
-    UUID personId = personDas.findIdByEmail("test@gmail.com");
+    UUID personId = personDas.findIdByEmail("test@gmail.com").orElse(null);
     short adminId = roleDas.findIdByName("ADMIN");
     short readerId = roleDas.findIdByName("READER");
 
