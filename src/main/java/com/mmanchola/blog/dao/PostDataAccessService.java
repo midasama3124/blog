@@ -147,6 +147,19 @@ public class PostDataAccessService implements PostDao {
   }
 
   @Override
+  public boolean isSlugTakenByOther(String newSlug, int postId) {
+    String sqlQuery = "SELECT EXISTS ("
+        + "SELECT 1 FROM post "
+        + "WHERE id <> ? "
+        + "AND slug = ?"
+        + ")";
+    return jdbcTemplate.queryForObject(
+        sqlQuery,
+        new Object[] {postId, newSlug},
+        (resultSet, i) -> resultSet.getBoolean(1));
+  }
+
+  @Override
   public int updatePersonId(int postId, UUID personId) {
     String sqlQuery = "UPDATE post SET "
         + "person_id = ? "

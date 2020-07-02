@@ -19,6 +19,7 @@ public interface PostDao {
   List<Post> findMostRecent(int numPosts);
   Optional<Integer> findIdBySlug(String slug);
   boolean isSlugTaken(String slug);
+  boolean isSlugTakenByOther(String slug, int id);
 
   // Update
   int updatePersonId(int postId, UUID personId);
