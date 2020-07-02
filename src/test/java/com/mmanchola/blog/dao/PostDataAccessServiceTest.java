@@ -22,7 +22,7 @@ public class PostDataAccessServiceTest {
 
   @Test
   public void canPerformCrudWhenValidPost() {
-    UUID personId = personDas.findIdByEmail("midasama3124@gmail.com");
+    UUID personId = personDas.findIdByEmail("midasama3124@gmail.com").orElse(null);
     String title = "Post title";
     String metatitle = "Post metatitle";
     String slug = "post-slug";
@@ -43,7 +43,7 @@ public class PostDataAccessServiceTest {
 
     // Read
     // Test getting post ID by slug
-    int id = posdtDas.findIdBySlug(slug);
+    int id = posdtDas.findIdBySlug(slug).orElse(0);
     post.setId(id);
     Post postRetrieved = posdtDas.findBySlug(slug).orElse(null);
     assert postRetrieved.equals(post);
@@ -68,7 +68,7 @@ public class PostDataAccessServiceTest {
       String slugTmp = String.format("post-slug%s", i);
       post.setSlug(slugTmp);
       posdtDas.saveChild(post);
-      int idTmp = posdtDas.findIdBySlug(slugTmp);
+      int idTmp = posdtDas.findIdBySlug(slugTmp).orElse(0);
       posdtDas.updatePublishedAt(idTmp, new Timestamp(System.currentTimeMillis()));
     }
 
@@ -87,7 +87,7 @@ public class PostDataAccessServiceTest {
 
     // Update
     // Test updating post status
-    id = posdtDas.findIdBySlug(slug);
+    id = posdtDas.findIdBySlug(slug).orElse(0);
     posdtDas.updateStatus(id, "draft");
     postRetrieved = posdtDas.findBySlug(slug).orElse(null);
     assert postRetrieved.getStatus().equals("draft");
@@ -98,12 +98,12 @@ public class PostDataAccessServiceTest {
     assertEquals(5, publishedPosts.size());
 
     // Update
-    id = posdtDas.findIdBySlug("post-slug1");
+    id = posdtDas.findIdBySlug("post-slug1").orElse(0);
     // Test updating person ID
-    personId = personDas.findIdByEmail("test@gmail.com");
+    personId = personDas.findIdByEmail("test@gmail.com").orElse(null);
     posdtDas.updatePersonId(id, personId);
     // Test updating parent ID
-    int parentId = posdtDas.findIdBySlug("post-slug2");
+    int parentId = posdtDas.findIdBySlug("post-slug2").orElse(0);
     posdtDas.updateParentId(id, parentId);
     // Test updating title
     String newTitle = "New post title";
@@ -132,10 +132,10 @@ public class PostDataAccessServiceTest {
 
     // Delete
     // Modify post id of parent post in order to delete it from subsequent cycle
-    id = posdtDas.findIdBySlug(slug);
+    id = posdtDas.findIdBySlug(slug).orElse(0);
     posdtDas.updateSlug(id,"post-slug1");
     for (int i = 6; i > 0; i--) {
-      id = posdtDas.findIdBySlug(String.format("post-slug%s", i));
+      id = posdtDas.findIdBySlug(String.format("post-slug%s", i)).orElse(0);
       rowsAffected = posdtDas.delete(id);
       assertEquals(1, rowsAffected);
     }

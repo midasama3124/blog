@@ -1,6 +1,5 @@
 package com.mmanchola.blog.dao;
 
-import com.google.common.collect.Lists;
 import com.mmanchola.blog.mapper.PostMapper;
 import com.mmanchola.blog.model.Post;
 import java.sql.Timestamp;
@@ -98,18 +97,7 @@ public class PostDataAccessService implements PostDao {
 
   @Override
   public List<Post> findMostRecent() {
-    String sqlQuery = "SELECT "
-        + "* "
-        + "FROM "
-        + "post "
-        + "WHERE published_at = ("
-        + "SELECT MAX (published_at) "
-        + "FROM post"
-        + ")";
-    // Retrieve a single object
-    return Lists.newArrayList(
-        jdbcTemplate.queryForObject(sqlQuery, new PostMapper())
-    );
+    return findMostRecent(1);
   }
 
   @Override
@@ -131,14 +119,30 @@ public class PostDataAccessService implements PostDao {
   }
 
   @Override
-  public int findIdBySlug(String slug) {
+  public Optional<Integer> findIdBySlug(String slug) {
     String sqlQuery = "SELECT * FROM post "
         + "WHERE slug = ?";
+    // Retrieve a single object
+    return Optional.ofNullable(
+      jdbcTemplate.queryForObject(
+        sqlQuery,
+        new Object[] {slug},
+        (resultSet, i) -> resultSet.getInt("id")
+      )
+    );
+  }
+
+  @Override
+  public boolean isSlugTaken(String slug) {
+    String sqlQuery = "SELECT EXISTS ("
+        + "SELECT 1 FROM post "
+        + "WHERE slug = ?"
+        + ")";
     // Retrieve a single object
     return jdbcTemplate.queryForObject(
         sqlQuery,
         new Object[] {slug},
-        (resultSet, i) -> resultSet.getInt("id")
+        (resultSet, i) -> resultSet.getBoolean(1)
     );
   }
 

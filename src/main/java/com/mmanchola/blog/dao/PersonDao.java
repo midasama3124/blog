@@ -13,7 +13,7 @@ public interface PersonDao {
   // R: Read
   List<Person> findAll();
   Optional<Person> findByEmail(String email);
-  UUID findIdByEmail(String email);
+  Optional<UUID> findIdByEmail(String email);
 
   // U: Update
   int updateFirstName(UUID id, String firstName);

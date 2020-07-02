@@ -47,7 +47,7 @@ public class PersonDataAccessServiceTest {
     assert personRetrieved.equals(person);
 
     // Update
-    UUID databaseId = dataAccessService.findIdByEmail(email);
+    UUID databaseId = dataAccessService.findIdByEmail(email).orElse(null);
     Person newPerson = new Person(
         id,
         "Freaky",
@@ -70,7 +70,7 @@ public class PersonDataAccessServiceTest {
     assert personUpdated.equals(newPerson);
 
     // Delete
-    id = dataAccessService.findIdByEmail(newPerson.getEmail());
+    id = dataAccessService.findIdByEmail(newPerson.getEmail()).orElse(null);
     int deleteRes = dataAccessService.delete(id);
     assertEquals(1, deleteRes);
   }

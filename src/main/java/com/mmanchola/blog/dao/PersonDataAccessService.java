@@ -63,14 +63,16 @@ public class PersonDataAccessService implements PersonDao {
   }
 
   @Override
-  public UUID findIdByEmail(String email) {
+  public Optional<UUID> findIdByEmail(String email) {
     String sqlQuery = "SELECT * FROM person "
         + "WHERE email = ?";
     // Retrieve a single object
-    return jdbcTemplate.queryForObject(
+    return Optional.ofNullable(
+      jdbcTemplate.queryForObject(
         sqlQuery,
         new Object[] {email},
         (resultSet, i) -> UUID.fromString(resultSet.getString("id"))
+      )
     );
   }
 
