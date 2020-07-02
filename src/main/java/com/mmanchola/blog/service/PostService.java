@@ -2,8 +2,9 @@ package com.mmanchola.blog.service;
 
 import static com.mmanchola.blog.exception.ExceptionMessage.INVALID;
 import static com.mmanchola.blog.exception.ExceptionMessage.MISSING;
-import static com.mmanchola.blog.exception.ExceptionMessage.MISSING_UNAVAILABLE;
+import static com.mmanchola.blog.exception.ExceptionMessage.MISSING_INVALID;
 import static com.mmanchola.blog.exception.ExceptionMessage.NOT_FOUND;
+import static com.mmanchola.blog.exception.ExceptionMessage.UNAVAILABLE;
 import static com.mmanchola.blog.model.TableFields.PERSON_EMAIL;
 import static com.mmanchola.blog.model.TableFields.POST_PARENT_ID;
 import static com.mmanchola.blog.model.TableFields.POST_SLUG;
@@ -39,12 +40,23 @@ public class PostService {
     this.checker = checker;
   }
 
-  // Check given slug in terms of correctness and availability (Not-null attribute)
-  private Optional<String> checkSlug(String slug) {
+  // Check given slug in terms of correctness
+  private Optional<String> checkSlugCorrectness(String slug) {
     return Optional.ofNullable(slug)
         .filter(Predicate.not(String::isEmpty))
-        .map(s -> StringUtils.replace(s, " ", "-"))  // Replace blank spaces for dashes
-        .filter(postDas::isSlugTaken);   // Check availability
+        .map(s -> StringUtils.replace(s, " ", "-"));  // Replace blank spaces for dashes
+  }
+
+  // Check given slug in terms of availability for POST operations (Not-null attribute)
+  private Optional<String> checkSlugAvailability(String slug) {
+    return Optional.ofNullable(slug)
+        .filter(Predicate.not(postDas::isSlugTaken));   // Check availability
+  }
+
+  // Check given slug in terms of availability for PUT operations (Not-null attribute)
+  private Optional<String> checkSlugAvailability(String slug, int id) {
+    return Optional.ofNullable(slug)
+        .filter(sl -> !postDas.isSlugTakenByOther(sl, id));   // Check availability
   }
 
   // Check given status
@@ -62,9 +74,13 @@ public class PostService {
     checker.checkNotEmpty(post.getTitle())
         .orElseThrow(() -> new ApiRequestException(MISSING.getMsg(POST_TITLE.toString())));
     // Check slug
-    String slug = checkSlug(post.getSlug())
-        .orElseThrow(() -> new ApiRequestException(MISSING_UNAVAILABLE.getMsg(POST_SLUG.toString())));
-    post.setSlug(slug);
+    String slug = checkSlugCorrectness(post.getSlug())
+        .orElseThrow(() -> new ApiRequestException(MISSING.getMsg(POST_SLUG.toString())));
+    checkSlugAvailability(slug)
+        .ifPresentOrElse(
+            post::setSlug,
+            () -> { throw new ApiRequestException(UNAVAILABLE.getMsg(POST_SLUG.toString())); }
+        );
     // Check status
     String status = checkStatus(post.getStatus())
         .orElseThrow(() -> new ApiRequestException(INVALID.getMsg(POST_STATUS.toString())));
@@ -85,7 +101,8 @@ public class PostService {
     int parentId = postDas.findIdBySlug(parentSlug)
         .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(POST_PARENT_ID.toString())));
     post.setParentId(parentId);
-    return add(post, authorEmail);
+    checkPost(post);
+    return postDas.saveChild(post);
   }
 
   // Get all posts
@@ -100,8 +117,8 @@ public class PostService {
 
   // Get post by its slug
   public Optional<Post> getBySlug(String slug) {
-    String checkedSlug = checkSlug(slug)
-        .orElseThrow(() -> new ApiRequestException(MISSING_UNAVAILABLE.getMsg(POST_SLUG.toString())));
+    String checkedSlug = checkSlugCorrectness(slug)
+        .orElseThrow(() -> new ApiRequestException(MISSING.getMsg(POST_SLUG.toString())));
     return postDas.findBySlug(checkedSlug);
   }
 
@@ -143,6 +160,18 @@ public class PostService {
     );
   }
 
+  // Update post status
+  public void updateStatus(String slug, String status) {
+    int postId = postDas.findIdBySlug(slug)
+        .orElseThrow(() -> new ApiRequestException(MISSING_INVALID.getMsg(POST_SLUG.toString())));
+    // Update status
+    checkStatus(status)
+        .ifPresentOrElse(
+            st -> postDas.updateStatus(postId, st),
+            () -> { throw new ApiRequestException(MISSING_INVALID.getMsg(POST_STATUS.toString())); }
+        );
+  }
+
   // Update post-related fields
   public void updatePost(String slug, Post post) {
     // Retrieve ID from database
@@ -155,11 +184,14 @@ public class PostService {
     checker.checkNotEmpty(post.getMetatitle())
         .ifPresent(metatitle -> postDas.updateMetatitle(postId, metatitle));
     // Update slug
-    checkSlug(post.getSlug())
-        .ifPresent(sl -> postDas.updateSlug(postId, sl));
-    // Update status
-    checkStatus(post.getStatus())
-        .ifPresent(status -> postDas.updateStatus(postId, status));
+    checkSlugCorrectness(post.getSlug())
+        .ifPresent(
+            sl -> checkSlugAvailability(sl, postId)   // Is it taken by other?
+                .ifPresentOrElse(
+                    s -> postDas.updateSlug(postId, s),
+                    () -> { throw new ApiRequestException(UNAVAILABLE.getMsg(POST_SLUG.toString())); }
+                )
+        );
     // Update update timestamp
     postDas.updateUpdatedAt(postId, new Timestamp(System.currentTimeMillis()));
     // Update content

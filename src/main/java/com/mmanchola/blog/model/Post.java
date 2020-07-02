@@ -62,9 +62,7 @@ public class Post {
     return parentPath;
   }
 
-  public void setParentPath(String parentPath) {
-    this.parentPath = parentPath;
-  }
+  public void setParentPath(String parentPath) { this.parentPath = parentPath; }
 
   public String getTitle() {
     return title;
@@ -82,9 +80,7 @@ public class Post {
     this.metatitle = metatitle;
   }
 
-  public String getSlug() {
-    return slug;
-  }
+  public String getSlug() { return slug; }
 
   public void setSlug(String slug) {
     this.slug = slug;
@@ -127,8 +123,7 @@ public class Post {
     if (this == obj) return true;
     if (!(obj instanceof Post)) return false;
     Post other = (Post) obj;
-    return this.id == other.getId() &&
-        this.personId.equals(other.getPersonId()) &&
+    return this.personId.equals(other.getPersonId()) &&
         this.parentId == other.getParentId() &&
         this.title.equals(other.getTitle()) &&
         this.metatitle.equals(other.getMetatitle()) &&
