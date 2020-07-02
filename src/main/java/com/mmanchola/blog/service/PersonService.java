@@ -84,13 +84,41 @@ public class PersonService {
     return dataAccessService.save(person);
   }
 
+  // Get all people on database
   public List<Person> getAll() { return dataAccessService.findAll(); }
 
+  // Get person by his/her email
   public Optional<Person> getByEmail(String email) {
     return dataAccessService.findByEmail(email);
   }
 
-  public void update(String email, Person person) {
+  // Update member email
+  public void updateEmail(String newEmail, String prevEmail) {
+    UUID memberId = dataAccessService.findIdByEmail(prevEmail)
+        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+    String updateEmail = checkEmailCorrectness(newEmail)
+        .orElseThrow(() -> new ApiRequestException(MISSING_INVALID.getMsg(PERSON_EMAIL.toString())));
+    checkEmailAvailability(updateEmail, memberId)
+        .ifPresentOrElse(
+            em -> dataAccessService.updateEmail(memberId, em),
+            () -> { throw new ApiRequestException(UNAVAILABLE.getMsg(PERSON_EMAIL.toString())); }
+        );
+  }
+
+  // Update member password
+  public void updatePassword(String password, String email) {
+    UUID memberId = dataAccessService.findIdByEmail(email)
+        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+    checker.checkNotEmpty(password)
+        .ifPresentOrElse(
+            // Encode password
+            passwordHash ->
+                dataAccessService.updatePasswordHash(memberId, passwordEncoder.encode(passwordHash)),
+            () -> { throw new ApiRequestException(MISSING.getMsg(PERSON_PASSWORD.toString())); }
+        );
+  }
+
+  public void updatePersonalInfo(String email, Person person) {
     // Retrieve id from database
     UUID id = dataAccessService.findIdByEmail(email)
         .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
@@ -106,20 +134,6 @@ public class PersonService {
     // Check age
     checker.checkAge(person.getAge())
         .ifPresent(age -> dataAccessService.updateAge(id, age));
-    // Check email
-    String updateEmail = checkEmailCorrectness(person.getEmail())
-        .orElseThrow(() -> new ApiRequestException(MISSING_INVALID.getMsg(PERSON_EMAIL.toString())));
-    checkEmailAvailability(updateEmail, id)
-        .ifPresentOrElse(
-            em -> dataAccessService.updateEmail(id, em),
-            () -> { throw new ApiRequestException(UNAVAILABLE.getMsg(PERSON_EMAIL.toString())); }
-        );
-    // Check password
-    checker.checkNotEmpty(person.getPasswordHash())
-        .ifPresent(passwordHash ->
-            // Encode password
-            dataAccessService.updatePasswordHash(id, passwordEncoder.encode(passwordHash))
-        );
   }
 
   public void updateLastLogin(String email, Timestamp lastLogin) {

@@ -39,7 +39,7 @@ public class PersonController {
   @PreAuthorize("hasAuthority('post:write')")
   public void updatePersonById(@PathVariable("email") String email,
       @RequestBody @Validated Person person) {
-    personService.update(email, person);
+    personService.updatePersonalInfo(email, person);
   }
 
   @DeleteMapping(path = "{email}")

@@ -42,7 +42,9 @@ public class PersonServiceTest {
     person.setGender("OTHER");
     person.setAge((short)38);
     person.setPasswordHash("345");
-    personService.update(prevEmail, person);
+    personService.updateEmail(person.getEmail(), prevEmail);
+    personService.updatePassword(person.getPasswordHash(), person.getEmail());
+    personService.updatePersonalInfo(person.getEmail(), person);
     personRetrieved = personService.getByEmail(person.getEmail()).orElse(null);
     assert person.equals(personRetrieved);
 
