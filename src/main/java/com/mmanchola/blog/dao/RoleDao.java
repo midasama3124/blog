@@ -9,8 +9,8 @@ public interface RoleDao {
 
   // Read
   Optional<Role> findByName(String name);
-  String findNameById(short id);
-  short findIdByName(String name);
+  Optional<String> findNameById(short id);
+  Optional<Short> findIdByName(String name);
 
   // Update
   int updateName(short id, String name);

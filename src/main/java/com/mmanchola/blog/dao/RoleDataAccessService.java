@@ -37,26 +37,30 @@ public class RoleDataAccessService implements RoleDao {
   }
 
   @Override
-  public String findNameById(short id) {
+  public Optional<String> findNameById(short id) {
     String sqlQuery = "SELECT * FROM role "
         + "WHERE id = ?";
     // Retrieve a single object
-    return jdbcTemplate.queryForObject(
-        sqlQuery,
-        new Object[] {id},
-        (resultSet, i) -> resultSet.getString("name")
+    return Optional.ofNullable(
+        jdbcTemplate.queryForObject(
+            sqlQuery,
+            new Object[] {id},
+            (resultSet, i) -> resultSet.getString("name")
+        )
     );
   }
 
   @Override
-  public short findIdByName(String name) {
+  public Optional<Short> findIdByName(String name) {
     String sqlQuery = "SELECT * FROM role "
         + "WHERE name = ?";
     // Retrieve a single object
-    return jdbcTemplate.queryForObject(
-        sqlQuery,
-        new Object[] {name},
-        (resultSet, i) -> resultSet.getShort("id")
+    return Optional.ofNullable(
+        jdbcTemplate.queryForObject(
+            sqlQuery,
+            new Object[] {name},
+            (resultSet, i) -> resultSet.getShort("id")
+        )
     );
   }
 

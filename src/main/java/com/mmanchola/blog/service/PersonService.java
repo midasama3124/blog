@@ -6,8 +6,11 @@ import static com.mmanchola.blog.exception.ExceptionMessage.NOT_FOUND;
 import static com.mmanchola.blog.exception.ExceptionMessage.UNAVAILABLE;
 import static com.mmanchola.blog.model.TableFields.PERSON_EMAIL;
 import static com.mmanchola.blog.model.TableFields.PERSON_PASSWORD;
+import static com.mmanchola.blog.model.TableFields.ROLE_NAME;
 
 import com.mmanchola.blog.dao.PersonDataAccessService;
+import com.mmanchola.blog.dao.PersonRoleDataAccessService;
+import com.mmanchola.blog.dao.RoleDataAccessService;
 import com.mmanchola.blog.exception.ApiRequestException;
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.util.EmailValidator;
@@ -23,18 +26,23 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PersonService {
-  private final PersonDataAccessService dataAccessService;
+  private final PersonDataAccessService personDas;
   private final EmailValidator emailValidator;
   private final PasswordEncoder passwordEncoder;
+  private final RoleDataAccessService roleDas;
+  private final PersonRoleDataAccessService personRoleDas;
   private final ServiceChecker checker;
 
   @Autowired
-  public PersonService(PersonDataAccessService dataAccessService,
+  public PersonService(PersonDataAccessService personDas,
       EmailValidator emailValidator,
-      PasswordEncoder passwordEncoder, ServiceChecker checker) {
-    this.dataAccessService = dataAccessService;
+      PasswordEncoder passwordEncoder, RoleDataAccessService roleDas,
+      PersonRoleDataAccessService personRoleDas, ServiceChecker checker) {
+    this.personDas = personDas;
     this.emailValidator = emailValidator;
     this.passwordEncoder = passwordEncoder;
+    this.roleDas = roleDas;
+    this.personRoleDas = personRoleDas;
     this.checker = checker;
   }
 
@@ -47,13 +55,13 @@ public class PersonService {
   // Check given person email in terms of availability for POST operations
   private Optional<String> checkEmailAvailability(String email) {
     return Optional.ofNullable(email)
-        .filter(Predicate.not(dataAccessService::isEmailTaken));
+        .filter(Predicate.not(personDas::isEmailTaken));
   }
 
   // Check given person email in terms of availability for PUT operations
   private Optional<String> checkEmailAvailability(String email, UUID exclusiveId) {
     return Optional.ofNullable(email)
-        .filter(e -> !dataAccessService.isEmailTakenBySomeoneElse(exclusiveId, e));
+        .filter(e -> !personDas.isEmailTakenBySomeoneElse(exclusiveId, e));
   }
 
   // Add new person to database
@@ -80,74 +88,80 @@ public class PersonService {
         ),
             () -> { throw new ApiRequestException(MISSING.getMsg(PERSON_PASSWORD.toString())); }
         );
+    return personDas.save(person);
+  }
 
-    return dataAccessService.save(person);
+  // Add role to given user by his/her email
+  public int addRole(String userEmail, String roleName) {
+    UUID userId = personDas.findIdByEmail(userEmail)
+        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+    short roleId = roleDas.findIdByName(roleName)
+        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(ROLE_NAME.toString())));
+    return personRoleDas.save(userId, roleId);
   }
 
   // Get all people on database
-  public List<Person> getAll() { return dataAccessService.findAll(); }
+  public List<Person> getAll() { return personDas.findAll(); }
 
   // Get person by his/her email
   public Optional<Person> getByEmail(String email) {
-    return dataAccessService.findByEmail(email);
+    return personDas.findByEmail(email);
   }
 
   // Update member email
   public void updateEmail(String newEmail, String prevEmail) {
-    UUID memberId = dataAccessService.findIdByEmail(prevEmail)
+    UUID memberId = personDas.findIdByEmail(prevEmail)
         .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
     String updateEmail = checkEmailCorrectness(newEmail)
         .orElseThrow(() -> new ApiRequestException(MISSING_INVALID.getMsg(PERSON_EMAIL.toString())));
     checkEmailAvailability(updateEmail, memberId)
         .ifPresentOrElse(
-            em -> dataAccessService.updateEmail(memberId, em),
+            em -> personDas.updateEmail(memberId, em),
             () -> { throw new ApiRequestException(UNAVAILABLE.getMsg(PERSON_EMAIL.toString())); }
         );
   }
 
   // Update member password
   public void updatePassword(String password, String email) {
-    UUID memberId = dataAccessService.findIdByEmail(email)
+    UUID memberId = personDas.findIdByEmail(email)
         .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
     checker.checkNotEmpty(password)
         .ifPresentOrElse(
             // Encode password
             passwordHash ->
-                dataAccessService.updatePasswordHash(memberId, passwordEncoder.encode(passwordHash)),
+                personDas.updatePasswordHash(memberId, passwordEncoder.encode(passwordHash)),
             () -> { throw new ApiRequestException(MISSING.getMsg(PERSON_PASSWORD.toString())); }
         );
   }
 
   public void updatePersonalInfo(String email, Person person) {
     // Retrieve id from database
-    UUID id = dataAccessService.findIdByEmail(email)
+    UUID id = personDas.findIdByEmail(email)
         .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
     // Check first name
     checker.checkPersonName(person.getFirstName())
-        .ifPresent(firstName -> dataAccessService.updateFirstName(id, firstName));
+        .ifPresent(firstName -> personDas.updateFirstName(id, firstName));
     // Check last name
     checker.checkPersonName(person.getLastName())
-        .ifPresent(lastName -> dataAccessService.updateLastName(id, lastName));
+        .ifPresent(lastName -> personDas.updateLastName(id, lastName));
     // Check gender
     checker.checkGender(person.getGender())
-        .ifPresent(gender -> dataAccessService.updateGender(id, gender));
+        .ifPresent(gender -> personDas.updateGender(id, gender));
     // Check age
     checker.checkAge(person.getAge())
-        .ifPresent(age -> dataAccessService.updateAge(id, age));
+        .ifPresent(age -> personDas.updateAge(id, age));
   }
 
-  public void updateLastLogin(String email, Timestamp lastLogin) {
-    UUID id = dataAccessService.findIdByEmail(email)
+  public void updateLastLogin(String email) {
+    UUID id = personDas.findIdByEmail(email)
         .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
-    Timestamp date = Optional.ofNullable(lastLogin)
-        .orElse(new Timestamp(System.currentTimeMillis()));
-    dataAccessService.updateLastLogin(id, date);
+    personDas.updateLastLogin(id, new Timestamp(System.currentTimeMillis()));
   }
 
   public int deleteByEmail(String email) {
-    UUID id = dataAccessService.findIdByEmail(email)
+    UUID id = personDas.findIdByEmail(email)
         .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
-    return dataAccessService.delete(id);
+    return personDas.delete(id);
   }
 
 }

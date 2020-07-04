@@ -10,8 +10,6 @@ public interface PersonRoleDao {
   // Read
   List<Short> find(UUID personId);
 
-  // Update
-
   // Delete
   int delete(UUID personId, short roleId);
 }
