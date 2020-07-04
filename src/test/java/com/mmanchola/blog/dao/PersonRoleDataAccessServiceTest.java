@@ -23,8 +23,8 @@ public class PersonRoleDataAccessServiceTest {
   @Test
   public void canPerformCrudWhenValidIds() {
     UUID personId = personDas.findIdByEmail("test@gmail.com").orElse(null);
-    short adminId = roleDas.findIdByName("ADMIN");
-    short readerId = roleDas.findIdByName("READER");
+    short adminId = roleDas.findIdByName("ADMIN").orElse(null);
+    short readerId = roleDas.findIdByName("READER").orElse(null);
 
     // Create
     int rowsAffected = personRoleDas.save(personId, readerId);

@@ -37,7 +37,7 @@ public class ApplicationUserDaoService implements ApplicationUserDao {
     Set<SimpleGrantedAuthority> permissions = roleIds
         .stream()
         .map(roleId ->
-            valueOf(roleDas.findNameById(roleId))
+            valueOf(roleDas.findNameById(roleId).get())
                 .getGrantedAuthorities()
         )
         .flatMap(Set::stream)           // Concatenate into a single set

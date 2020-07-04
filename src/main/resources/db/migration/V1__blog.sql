@@ -148,7 +148,8 @@ CREATE TABLE tag (
     title VARCHAR(50) NOT NULL,
     metatitle VARCHAR(75),
     slug VARCHAR(75) NOT NULL,
-    content TEXT );
+    content TEXT,
+    UNIQUE (slug));
 
 /* Post/Tag table */
 CREATE TABLE post_tag (
