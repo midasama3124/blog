@@ -1,8 +1,11 @@
 package com.mmanchola.blog.util;
 
+import com.mmanchola.blog.model.PostStatus;
 import java.util.Optional;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 public class ServiceChecker {
@@ -54,6 +57,33 @@ public class ServiceChecker {
     return Optional.ofNullable(role)
         .filter(Predicate.not(String::isEmpty))
         .map(String::toUpperCase);
+  }
+
+  // Check given slug in terms of correctness
+  public Optional<String> checkSlugCorrectness(String slug) {
+    return Optional.ofNullable(slug)
+        .filter(Predicate.not(String::isEmpty))
+        .map(s -> StringUtils.replace(s, " ", "-"));  // Replace blank spaces for dashes
+  }
+
+  // Check given slug in terms of availability for POST operations (Not-null attribute)
+  public Optional<String> checkSlugAvailability(String slug, Predicate<? super String> isTaken) {
+    return Optional.ofNullable(slug)
+        .filter(Predicate.not(isTaken));   // Check availability
+  }
+
+  // Check given slug in terms of availability for PUT operations (Not-null attribute)
+  public Optional<String> checkSlugAvailability(String slug, int id, BiPredicate<? super String, ? super Integer> isTakenByOther) {
+    return Optional.ofNullable(slug)
+        .filter(sl -> !isTakenByOther.test(sl, id));   // Check availability
+  }
+
+  // Check given status
+  public Optional<String> checkStatus(String status) {
+    return Optional.ofNullable(status)
+        .filter(Predicate.not(String::isEmpty))
+        .map(String::toLowerCase)
+        .filter(PostStatus::contains);    // Must be contained in PostStatus enum
   }
 
 }

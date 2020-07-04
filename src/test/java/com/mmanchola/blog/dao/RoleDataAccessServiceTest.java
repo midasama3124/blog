@@ -33,9 +33,9 @@ public class RoleDataAccessServiceTest {
     // Read
     Role retrievedRole = dataAccessService.findByName(firstRole.getName()).orElse(null);
     assert retrievedRole.equals(firstRole);
-    id = dataAccessService.findIdByName(name);
+    id = dataAccessService.findIdByName(name).orElse(null);
     assertEquals(retrievedRole.getId(), id);
-    name = dataAccessService.findNameById(id);
+    name = dataAccessService.findNameById(id).orElse(null);
     assertEquals(retrievedRole.getName(), name);
 
     // Update

@@ -1,6 +1,7 @@
 package com.mmanchola.blog.service;
 
 import static com.mmanchola.blog.exception.ExceptionMessage.MISSING_INVALID;
+import static com.mmanchola.blog.exception.ExceptionMessage.NOT_FOUND;
 import static com.mmanchola.blog.model.TableFields.ROLE_NAME;
 
 import com.mmanchola.blog.dao.RoleDataAccessService;
@@ -13,13 +14,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RoleService {
-  private RoleDataAccessService dataAccessService;
+  private RoleDataAccessService roleDas;
   private ServiceChecker checker;
 
   @Autowired
-  public RoleService(RoleDataAccessService dataAccessService,
+  public RoleService(RoleDataAccessService roleDas,
       ServiceChecker checker) {
-    this.dataAccessService = dataAccessService;
+    this.roleDas = roleDas;
     this.checker = checker;
   }
 
@@ -30,27 +31,27 @@ public class RoleService {
             role::setName,
             () -> { throw new ApiRequestException(MISSING_INVALID.getMsg(ROLE_NAME.toString())); }
         );
-
-    return dataAccessService.save(role);
+    return roleDas.save(role);
   }
 
   public Optional<Role> get(String name) {
-    return dataAccessService.findByName(name);
+    return roleDas.findByName(name);
   }
 
   public void update(String name, Role role) {
-    short id = dataAccessService.findIdByName(name);
+    short id = roleDas.findIdByName(name)
+        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(ROLE_NAME.toString())));
 
     // Check name
     checker.checkRoleName(role.getName())
-        .ifPresent(r -> dataAccessService.updateName(id, r));
+        .ifPresent(r -> roleDas.updateName(id, r));
 
     // Check description
     checker.checkNotEmpty(role.getDescription())
-        .ifPresent(desc -> dataAccessService.updateDescription(id, desc));
+        .ifPresent(desc -> roleDas.updateDescription(id, desc));
   }
 
   public int delete(String name) {
-    return dataAccessService.deleteByName(name);
+    return roleDas.deleteByName(name);
   }
 }

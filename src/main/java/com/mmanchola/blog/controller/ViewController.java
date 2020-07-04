@@ -1,5 +1,7 @@
 package com.mmanchola.blog.controller;
 
+import static com.mmanchola.blog.security.ApplicationUserRole.READER;
+
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,12 @@ public class ViewController {
   public String addNewUser(Person person, Model model) {
     model.addAttribute("person", person);
     personService.add(person);
+    personService.addRole(person.getEmail(), READER.name());
     return "index";
+  }
+
+  @GetMapping("post")
+  public String displayPost() {
+    return "post";
   }
 }
