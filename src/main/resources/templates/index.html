@@ -3,11 +3,11 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Bellas Palabras - Responsive Bootstrap Blog Website</title>
-    <link rel="stylesheet" th:href="@{/dist/css/app.css}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Bellas Palabras - Blog Website</title>
+  <link rel="stylesheet" th:href="@{/dist/css/app.css}">
 </head>
 
 <body class="app">
@@ -30,15 +30,15 @@
                       <a class="nav-link" href="#">Inicio</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Posts
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                          <a class="dropdown-item" href="#">Maternidad</a>
-                          <a class="dropdown-item" href="#">Vida de Pareja</a>
-                          <a class="dropdown-item" href="#">Comida Hecha en Casa</a>
-                        </div>
-                      </li>
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Posts
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Maternidad</a>
+                        <a class="dropdown-item" href="#">Vida de Pareja</a>
+                        <a class="dropdown-item" href="#">Comida Hecha en Casa</a>
+                      </div>
+                    </li>
                     <li class="nav-item">
                       <a class="nav-link" href="#">Contáctanos</a>
                     </li>
@@ -48,12 +48,21 @@
                     <li class="nav-item login">
                       <a class="nav-link" th:href="@{/login}" sec:authorize="!isAuthenticated()"><i class="fas fa-sign-in-alt header-icon"></i> Ingresa</a>
                     </li>
-                    <li class="nav-item login">
-                      <form th:action="@{/logout}" method="get" th:if="${#authorization.expression('isAuthenticated()')}">
-                        <button class="custom-btn" type="submit">
-                          <i class="fas fa-sign-out-alt header-icon"></i> Cerrar sesión</a>
-                        </button>
-                      </form>
+                    <li class="nav-item dropdown login" sec:authorize="isAuthenticated()">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user header-icon"></i> Usuario
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">
+                          <i class="fas fa-file-invoice header-icon"></i> Modificar cuenta
+                        </a>
+                        <a class="dropdown-item" th:href="@{/admin}" sec:authorize="hasRole('ROLE_ADMIN')">
+                          <i class="fas fa-user-cog header-icon"></i> Administración
+                        </a>
+                        <a class="dropdown-item" th:href="@{/logout}" custom:linkMethod="get">
+                          <i class="fas fa-sign-out-alt header-icon"></i> Cerrar sesión
+                        </a>
+                      </div>
                     </li>
                   </ul>
                 </div>
@@ -181,7 +190,7 @@
     <p class="privacy-policy">&copy 2020 Bellas Palabras. <a href="#">Política de Privacidad</a></p>
   </footer>
 
-  <script th:src=@{dist/js/app.js}></script>
+  <script th:src=@{/dist/js/app.js}></script>
 </body>
 
 </html>

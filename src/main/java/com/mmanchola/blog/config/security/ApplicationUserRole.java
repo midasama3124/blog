@@ -1,7 +1,7 @@
-package com.mmanchola.blog.security;
+package com.mmanchola.blog.config.security;
 
-import static com.mmanchola.blog.security.ApplicationUserPermission.POST_READ;
-import static com.mmanchola.blog.security.ApplicationUserPermission.POST_WRITE;
+import static com.mmanchola.blog.config.security.ApplicationUserPermission.POST_READ;
+import static com.mmanchola.blog.config.security.ApplicationUserPermission.POST_WRITE;
 
 import com.google.common.collect.Sets;
 import java.util.Set;
@@ -12,14 +12,14 @@ public enum ApplicationUserRole {
   READER(Sets.newHashSet(POST_READ)),
   ADMIN(Sets.newHashSet(POST_READ, POST_WRITE));
 
-  private final Set<com.mmanchola.blog.security.ApplicationUserPermission> permissions;
+  private final Set<ApplicationUserPermission> permissions;
 
   ApplicationUserRole(
-      Set<com.mmanchola.blog.security.ApplicationUserPermission> permissions) {
+      Set<ApplicationUserPermission> permissions) {
     this.permissions = permissions;
   }
 
-  public Set<com.mmanchola.blog.security.ApplicationUserPermission> getPermissions () {
+  public Set<ApplicationUserPermission> getPermissions () {
     return permissions;
   }
 
