@@ -1,4 +1,4 @@
-package com.mmanchola.blog.security;
+package com.mmanchola.blog.config.security;
 
 import com.mmanchola.blog.auth.ApplicationUserService;
 import java.util.concurrent.TimeUnit;

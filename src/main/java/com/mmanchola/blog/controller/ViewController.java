@@ -1,6 +1,6 @@
 package com.mmanchola.blog.controller;
 
-import static com.mmanchola.blog.security.ApplicationUserRole.READER;
+import static com.mmanchola.blog.config.security.ApplicationUserRole.READER;
 
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.service.PersonService;
@@ -49,4 +49,7 @@ public class ViewController {
   public String displayPost() {
     return "post";
   }
+
+  @GetMapping("admin")
+  public String displayAdminPage() { return "admin"; }
 }

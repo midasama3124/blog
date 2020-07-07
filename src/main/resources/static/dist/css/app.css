@@ -3,7 +3,7 @@
 @import url(https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap);
 @import url(https://fonts.googleapis.com/css2?family=Lora&display=swap);
 @import url(https://fonts.googleapis.com/css2?family=Lobster&display=swap);
-@import url(https://fonts.googleapis.com/css?family=Poppins:200i,400&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Lato:300,400,700);
 /*!
 * Bellas Palabras - Free Responsive Bootstrap Blog Website
 * Author: Miguel Manchola
@@ -11805,6 +11805,14 @@ readers do not read off random characters that represent icons */
   font-family: 'Font Awesome 5 Free';
   font-weight: 900; }
 
+.app-header {
+  width: 100%;
+  min-height: 100vh;
+  background-image: url(/image/header_background.jpg);
+  background-repeat: no-repeat;
+  background-position: right;
+  background-size: cover; }
+
 .app-header:before {
   content: '';
   width: 100%;
@@ -11815,7 +11823,7 @@ readers do not read off random characters that represent icons */
   background-image: linear-gradient(75deg, rgba(161, 198, 234, 0.1), rgba(215, 218, 229, 0.5)); }
 
 .navbar {
-  padding: 0; }
+  padding: 0 10vw 0 10vw; }
 
 .navbar-container.scrolled {
   background-color: #fff !important;
@@ -11868,14 +11876,6 @@ readers do not read off random characters that represent icons */
 
 .nav-item {
   font-size: 1.2rem; }
-
-@media (min-width: 769px) {
-  .header-icon {
-    font-size: .9em; }
-  .register {
-    margin-left: 13vw; }
-  .register a, .login a {
-    font-size: .8em; } }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
   .card-columns {
@@ -12107,141 +12107,169 @@ readers do not read off random characters that represent icons */
     padding-right: .8em; } }
 
 *,
-*::before,
-*::after {
+*:before,
+*:after {
   box-sizing: border-box; }
 
-.member-body {
-  font-family: "Poppins", sans-serif;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.4;
-  color: #f3f3f3;
-  margin: 0; }
+body {
+  background: #f5f5f5;
+  padding: 0;
+  margin: 0;
+  font-family: 'Lato', sans-serif; }
 
-/* mobile friendly alternative to using background-attachment: fixed */
-.member-body::before {
-  content: '';
+i.fa {
+  font-size: 16px; }
+
+p {
+  font-size: 16px;
+  line-height: 1.428571429; }
+
+.header {
   position: fixed;
+  z-index: 10;
   top: 0;
   left: 0;
+  background: #3498DB;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  color: #fff; }
+  .header .logo {
+    text-transform: uppercase;
+    letter-spacing: 1px; }
+  .header #menu-action {
+    display: block;
+    float: left;
+    width: 60px;
+    height: 50px;
+    line-height: 50px;
+    margin-right: 15px;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.15);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all .2s ease-in-out; }
+    .header #menu-action i {
+      display: inline-block;
+      margin: 0 5px; }
+    .header #menu-action i.fa-bars {
+      padding-top: 15px; }
+    .header #menu-action span {
+      width: 0px;
+      display: none;
+      overflow: hidden;
+      transition: all .2s ease-in-out; }
+    .header #menu-action:hover {
+      background: rgba(0, 0, 0, 0.25); }
+    .header #menu-action.active {
+      width: 250px;
+      transition: all .2s ease-in-out; }
+      .header #menu-action.active span {
+        display: inline;
+        width: auto;
+        transition: all .2s ease-in-out; }
+
+.sidebar {
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  top: 50px;
   height: 100%;
-  width: 100%;
-  z-index: -1;
-  background: #1b1b32;
-  background-image: linear-gradient(115deg, rgba(58, 58, 158, 0.8), rgba(136, 136, 206, 0.7)), url(/image/login_background.jpg);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center; }
+  width: 60px;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  text-align: center;
+  transition: all .2s ease-in-out; }
+  .sidebar:hover, .sidebar.active, .sidebar.hovered {
+    width: 250px;
+    transition: all .2s ease-in-out; }
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0; }
+    .sidebar ul li {
+      display: block; }
+      .sidebar ul li a {
+        display: block;
+        position: relative;
+        white-space: nowrap;
+        overflow: hidden;
+        border-bottom: 1px solid #ddd;
+        color: #444;
+        text-align: left; }
+        .sidebar ul li a i {
+          display: inline-block;
+          width: 60px;
+          height: 60px;
+          line-height: 60px;
+          text-align: center;
+          -webkit-animation-duration: .7s;
+          animation-duration: .7s;
+          -webkit-animation-fill-mode: both;
+          animation-fill-mode: both; }
+        .sidebar ul li a span {
+          display: inline-block;
+          height: 60px;
+          line-height: 60px; }
+        .sidebar ul li a:hover {
+          background-color: #eee; }
+          .sidebar ul li a:hover i {
+            -webkit-animation-name: swing;
+            animation-name: swing; }
 
-.member-title {
-  font-family: "Dancing Script";
-  font-weight: 400;
-  line-height: 1.2; }
-
-.member-description {
-  font-size: 1.125rem;
-  font-style: italic;
-  font-weight: 200;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4); }
-
-.member-title,
-.member-description {
-  margin-top: 0;
-  margin-bottom: 0.5rem; }
-
-label, .label-alone {
-  display: flex;
-  align-items: center;
-  font-size: 1.125rem;
-  margin-bottom: 0.5rem; }
-
-.member-container {
-  width: 100%;
-  margin: 3.125rem auto 0 auto; }
-
-@media (min-width: 576px) {
-  .member-container {
-    max-width: 540px; } }
-
-@media (min-width: 768px) {
-  .member-container {
-    max-width: 720px; } }
-
-.member-header {
-  padding: 0 0.625rem;
-  margin-bottom: 0.75rem; }
-
-.clue {
-  font-size: 1.2rem;
-  color: #b5446e; }
-
-/* form */
-.member-form {
-  background: rgba(27, 27, 50, 0.8);
-  padding: 2.5rem 0.625rem;
-  border-radius: 0.25rem; }
-
-@media (min-width: 480px) {
-  .member-form {
-    padding: 2.5rem; } }
-
-.form-group {
-  margin: 0 auto 0.5rem auto;
-  padding: 0.25rem; }
-
-.auth-buttons {
-  margin: 0; }
-
-.form-control {
+.main {
+  position: relative;
   display: block;
-  width: 100%;
-  height: 2.375rem;
-  padding: 0.375rem 0.75rem;
-  color: #495057;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  margin-bottom: 0.5rem; }
+  top: 50px;
+  left: 0;
+  padding: 15px;
+  padding-left: 75px;
+  transition: all .2s ease-in-out; }
+  .main.active {
+    padding-left: 275px;
+    transition: all .2s ease-in-out; }
+  .main .jumbotron {
+    background-color: #fff;
+    padding: 30px !important;
+    border: 1px solid #dfe8f1;
+    border-radius: 3px; }
+    .main .jumbotron h1 {
+      font-size: 24px;
+      margin: 0;
+      padding: 0;
+      margin-bottom: 12px; }
 
-.form-control:focus {
-  border-color: #80bdff;
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
+@-webkit-keyframes swing {
+  20% {
+    transform: rotate3d(0, 0, 1, 15deg); }
+  40% {
+    transform: rotate3d(0, 0, 1, -10deg); }
+  60% {
+    transform: rotate3d(0, 0, 1, 5deg); }
+  80% {
+    transform: rotate3d(0, 0, 1, -5deg); }
+  100% {
+    transform: rotate3d(0, 0, 1, 0deg); } }
 
-.input-radio, .input-checkbox {
-  display: inline-block;
-  margin-right: 0.625rem;
-  min-height: 1.25rem;
-  min-width: 1.25rem; }
+@keyframes swing {
+  20% {
+    transform: rotate3d(0, 0, 1, 15deg); }
+  40% {
+    transform: rotate3d(0, 0, 1, -10deg); }
+  60% {
+    transform: rotate3d(0, 0, 1, 5deg); }
+  80% {
+    transform: rotate3d(0, 0, 1, -5deg); }
+  100% {
+    transform: rotate3d(0, 0, 1, 0deg); } }
 
-.login-btn {
-  background: rgba(55, 175, 101, 0.5); }
-
-.signup-btn {
-  background: rgba(181, 68, 110, 0.5); }
-
-.login-btn, .signup-btn {
-  display: block;
-  width: 100%;
-  padding: 0.75rem;
-  color: inherit;
-  border-radius: 2px;
-  cursor: pointer; }
-
-.login-btn:hover {
-  background: #37af65; }
-
-.signup-btn:hover {
-  background: #b5446e;
-  color: #f3f3f3;
-  text-decoration: none; }
-
-@media (max-width: 426px) {
-  .signup-btn {
-    margin-top: 1.25rem; } }
+.swing {
+  transform-origin: top center;
+  -webkit-animation-name: swing;
+  animation-name: swing; }
 
 html {
   font-size: 100%;
