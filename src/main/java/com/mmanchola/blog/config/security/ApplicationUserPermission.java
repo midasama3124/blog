@@ -1,4 +1,4 @@
-package com.mmanchola.blog.security;
+package com.mmanchola.blog.config.security;
 
 public enum ApplicationUserPermission {
   POST_READ("post:read"),

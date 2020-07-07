@@ -1,6 +1,6 @@
 package com.mmanchola.blog.auth;
 
-import static com.mmanchola.blog.security.ApplicationUserRole.valueOf;
+import static com.mmanchola.blog.config.security.ApplicationUserRole.valueOf;
 
 import com.mmanchola.blog.dao.PersonDataAccessService;
 import com.mmanchola.blog.dao.PersonRoleDataAccessService;
