@@ -1,7 +1,6 @@
 package com.mmanchola.blog.config.security;
 
 import com.mmanchola.blog.auth.ApplicationUserService;
-import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -11,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableWebSecurity
@@ -31,9 +32,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
-      .csrf().disable()
-      .authorizeRequests()
-        .antMatchers("/", "/home", "/dist/**", "/register", "/login*").permitAll()
+            .csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/", "/home", "/css/**", "/js/**", "/fonts/**", "/image/**", "/register", "/login*", "/post/**").permitAll()
         // Order DOES matter
 //        .antMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(POST_WRITE.getPermission())
 //        .antMatchers(HttpMethod.POST, "/api/**").hasAuthority(POST_WRITE.getPermission())

@@ -1,15 +1,16 @@
 package com.mmanchola.blog.controller;
 
-import static com.mmanchola.blog.config.security.ApplicationUserRole.READER;
-
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import static com.mmanchola.blog.config.security.ApplicationUserRole.READER;
 
 @Controller
 @RequestMapping("/")
@@ -51,5 +52,6 @@ public class ViewController {
   }
 
   @GetMapping("admin")
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
   public String displayAdminPage() { return "admin"; }
 }

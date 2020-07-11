@@ -1,3 +1,6 @@
+/* Import SQL files using PostgreSQL on Windows 10
+ * \i 'C:/Users/MDSM3/Documents/IdeaProjects/blog/src/main/resources/db/migration/V1__blog.sql'
+ */
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 /* Person/User table */
