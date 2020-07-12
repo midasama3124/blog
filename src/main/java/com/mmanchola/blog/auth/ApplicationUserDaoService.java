@@ -1,17 +1,21 @@
 package com.mmanchola.blog.auth;
 
-import static com.mmanchola.blog.config.security.ApplicationUserRole.valueOf;
-
 import com.mmanchola.blog.dao.PersonDataAccessService;
 import com.mmanchola.blog.dao.PersonRoleDataAccessService;
 import com.mmanchola.blog.dao.RoleDataAccessService;
+import com.mmanchola.blog.exception.ApiRequestException;
 import com.mmanchola.blog.model.Person;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Repository;
+
+import static com.mmanchola.blog.config.security.ApplicationUserRole.valueOf;
+import static com.mmanchola.blog.exception.ExceptionMessage.NOT_FOUND;
+import static com.mmanchola.blog.model.TableFields.PERSON_EMAIL;
 
 @Repository
 public class ApplicationUserDaoService implements ApplicationUserDao {
@@ -30,18 +34,19 @@ public class ApplicationUserDaoService implements ApplicationUserDao {
 
   @Override
   public Optional<ApplicationUser> selectApplicationUserByUsername(String username) {
-    Person person = personDas.findByEmail(username).orElse(null);
+      Person person = personDas.findByEmail(username)
+              .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
 
-    // Authorities / Permissions
-    List<Short> roleIds = personRoleDas.find(person.getId());
-    Set<SimpleGrantedAuthority> permissions = roleIds
-        .stream()
-        .map(roleId ->
-            valueOf(roleDas.findNameById(roleId).get())
-                .getGrantedAuthorities()
-        )
-        .flatMap(Set::stream)           // Concatenate into a single set
-        .collect(Collectors.toSet());
+      // Authorities / Permissions
+      List<Short> roleIds = personRoleDas.findRoles(person.getId());
+      Set<SimpleGrantedAuthority> permissions = roleIds
+              .stream()
+              .map(roleId ->
+                      valueOf(roleDas.findNameById(roleId).get())
+                              .getGrantedAuthorities()
+              )
+              .flatMap(Set::stream)           // Concatenate into a single set
+              .collect(Collectors.toSet());
 
     ApplicationUser applicationUser = new ApplicationUser(
         person.getEmail(),

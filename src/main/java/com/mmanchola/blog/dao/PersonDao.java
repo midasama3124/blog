@@ -1,6 +1,7 @@
 package com.mmanchola.blog.dao;
 
 import com.mmanchola.blog.model.Person;
+
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -12,8 +13,12 @@ public interface PersonDao {
 
   // R: Read
   List<Person> findAll();
-  Optional<Person> findByEmail(String email);
-  Optional<UUID> findIdByEmail(String email);
+
+    Optional<Person> findByEmail(String email);
+
+    Optional<Person> findById(UUID id);
+
+    Optional<UUID> findIdByEmail(String email);
 
   // U: Update
   int updateFirstName(UUID id, String firstName);

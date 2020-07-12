@@ -1,7 +1,5 @@
 package com.mmanchola.blog.service;
 
-import static org.junit.Assert.assertEquals;
-
 import com.mmanchola.blog.model.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,15 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class PersonServiceTest {
 
-  @Autowired
-  private PersonService personService;
+    @Autowired
+    private PersonService personService;
 
-  @Test
-  public void canPerformCrudWhenValidUser() {
+    @Test
+    public void canPerformCrudWhenValidUser() {
     Person person = new Person();
     person.setFirstName("James");
     person.setLastName("Bond");
@@ -43,14 +46,25 @@ public class PersonServiceTest {
     person.setAge((short)38);
     person.setPasswordHash("345");
     personService.updateEmail(person.getEmail(), prevEmail);
-    personService.updatePassword(person.getPasswordHash(), person.getEmail());
-    personService.updatePersonalInfo(person.getEmail(), person);
-    personRetrieved = personService.getByEmail(person.getEmail()).orElse(null);
-    assert person.equals(personRetrieved);
+        personService.updatePassword(person.getPasswordHash(), person.getEmail());
+        personService.updatePersonalInfo(person.getEmail(), person);
+        personRetrieved = personService.getByEmail(person.getEmail()).orElse(null);
+        assert person.equals(personRetrieved);
 
-    // Delete
-    rowsAffected = personService.deleteByEmail(person.getEmail());
-    assertEquals(1, rowsAffected);
-  }
+        // Delete
+        rowsAffected = personService.deleteByEmail(person.getEmail());
+        assertEquals(1, rowsAffected);
+    }
+
+    @Test
+    public void getAllAdminUsers() {
+        List<Person> admins = personService.getAdmins();
+        assertEquals(2, admins.size());
+        List<String> emails = Arrays.asList("midasama3124@gmail.com",
+                "angelammanchola@gmail.com");
+        for (Person admin : admins) {
+            assert emails.contains(admin.getEmail());
+        }
+    }
 
 }
