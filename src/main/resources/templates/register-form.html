@@ -14,10 +14,13 @@
 
   <div class="container member-container">
     <header class="member-header">
-      <h1 class="member-title text-center">Bellas Palabras</h1>
-      <p class="member-description text-center">
-        Ingresa tu correo y contraseña para registrarte
-      </p>
+        <h1 class="member-title text-center">Bellas Palabras</h1>
+        <p class="member-description text-center">
+            Ingresa tu correo y contraseña para registrarte
+        </p>
+        <p class="member-action-msg text-center" th:if="${param.error}">
+            Email inválido o ya registrado
+        </p>
     </header>
 
       <form class="member-form" method="post" th:action="@{/register}" th:object="${person}">
@@ -123,13 +126,13 @@
           >Edad</label
         >
         <input
-          type="number"
-          name="age"
-          id="age"
-          min="1"
-          max="99"
-          class="form-control"
-          th:field="*{age}"
+                type="number"
+                name="age"
+                id="age"
+                min="0"
+                max="99"
+                class="form-control"
+                th:field="*{age}"
         />
       </div>
   

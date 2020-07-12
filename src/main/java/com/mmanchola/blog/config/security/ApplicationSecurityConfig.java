@@ -1,6 +1,7 @@
 package com.mmanchola.blog.config.security;
 
 import com.mmanchola.blog.auth.ApplicationUserService;
+import com.mmanchola.blog.auth.AuthSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,16 +19,19 @@ import java.util.concurrent.TimeUnit;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private ApplicationUserService userDetailsService;
-  private PasswordEncoder passwordEncoder;
+    private final ApplicationUserService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthSuccessHandler authSuccessHandler;
 
-  @Autowired
-  public ApplicationSecurityConfig(
-      ApplicationUserService userDetailsService,
-      PasswordEncoder passwordEncoder) {
-    this.userDetailsService = userDetailsService;
-    this.passwordEncoder = passwordEncoder;
-  }
+    @Autowired
+    public ApplicationSecurityConfig(
+            ApplicationUserService userDetailsService,
+            PasswordEncoder passwordEncoder,
+            AuthSuccessHandler authSuccessHandler) {
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+        this.authSuccessHandler = authSuccessHandler;
+    }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -40,16 +44,17 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 //        .antMatchers(HttpMethod.POST, "/api/**").hasAuthority(POST_WRITE.getPermission())
 //        .antMatchers(HttpMethod.PUT, "/api/**").hasAuthority(POST_WRITE.getPermission())
 //        .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole(ADMIN.name())
-        .anyRequest().authenticated()
-        .and()
+            .anyRequest().authenticated()
+            .and()
 //        .httpBasic();
-      .formLogin()
-        .loginPage("/login")
-        .permitAll()
-        .defaultSuccessUrl("/home", true)
-        .usernameParameter("username")    // Explicit declaration. Default: username
-        .passwordParameter("password")    // Explicit declaration. Default: password
-        .and()
+            .formLogin()
+            .loginPage("/login")
+            .permitAll()
+//        .defaultSuccessUrl("/home", true)  // If the login is successful, user will be redirected to this URL.
+            .usernameParameter("username")    // Explicit declaration. Default: username
+            .passwordParameter("password")    // Explicit declaration. Default: password
+            .successHandler(authSuccessHandler)   // Custom success handler
+            .and()
       .rememberMe()   // Default: 2 months
 //        .tokenRepository()    // Retrieved from database
         .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(120))

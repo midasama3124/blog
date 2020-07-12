@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PersonRoleDao {
-  // Create
-  int save(UUID personId, short roleId);
+    // Create
+    int save(UUID personId, short roleId);
 
-  // Read
-  List<Short> find(UUID personId);
+    // Read
+    List<Short> findRoles(UUID personId);
 
-  // Delete
-  int delete(UUID personId, short roleId);
+    List<UUID> findPeople(short roleId);
+
+    // Delete
+    int delete(UUID personId, short roleId);
 }
