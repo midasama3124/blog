@@ -2,13 +2,14 @@ package com.mmanchola.blog.dao;
 
 import com.mmanchola.blog.mapper.PersonMapper;
 import com.mmanchola.blog.model.Person;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class PersonDataAccessService implements PersonDao {
@@ -58,19 +59,28 @@ public class PersonDataAccessService implements PersonDao {
     String sqlQuery = "SELECT * FROM person WHERE email = ?";
     // Retrieve a single object
     return Optional.ofNullable(
-        jdbcTemplate.queryForObject(sqlQuery, new Object[] {email}, new PersonMapper())
+            jdbcTemplate.queryForObject(sqlQuery, new Object[]{email}, new PersonMapper())
+    );
+  }
+
+  @Override
+  public Optional<Person> findById(UUID id) {
+    String sqlQuery = "SELECT * FROM person WHERE id = ?";
+    // Retrieve a single object
+    return Optional.ofNullable(
+            jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new PersonMapper())
     );
   }
 
   @Override
   public Optional<UUID> findIdByEmail(String email) {
     String sqlQuery = "SELECT * FROM person "
-        + "WHERE email = ?";
+            + "WHERE email = ?";
     // Retrieve a single object
     return Optional.ofNullable(
-      jdbcTemplate.queryForObject(
-        sqlQuery,
-        new Object[] {email},
+            jdbcTemplate.queryForObject(
+                    sqlQuery,
+                    new Object[]{email},
         (resultSet, i) -> UUID.fromString(resultSet.getString("id"))
       )
     );

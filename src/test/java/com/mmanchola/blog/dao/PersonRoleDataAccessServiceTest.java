@@ -1,14 +1,15 @@
 package com.mmanchola.blog.dao;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,9 +34,11 @@ public class PersonRoleDataAccessServiceTest {
     assertEquals(1, rowsAffected);
 
     // Read
-    List<Short> roleIds = personRoleDas.find(personId);
+    List<Short> roleIds = personRoleDas.findRoles(personId);
     assert roleIds.contains(adminId);
     assert roleIds.contains(readerId);
+    List<UUID> peopleIds = personRoleDas.findPeople(adminId);
+    assertEquals(3, peopleIds.size());
 
     // Delete
     rowsAffected = personRoleDas.delete(personId, readerId);

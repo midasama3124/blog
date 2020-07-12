@@ -1,13 +1,5 @@
 package com.mmanchola.blog.service;
 
-import static com.mmanchola.blog.exception.ExceptionMessage.MISSING;
-import static com.mmanchola.blog.exception.ExceptionMessage.MISSING_INVALID;
-import static com.mmanchola.blog.exception.ExceptionMessage.NOT_FOUND;
-import static com.mmanchola.blog.exception.ExceptionMessage.UNAVAILABLE;
-import static com.mmanchola.blog.model.TableFields.PERSON_EMAIL;
-import static com.mmanchola.blog.model.TableFields.PERSON_PASSWORD;
-import static com.mmanchola.blog.model.TableFields.ROLE_NAME;
-
 import com.mmanchola.blog.dao.PersonDataAccessService;
 import com.mmanchola.blog.dao.PersonRoleDataAccessService;
 import com.mmanchola.blog.dao.RoleDataAccessService;
@@ -15,14 +7,20 @@ import com.mmanchola.blog.exception.ApiRequestException;
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.util.EmailValidator;
 import com.mmanchola.blog.util.ServiceChecker;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+
+import static com.mmanchola.blog.config.security.ApplicationUserRole.ADMIN;
+import static com.mmanchola.blog.exception.ExceptionMessage.*;
+import static com.mmanchola.blog.model.TableFields.*;
 
 @Service
 public class PersonService {
@@ -93,25 +91,41 @@ public class PersonService {
 
   // Add role to given user by his/her email
   public int addRole(String userEmail, String roleName) {
-    UUID userId = personDas.findIdByEmail(userEmail)
-        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
-    short roleId = roleDas.findIdByName(roleName)
-        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(ROLE_NAME.toString())));
-    return personRoleDas.save(userId, roleId);
+      UUID userId = personDas.findIdByEmail(userEmail)
+              .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+      short roleId = roleDas.findIdByName(roleName)
+              .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(ROLE_NAME.toString())));
+      return personRoleDas.save(userId, roleId);
   }
 
-  // Get all people on database
-  public List<Person> getAll() { return personDas.findAll(); }
+    // Get all people on database
+    public List<Person> getAll() {
+        return personDas.findAll();
+    }
 
-  // Get person by his/her email
-  public Optional<Person> getByEmail(String email) {
-    return personDas.findByEmail(email);
-  }
+    // Get all people with admin privileges
+    public List<Person> getAdmins() {
+        short adminRoleId = roleDas.findIdByName(ADMIN.name())
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(ROLE_NAME.toString())));
+        List<UUID> adminPersonIds = personRoleDas.findPeople(adminRoleId);
+        List<Person> admins = new ArrayList<>();
+        for (UUID personId : adminPersonIds) {
+            Person admin = personDas.findById(personId)
+                    .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_ID.toString())));
+            admins.add(admin);
+        }
+        return admins;
+    }
 
-  // Update member email
-  public void updateEmail(String newEmail, String prevEmail) {
-    UUID memberId = personDas.findIdByEmail(prevEmail)
-        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+    // Get person by his/her email
+    public Optional<Person> getByEmail(String email) {
+        return personDas.findByEmail(email);
+    }
+
+    // Update member email
+    public void updateEmail(String newEmail, String prevEmail) {
+        UUID memberId = personDas.findIdByEmail(prevEmail)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
     String updateEmail = checkEmailCorrectness(newEmail)
         .orElseThrow(() -> new ApiRequestException(MISSING_INVALID.getMsg(PERSON_EMAIL.toString())));
     checkEmailAvailability(updateEmail, memberId)
