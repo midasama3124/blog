@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="bg-light navbar-container">
+    <div class="container" th:fragment="navbar">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="/">
+                <img alt="Blog logo" height="50" src="image/logo_bp.svg" width="150">
+            </a>
+            <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation"
+                    class="navbar-toggler" data-target="#navbarNavDropdown" data-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav w-100 justify-content-center">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Inicio</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                           data-toggle="dropdown"
+                           href="#" id="navbarDropdownMenuLink" role="button">
+                            Posts
+                        </a>
+                        <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
+                            <a class="dropdown-item" href="#">Maternidad</a>
+                            <a class="dropdown-item" href="#">Vida de Pareja</a>
+                            <a class="dropdown-item" href="#">Comida Hecha en Casa</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contáctanos</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav justify-content-center" sec:authorize="isAuthenticated()">
+                    <li class="nav-item dropdown login-link">
+                        <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                           data-toggle="dropdown"
+                           href="#" id="navbarDropdownMenuLink" role="button">
+                            <i class="fas fa-user header-icon"></i>
+                            <span th:text=" ${#authentication.getPrincipal().getUsername()}"></span>
+                        </a>
+                        <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-file-invoice header-icon"></i> Modificar cuenta
+                            </a>
+                            <a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">
+                                <i class="fas fa-user-cog header-icon"></i> Administración
+                            </a>
+                            <a class="dropdown-item" method="get" th:href="@{/logout}">
+                                <i class="fas fa-sign-out-alt header-icon"></i> Cerrar sesión
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav justify-content-end membership-links" sec:authorize="!isAuthenticated()">
+                    <li class="nav-item register-link">
+                        <a class="nav-link" th:href="@{/register}"><i class="fa fa-user header-icon"></i> Regístrate</a>
+                    </li>
+                    <li class="nav-item login-link">
+                        <a class="nav-link" th:href="@{/login}"><i class="fas fa-sign-in-alt header-icon"></i>
+                            Ingresa</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+</body>
+</html>
