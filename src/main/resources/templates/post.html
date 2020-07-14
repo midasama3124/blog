@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -14,181 +13,124 @@
 <body class="home">
 <!-- Blog website header -->
 <header class="post-header">
-    <div class="bg-light navbar-container">
+    <!-- Navbar -->
+    <div th:replace="common/navbar::navbar"></div>
+    <div class="post-text-header d-flex align-items-center">
         <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-light">
-                <a class="navbar-brand" href="/">
-                    <img alt="Blog logo" height="50" src="image/logo_bp.svg" width="150">
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
-                        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                  </button>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav w-100 justify-content-center">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Inicio</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
-                               data-toggle="dropdown" href="#" id="navbarDropdownMenuLink" role="button">
-                                Posts
-                            </a>
-                            <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Maternidad</a>
-                                <a class="dropdown-item" href="#">Vida de Pareja</a>
-                                <a class="dropdown-item" href="#">Comida Hecha en Casa</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Contáctanos</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav justify-content-center" sec:authorize="isAuthenticated()">
-                        <li class="nav-item dropdown login-link">
-                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
-                               data-toggle="dropdown" href="#" id="navbarDropdownMenuLink" role="button">
-                                <i class="fas fa-user header-icon"></i> Usuario
-                            </a>
-                            <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-file-invoice header-icon"></i> Modificar cuenta
-                                </a>
-                                <a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">
-                                    <i class="fas fa-user-cog header-icon"></i> Administración
-                                </a>
-                                <a class="dropdown-item" method="get" th:href="@{/logout}">
-                                    <i class="fas fa-sign-out-alt header-icon"></i> Cerrar sesión
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav justify-content-end membership-links" sec:authorize="!isAuthenticated()">
-                        <li class="nav-item register-link">
-                            <a class="nav-link" th:href="@{/register}"><i class="fa fa-user header-icon"></i> Regístrate</a>
-                        </li>
-                        <li class="nav-item login-link">
-                            <a class="nav-link" th:href="@{/login}"><i class="fas fa-sign-in-alt header-icon"></i>
-                                Ingresa</a>
-                        </li>
-                    </ul>
-                </div>
-              </nav>
-          </div>
-      </div>
-      <div class="post-text-header d-flex align-items-center">
-          <div class="container">
-              <div class="row">
-                  <div class="col-sm-12 text-center">
-                      <h1>¿Cómo hacer arepas en casa?</h1>
-                      <p><span>Ángela Sánchez Manchola</span> // Publicado hace 2 días // 9 min. </p>
-                      <div class="post-tags">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <h1>¿Cómo hacer arepas en casa?</h1>
+                    <p><span>Ángela Sánchez Manchola</span> // Publicado hace 2 días // 9 min. </p>
+                    <div class="post-tags">
                         <i class="fas fa-tags fa-1x tags-icon"></i>
                         <a href="#" class="tag-anchor">Comida</a>
                         <a href="#" class="tag-anchor">En casa</a>
                         <a href="#" class="tag-anchor">Familia</a>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </header>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
-  <!-- Post content -->
-  <section class="post-section container-fluid">
+<!-- Post content -->
+<section class="post-section container-fluid">
     <div class="row">
         <div class="col-md-8 col-sm-12 post-content">
-          <div class="post-text">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In ex eum velit corporis consequuntur voluptatum similique eveniet perspiciatis magni? Doloribus incidunt distinctio ipsum quo ipsa soluta officia sed nostrum quaerat.</p>
-            <h2>Ingredientes</h2>
-            <ul>
-              <li>Harina</li>
-              <li>Queso</li>
-              <li>Agua</li>
-              <li>Sal</li>
-            </ul>
-            <h2>Preparación</h2>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo labore eos atque odio laborum officia saepe recusandae. Explicabo voluptatum vitae tenetur numquam incidunt impedit, iste fugiat possimus dolores ipsa corrupti.</p>  
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt minus sapiente qui iure quaerat vel aut cupiditate fuga repellat sed, reiciendis minima ullam at consequatur laboriosam. Veniam ipsam unde non!</p>
-            <img class="post-img" src="image/blog_post_img1.jpg" alt="Blog post image 1">
-            <p class="figure-label">Etiqueta de figura</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores error praesentium, dicta pariatur vero eligendi iusto quaerat quia iure sed quisquam rerum optio dignissimos blanditiis sit doloribus nisi ipsa tenetur.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium, eveniet natus! Numquam ea eligendi voluptatem. Corrupti earum illum, incidunt voluptatibus vel, omnis sint error alias corporis perspiciatis provident. Asperiores, vitae.</p>
-          </div>
-          <div class="post-interaction">
-            <p class="like-button"><i class="fas fa-thumbs-up like-button-icon"></i> <span>Me gusta</span></p>
-            <p>Déjanos un comentario</p>
-            <textarea name="comment" rows="5" class="comment-area" placeholder="Escribe tu comentario aquí..."></textarea>
-              <button class="btn btn-primary comment-submission-btn" value="submit">Enviar</button>
-          </div>
+            <div class="post-text">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. In ex eum velit corporis consequuntur
+                    voluptatum similique eveniet perspiciatis magni? Doloribus incidunt distinctio ipsum quo ipsa soluta
+                    officia sed nostrum quaerat.</p>
+                <h2>Ingredientes</h2>
+                <ul>
+                    <li>Harina</li>
+                    <li>Queso</li>
+                    <li>Agua</li>
+                    <li>Sal</li>
+                </ul>
+                <h2>Preparación</h2>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo labore eos atque odio laborum officia
+                    saepe recusandae. Explicabo voluptatum vitae tenetur numquam incidunt impedit, iste fugiat possimus
+                    dolores ipsa corrupti.</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt minus sapiente qui iure quaerat vel
+                    aut cupiditate fuga repellat sed, reiciendis minima ullam at consequatur laboriosam. Veniam ipsam
+                    unde non!</p>
+                <img alt="Blog post image 1" class="post-img" src="image/blog_post_img1.jpg">
+                <p class="figure-label">Etiqueta de figura</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores error praesentium, dicta pariatur
+                    vero eligendi iusto quaerat quia iure sed quisquam rerum optio dignissimos blanditiis sit doloribus
+                    nisi ipsa tenetur.</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium, eveniet natus! Numquam ea
+                    eligendi voluptatem. Corrupti earum illum, incidunt voluptatibus vel, omnis sint error alias
+                    corporis perspiciatis provident. Asperiores, vitae.</p>
+            </div>
+            <div class="post-interaction">
+                <p class="like-button"><i class="fas fa-thumbs-up like-button-icon"></i> <span>Me gusta</span></p>
+                <p>Déjanos un comentario</p>
+                <textarea class="comment-area" name="comment" placeholder="Escribe tu comentario aquí..."
+                          rows="5"></textarea>
+                <button class="btn btn-primary comment-submission-btn" value="submit">Enviar</button>
+            </div>
         </div>
         <div class="post-sidebar col-md-4 col-sm-12">
             <div class="popular-posts-headline">
-              <h4><i class="far fa-clipboard"></i> Posts Populares</h4>
+                <h4><i class="far fa-clipboard"></i> Posts Populares</h4>
             </div>
             <div class="card">
-              <a href="/post.html"><img class="card-img-top" src="image/blog_post_img6.jpg" alt="Card image cap"></a>
-              <div class="popular-post-likes">
-                  <h4><i class="fas fa-thumbs-up"></i> 12</h4>
-              </div>
-              <div class="card-body">
-                <h5 class="card-title">Título de Post</h5>
-                <p class="card-text">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti ratione eius illo? Temporibus est vel mollitia aliquid minus unde eos. Facere ratione dicta veritatis harum perferendis nulla magni asperiores reprehenderit?
-                </p>
-              </div>
+                <a href="/post.html"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img6.jpg"></a>
+                <div class="popular-post-likes">
+                    <h4><i class="fas fa-thumbs-up"></i> 12</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Título de Post</h5>
+                    <p class="card-text">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti ratione eius illo? Temporibus
+                        est vel mollitia aliquid minus unde eos. Facere ratione dicta veritatis harum perferendis nulla
+                        magni asperiores reprehenderit?
+                    </p>
+                </div>
             </div>
             <div class="card">
-              <a href="/post.html"><img class="card-img-top" src="image/blog_post_img5.jpg" alt="Card image cap"></a>
-              <div class="popular-post-likes">
-                  <h4><i class="fas fa-thumbs-up"></i> 8</h4>
-              </div>
-              <div class="card-body">
-                <h5 class="card-title">Título de Post</h5>
-                <p class="card-text">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti ratione eius illo? Temporibus est vel mollitia aliquid minus unde eos. Facere ratione dicta veritatis harum perferendis nulla magni asperiores reprehenderit?
-                </p>
-              </div>
+                <a href="/post.html"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img5.jpg"></a>
+                <div class="popular-post-likes">
+                    <h4><i class="fas fa-thumbs-up"></i> 8</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Título de Post</h5>
+                    <p class="card-text">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti ratione eius illo? Temporibus
+                        est vel mollitia aliquid minus unde eos. Facere ratione dicta veritatis harum perferendis nulla
+                        magni asperiores reprehenderit?
+                    </p>
+                </div>
             </div>
             <div class="popular-tags-headline">
-              <h4><i class="fas fa-tag"></i> Tags populares</h4>
+                <h4><i class="fas fa-tag"></i> Tags populares</h4>
             </div>
             <div class="container">
-              <div class="row popular-tags">
-                <div class="col-lg-4 col-md-6 d-flex justify-content-center popular-tag"><a href="#" class="tag-anchor">Relaciones</a></div>
-                  <div class="col-lg-4 col-md-6 d-flex justify-content-center popular-tag"><a href="#"
-                                                                                              class="tag-anchor">Manualidades</a>
-                  </div>
-                  <div class="col-lg-4 col-md-6 d-flex justify-content-center popular-tag"><a href="#"
-                                                                                              class="tag-anchor">Crianza</a>
-                  </div>
-                  <div class="col-lg-4 col-md-6 d-flex justify-content-center popular-tag"><a href="#"
-                                                                                              class="tag-anchor">Familia</a>
-                  </div>
-              </div>
+                <div class="row popular-tags">
+                    <div class="col-lg-4 col-md-6 d-flex justify-content-center popular-tag"><a class="tag-anchor"
+                                                                                                href="#">Relaciones</a>
+                    </div>
+                    <div class="col-lg-4 col-md-6 d-flex justify-content-center popular-tag"><a class="tag-anchor"
+                                                                                                href="#">Manualidades</a>
+                    </div>
+                    <div class="col-lg-4 col-md-6 d-flex justify-content-center popular-tag"><a class="tag-anchor"
+                                                                                                href="#">Crianza</a>
+                    </div>
+                    <div class="col-lg-4 col-md-6 d-flex justify-content-center popular-tag"><a class="tag-anchor"
+                                                                                                href="#">Familia</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-  </section>
+</section>
 
 <!-- Blog website footer -->
 <footer class="home-footer">
-    <a href="#">
-        <img alt="Blog website logo" class="img-fluid mx-auto d-block" height="150" src="image/logo_bp.svg" width="150">
-    </a>
-    <div class="social-media">
-        <h5 class="text-center">Redes Sociales</h5>
-        <div class="social-media-icons">
-            <div class="social-media-icon">
-                <a href="#"><i class="fab fa-facebook fa-2x"></i></a>
-            </div>
-            <div class="social-media-icon">
-                <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
-            </div>
-        </div>
-    </div>
-    <p class="privacy-policy">&copy 2020 Bellas Palabras. <a href="#">Política de Privacidad</a></p>
-  </footer>
+    <div th:replace="common/footer::footer"></div>
+</footer>
 
 <script src="/js/app.js"></script>
 </body>
