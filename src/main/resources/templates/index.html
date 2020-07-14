@@ -1,207 +1,145 @@
 <!DOCTYPE html>
 <html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+>
 
 <head>
-  <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <meta content="ie=edge" http-equiv="X-UA-Compatible">
-  <title>Bellas Palabras - Blog Website</title>
-  <link href="css/app.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Bellas Palabras - Blog Website</title>
+    <link href="css/app.css" rel="stylesheet">
 </head>
 
 <body class="home">
 <!-- Home header -->
 <header class="home-header">
-  <div class="bg-light navbar-container">
-    <div class="container">
-      <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="/">
-          <img alt="Blog logo" height="50" src="image/logo_bp.svg" width="150">
-        </a>
-        <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation"
-                class="navbar-toggler" data-target="#navbarNavDropdown" data-toggle="collapse" type="button">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav w-100 justify-content-center">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Inicio</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                 href="#" id="navbarDropdownMenuLink" role="button">
-                Posts
-              </a>
-              <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
-                <a class="dropdown-item" href="#">Maternidad</a>
-                <a class="dropdown-item" href="#">Vida de Pareja</a>
-                <a class="dropdown-item" href="#">Comida Hecha en Casa</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contáctanos</a>
-            </li>
-          </ul>
-          <ul class="navbar-nav justify-content-center" sec:authorize="isAuthenticated()">
-            <li class="nav-item dropdown login-link">
-              <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                 href="#" id="navbarDropdownMenuLink" role="button">
-                  <i class="fas fa-user header-icon"></i>
-                  <span th:text=" ${#authentication.getPrincipal().getUsername()}"></span>
-              </a>
-              <div aria-labelledby="navbarDropdownMenuLink" class="dropdown-menu">
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-file-invoice header-icon"></i> Modificar cuenta
-                </a>
-                <a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">
-                  <i class="fas fa-user-cog header-icon"></i> Administración
-                </a>
-                <a class="dropdown-item" method="get" th:href="@{/logout}">
-                  <i class="fas fa-sign-out-alt header-icon"></i> Cerrar sesión
-                </a>
-              </div>
-            </li>
-          </ul>
-          <ul class="navbar-nav justify-content-end membership-links" sec:authorize="!isAuthenticated()">
-            <li class="nav-item register-link">
-              <a class="nav-link" th:href="@{/register}"><i class="fa fa-user header-icon"></i> Regístrate</a>
-            </li>
-            <li class="nav-item login-link">
-              <a class="nav-link" th:href="@{/login}"><i class="fas fa-sign-in-alt header-icon"></i> Ingresa</a>
-            </li>
-          </ul>
+    <!-- Navbar -->
+    <div th:replace="common/navbar::navbar"></div>
+    <div class="text-header d-flex align-items-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-8 text-right">
+                    <h1>Bellas Palabras</h1>
+                    <p>El blog de una mamá al rescate del mundo</p>
+                    <button class="btn btn-primary custom-btn"><span>Leer último post</span></button>
+                </div>
+            </div>
         </div>
-      </nav>
     </div>
-  </div>
-  <div class="text-header d-flex align-items-center">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-8 text-right">
-          <h1>Bellas Palabras</h1>
-          <p>El blog de una mamá al rescate del mundo</p>
-          <button class="btn btn-primary custom-btn"><span>Leer último post</span></button>
-        </div>
-      </div>
-    </div>
-  </div>
 </header>
 
 <!-- Home content -->
 <section class="home-content">
-  <div class="row blog-cards">
-    <div class="col-lg-4 col-md-6">
-      <div class="card">
-        <a th:href="@{/post}"><img alt="Blog post image 1" class="card-img-top" src="image/blog_post_img1.jpg"></a>
-        <div class="card-body">
-          <h5 class="card-title">Título de Post</h5>
-          <p class="card-text">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus recusandae, repudiandae consequuntur nam
-            totam id modi quidem qui, iure facere alias doloribus. Tenetur odio, excepturi fugiat architecto reiciendis
-            commodi laboriosam?
-          </p>
+    <div class="row blog-cards">
+        <div class="col-lg-4 col-md-6">
+            <div class="card">
+                <a th:href="@{/post}"><img alt="Blog post image 1" class="card-img-top" src="image/blog_post_img1.jpg"></a>
+                <div class="card-body">
+                    <h5 class="card-title">Título de Post</h5>
+                    <p class="card-text">
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusamus recusandae, repudiandae
+                        consequuntur nam
+                        totam id modi quidem qui, iure facere alias doloribus. Tenetur odio, excepturi fugiat architecto
+                        reiciendis
+                        commodi laboriosam?
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Publicado hace 3 mins</small>
+                </div>
+            </div>
         </div>
-          <div class="card-footer">
-            <small class="text-muted">Publicado hace 3 mins</small>
-          </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card">
+                <a th:href="@{/post}"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img2.jpg"></a>
+                <div class="card-body">
+                    <h5 class="card-title">Título de Post</h5>
+                    <p class="card-text">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia delectus sed voluptates rem
+                        rerum a inventore, explicabo quae corporis vero ipsa culpa. Ab eum eius qui facilis alias
+                        repellendus repudiandae!
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Publicado hace 4 mins</small>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="card">
-          <a th:href="@{/post}"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img2.jpg"></a>
-          <div class="card-body">
-            <h5 class="card-title">Título de Post</h5>
-            <p class="card-text">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia delectus sed voluptates rem rerum a inventore, explicabo quae corporis vero ipsa culpa. Ab eum eius qui facilis alias repellendus repudiandae!
-            </p>
-          </div>
-          <div class="card-footer">
-            <small class="text-muted">Publicado hace 4 mins</small>
-          </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card">
+                <a th:href="@{/post}"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img3.jpg"></a>
+                <div class="card-body">
+                    <h5 class="card-title">Título de Post</h5>
+                    <p class="card-text">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea maiores beatae eligendi nihil illum
+                        vel cum dolor tenetur ut quaerat iste reprehenderit labore, rem cumque ipsam aperiam facilis,
+                        architecto totam!
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Publicado hace 5 mins</small>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="card">
-          <a th:href="@{/post}"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img3.jpg"></a>
-          <div class="card-body">
-            <h5 class="card-title">Título de Post</h5>
-            <p class="card-text">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea maiores beatae eligendi nihil illum vel cum dolor tenetur ut quaerat iste reprehenderit labore, rem cumque ipsam aperiam facilis, architecto totam!
-            </p>
-          </div>
-          <div class="card-footer">
-            <small class="text-muted">Publicado hace 5 mins</small>
-          </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card">
+                <a th:href="@{/post}"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img4.jpg"></a>
+                <div class="card-body">
+                    <h5 class="card-title">Título de Post</h5>
+                    <p class="card-text">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic itaque ducimus dolorem, error
+                        molestias
+                        facere deserunt cum, quae incidunt omnis eos sit fugit reprehenderit nihil architecto est
+                        possimus,
+                        tempore non.
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Publicado hace 6 mins</small>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="card">
-          <a th:href="@{/post}"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img4.jpg"></a>
-          <div class="card-body">
-            <h5 class="card-title">Título de Post</h5>
-            <p class="card-text">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic itaque ducimus dolorem, error molestias
-              facere deserunt cum, quae incidunt omnis eos sit fugit reprehenderit nihil architecto est possimus,
-              tempore non.
-            </p>
-          </div>
-          <div class="card-footer">
-            <small class="text-muted">Publicado hace 6 mins</small>
-          </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card">
+                <a th:href="@{/post}"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img5.jpg"></a>
+                <div class="card-body">
+                    <h5 class="card-title">Título de Post</h5>
+                    <p class="card-text">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad, laborum suscipit incidunt
+                        accusantium fuga
+                        alias, ipsum deserunt sunt nesciunt voluptate eligendi sed unde quos et ipsa quas, eius
+                        reprehenderit id.
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Publicado hace 7 mins</small>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="card">
-          <a th:href="@{/post}"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img5.jpg"></a>
-          <div class="card-body">
-            <h5 class="card-title">Título de Post</h5>
-            <p class="card-text">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad, laborum suscipit incidunt accusantium fuga
-              alias, ipsum deserunt sunt nesciunt voluptate eligendi sed unde quos et ipsa quas, eius reprehenderit id.
-            </p>
-          </div>
-          <div class="card-footer">
-            <small class="text-muted">Publicado hace 7 mins</small>
-          </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card">
+                <a th:href="@{/post}"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img6.jpg"></a>
+                <div class="card-body">
+                    <h5 class="card-title">Título de Post</h5>
+                    <p class="card-text">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti ratione eius illo? Temporibus
+                        est vel mollitia aliquid minus unde eos. Facere ratione dicta veritatis harum perferendis nulla
+                        magni asperiores reprehenderit?
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Publicado hace 8 mins</small>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="card">
-          <a th:href="@{/post}"><img alt="Card image cap" class="card-img-top" src="image/blog_post_img6.jpg"></a>
-          <div class="card-body">
-            <h5 class="card-title">Título de Post</h5>
-            <p class="card-text">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti ratione eius illo? Temporibus est vel mollitia aliquid minus unde eos. Facere ratione dicta veritatis harum perferendis nulla magni asperiores reprehenderit?
-            </p>
-          </div>
-          <div class="card-footer">
-            <small class="text-muted">Publicado hace 8 mins</small>
-          </div>
-        </div>
-      </div>
-  </div>
+    </div>
 </section>
 
 <!-- Home footer -->
 <footer class="home-footer">
-  <a href="#">
-    <img alt="Blog website logo" class="img-fluid mx-auto d-block" height="150" src="image/logo_bp.svg" width="150">
-  </a>
-  <div class="social-media">
-    <h5 class="text-center">Redes Sociales</h5>
-    <div class="social-media-icons">
-      <div class="social-media-icon">
-        <a href="#"><i class="fab fa-facebook fa-2x"></i></a>
-      </div>
-      <div class="social-media-icon">
-        <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
-      </div>
-    </div>
-    </div>
-    <p class="privacy-policy">&copy 2020 Bellas Palabras. <a href="#">Política de Privacidad</a></p>
-  </footer>
+    <div th:replace="common/footer::footer"></div>
+</footer>
 
 <script src="js/app.js"></script>
 </body>
