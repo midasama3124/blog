@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Bellas Palabras - Admin Website</title>
+    <link href="/css/app.css" rel="stylesheet">
+</head>
+
+<body class="admin-body">
+<!-- Admin sidebar -->
+<div th:replace="common/admin-sidebar::sidebar"></div>
+
+<!-- Admin content -->
+<section class="admin-main">
+    <form class="needs-validation" novalidate>
+        <h3 class="text-center"><i class="fa fa-puzzle-piece bigger-icon"></i> Nueva Categoría</h3>
+        <div class="form-group">
+            <label for="category-title">Título</label>
+            <input class="form-control" id="category-title" placeholder="Ingrese el título de la categoría" required
+                   type="text">
+            <div class="invalid-feedback">
+                Hace falta un título
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="category-metatitle">Metatítulo</label>
+            <input class="form-control" id="category-metatitle" placeholder="Ingrese el metatítulo de la categoría"
+                   type="text">
+        </div>
+        <div class="form-group">
+            <label for="category-slug">URL</label>
+            <input class="form-control" id="category-slug" placeholder="Ingrese el URL de la categoría" required
+                   type="text">
+            <div class="invalid-feedback">
+                Hace falta un URL
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="category-parent">Categoría padre (Si aplica)</label>
+            <select class="selectpicker form-control" data-live-search="true" data-style="btn-tertiary"
+                    id="category-parent" title="Escoja una categoría padre">
+                <option value="slug1">Comida</option>
+                <option value="slug2">Familia</option>
+                <option value="slug3">Paternidad</option>
+                <option value="slug4">Viajes</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="category-content">Contenido</label>
+            <textarea class="form-control admin-textarea" id="category-content"
+                      placeholder="Ingrese contenido que aparecerá como descripción de los posts contenidos dentro de esta categoría"
+                      rows="3"></textarea>
+        </div>
+        <div class="row justify-content-center">
+            <button class="btn-lg btn-secondary" type="submit">Guardar</button>
+        </div>
+    </form>
+</section>
+
+<script src="/js/app.js"></script>
+</body>
+
+</html>

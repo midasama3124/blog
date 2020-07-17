@@ -4,6 +4,7 @@ import com.mmanchola.blog.auth.ApplicationUserService;
 import com.mmanchola.blog.auth.AuthSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.concurrent.TimeUnit;
+
+import static com.mmanchola.blog.config.security.ApplicationUserRole.ADMIN;
 
 @Configuration
 @EnableWebSecurity
@@ -35,15 +38,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http
-            .csrf().disable()
-            .authorizeRequests()
-            .antMatchers("/", "/home", "/css/**", "/js/**", "/fonts/**", "/image/**", "/register", "/login*", "/post/**").permitAll()
-        // Order DOES matter
+      http
+              .csrf().disable()
+              .authorizeRequests()
+              .antMatchers("/", "/home", "/css/**", "/js/**", "/fonts/**", "/image/**", "/register", "/login*", "/post/**").permitAll()
+              // Order DOES matter
 //        .antMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(POST_WRITE.getPermission())
-//        .antMatchers(HttpMethod.POST, "/api/**").hasAuthority(POST_WRITE.getPermission())
-//        .antMatchers(HttpMethod.PUT, "/api/**").hasAuthority(POST_WRITE.getPermission())
-//        .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole(ADMIN.name())
+              .antMatchers(HttpMethod.GET, "/admin/**").hasAnyRole(ADMIN.name())
+              .antMatchers(HttpMethod.POST, "/admin/**").hasAnyRole(ADMIN.name())
+              .antMatchers(HttpMethod.PUT, "/admin/**").hasAnyRole(ADMIN.name())
+              .antMatchers(HttpMethod.DELETE, "/admin/**").hasAnyRole(ADMIN.name())
             .anyRequest().authenticated()
             .and()
 //        .httpBasic();
