@@ -13,13 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import static com.mmanchola.blog.config.security.ApplicationUserRole.READER;
+
 @Controller
 @RequestMapping("/")
-public class ViewController {
+public class HomeController {
   private PersonService personService;
 
   @Autowired
-  public ViewController(PersonService personService) {
+  public HomeController(PersonService personService) {
     this.personService = personService;
   }
 
@@ -45,7 +47,7 @@ public class ViewController {
     String psw = person.getPasswordHash();
     // TODO: Fix bug when registering with only email and psw given
     personService.add(person);
-//    personService.addRole(person.getEmail(), READER.name());
+    personService.addRole(person.getEmail(), READER.name());
     // Auto login after successful registration
     try {
       request.login(person.getEmail(), psw);
