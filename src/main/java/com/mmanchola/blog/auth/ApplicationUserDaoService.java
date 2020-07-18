@@ -20,43 +20,43 @@ import static com.mmanchola.blog.model.TableFields.PERSON_EMAIL;
 @Repository
 public class ApplicationUserDaoService implements ApplicationUserDao {
 
-  private PersonDataAccessService personDas;
-  private RoleDataAccessService roleDas;
-  private PersonRoleDataAccessService personRoleDas;
+    private PersonDataAccessService personDas;
+    private RoleDataAccessService roleDas;
+    private PersonRoleDataAccessService personRoleDas;
 
-  public ApplicationUserDaoService(PersonDataAccessService personDas,
-      RoleDataAccessService roleDas,
-      PersonRoleDataAccessService personRoleDas) {
-    this.personDas = personDas;
-    this.roleDas = roleDas;
-    this.personRoleDas = personRoleDas;
-  }
+    public ApplicationUserDaoService(PersonDataAccessService personDas,
+                                     RoleDataAccessService roleDas,
+                                     PersonRoleDataAccessService personRoleDas) {
+        this.personDas = personDas;
+        this.roleDas = roleDas;
+        this.personRoleDas = personRoleDas;
+    }
 
-  @Override
-  public Optional<ApplicationUser> selectApplicationUserByUsername(String username) {
-      Person person = personDas.findByEmail(username)
-              .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+    @Override
+    public Optional<ApplicationUser> selectApplicationUserByUsername(String username) {
+        Person person = personDas.findByEmail(username)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
 
-      // Authorities / Permissions
-      List<Short> roleIds = personRoleDas.findRoles(person.getId());
-      Set<SimpleGrantedAuthority> permissions = roleIds
-              .stream()
-              .map(roleId ->
-                      valueOf(roleDas.findNameById(roleId).get())
-                              .getGrantedAuthorities()
-              )
-              .flatMap(Set::stream)           // Concatenate into a single set
-              .collect(Collectors.toSet());
+        // Authorities / Permissions
+        List<Short> roleIds = personRoleDas.findRoles(person.getId());
+        Set<SimpleGrantedAuthority> permissions = roleIds
+                .stream()
+                .map(roleId ->
+                        valueOf(roleDas.findNameById(roleId).get())
+                                .getGrantedAuthorities()
+                )
+                .flatMap(Set::stream)           // Concatenate into a single set
+                .collect(Collectors.toSet());
 
-    ApplicationUser applicationUser = new ApplicationUser(
-        person.getEmail(),
-        person.getPasswordHash(),
-        permissions,
-        true,
-        true,
-        true,
-        true
-    );
-    return Optional.ofNullable(applicationUser);
-  }
+        ApplicationUser applicationUser = new ApplicationUser(
+                person.getEmail(),
+                person.getPasswordHash(),
+                permissions,
+                true,
+                true,
+                true,
+                true
+        );
+        return Optional.ofNullable(applicationUser);
+    }
 }

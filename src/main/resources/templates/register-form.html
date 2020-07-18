@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Bellas Palabras - Register Form</title>
-    <link href="css/app.css" rel="stylesheet">
+    <link href="/css/app.css" rel="stylesheet">
 </head>
 
 <body class="member-body">
@@ -16,14 +16,23 @@
     <header class="member-header">
         <h1 class="member-title text-center">Bellas Palabras</h1>
         <p class="member-description text-center">
-            Ingresa tu correo y contraseña para registrarte
+            <span th:text="${method} == 'PUT' ?
+                'Actualiza aquí tu información personal' :
+                'Ingresa tu correo y contraseña para registrarte'"
+            ></span>
+
         </p>
         <p class="member-action-msg text-center" th:if="${param.error}">
             Email inválido o ya registrado
         </p>
+        <p class="member-action-msg text-center" th:if="${errorMessage}" th:text="${errorMessage}"></p>
     </header>
 
-    <form class="member-form" method="post" th:action="@{/register}" th:object="${person}">
+    <form class="member-form needs-validation"
+          method="post"
+          novalidate
+          th:action="${method} == 'PUT' ? @{'/update/{id}'(id=${id})} : @{/register}"
+          th:object="${person}">
 
         <div class="form-group">
             <label for="email" id="email-label">Email <span class="clue">*</span></label>
@@ -36,6 +45,9 @@
                     th:field="*{email}"
                     type="email"
             />
+            <div class="invalid-feedback">
+                Hace falta un email
+            </div>
         </div>
 
         <div class="form-group">
@@ -57,6 +69,9 @@
                     value="show-password"
             /> <small>Mostrar contraseña</small>
             </label>
+            <div class="invalid-feedback">
+                Hace falta una contraseña
+            </div>
         </div>
 
         <div class="form-group">
@@ -90,35 +105,16 @@
 
         <div class="form-group">
             <p class="label-alone">Género</p>
-            <label>
+            <label th:each="g : ${genders}" th:for="${g.toString()}">
                 <input
                         class="input-radio"
                         name="gender"
                         th:field="*{gender}"
                         type="radio"
-                        value="female"
-                />Mujer</label
-            >
-            <label>
-                <input
-                        class="input-radio"
-                        name="gender"
-                        th:field="*{gender}"
-                        type="radio"
-                        value="male"
-                />Hombre</label
-            >
-
-            <label
-            ><input
-                    checked
-                    class="input-radio"
-                    name="gender"
-                    th:field="*{gender}"
-                    type="radio"
-                    value="other"
-            />Otro</label
-            >
+                        th:value="${g.toString()}"
+                />
+                <span th:text="${genderMap.get(g.toString())}"></span>
+            </label>
         </div>
 
         <div class="form-group">
@@ -138,12 +134,12 @@
 
         <div class="form-group">
             <button class="signup-btn" id="submit" type="submit">
-                Registrar
+                <span th:text="${method} == 'PUT' ? 'Actualizar' : 'Registrar'"></span>
             </button>
         </div>
     </form>
 </div>
 
-<script src="js/app.js"></script>
+<script src="/js/app.js"></script>
 </body>
 </html>
