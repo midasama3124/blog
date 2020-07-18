@@ -1,6 +1,7 @@
 package com.mmanchola.blog.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -118,9 +119,24 @@ public class Person {
       return false;
     Person other = (Person) o;
     return this.email.equals(other.getEmail()) &&
-        this.firstName.equals(other.getFirstName()) &&
-        this.lastName.equals(other.getLastName()) &&
-        this.gender.equals(other.getGender()) &&
-        this.age == other.getAge();
+            this.firstName.equals(other.getFirstName()) &&
+            this.lastName.equals(other.getLastName()) &&
+            this.gender.equals(other.getGender()) &&
+            this.age == other.getAge();
+  }
+
+  @Override
+  public String toString() {
+    String msg = new String();
+    if (this.id != null) msg += "ID: " + this.id + "\n";
+    if (this.firstName != null) msg += "First name: " + this.firstName + "\n";
+    if (this.lastName != null) msg += "Last name: " + this.lastName + "\n";
+    if (this.gender != null) msg += "Gender: " + this.gender + "\n";
+    msg += "Age: " + this.age + "\n";
+    if (this.email != null) msg += "Email: " + this.email + "\n";
+    if (this.passwordHash != null) msg += "Password Hash: " + this.passwordHash + "\n";
+    if (this.registeredAt != null) msg += "Registration: " + this.registeredAt + "\n";
+    if (this.lastLogin != null) msg += "Last Login: " + this.lastLogin + "\n";
+    return msg;
   }
 }

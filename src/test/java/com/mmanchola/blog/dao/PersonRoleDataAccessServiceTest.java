@@ -41,10 +41,10 @@ public class PersonRoleDataAccessServiceTest {
     assertEquals(3, peopleIds.size());
 
     // Delete
-    rowsAffected = personRoleDas.delete(personId, readerId);
-    assertEquals(1, rowsAffected);
-    rowsAffected = personRoleDas.delete(personId, adminId);
-    assertEquals(1, rowsAffected);
+    rowsAffected = personRoleDas.deleteSingleEntry(personId, readerId);
+      assertEquals(1, rowsAffected);
+      rowsAffected = personRoleDas.deleteSingleEntry(personId, adminId);
+      assertEquals(1, rowsAffected);
   }
 
 }

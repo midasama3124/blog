@@ -16,7 +16,7 @@ public class ApplicationUserService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//    /* First approach without implementing UserDetails interface */
+    /* First approach without implementing UserDetails interface */
 //    // Roles (Dummy list)
 //    List<GrantedAuthority> roles = new ArrayList<>();
 //    roles.add(new SimpleGrantedAuthority(ADMIN.name()));

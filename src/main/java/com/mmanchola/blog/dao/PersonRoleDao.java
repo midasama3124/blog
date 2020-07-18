@@ -12,6 +12,10 @@ public interface PersonRoleDao {
 
     List<UUID> findPeople(short roleId);
 
+    boolean hasRole(UUID personId, short roleId);
+
     // Delete
-    int delete(UUID personId, short roleId);
+    int deleteSingleEntry(UUID personId, short roleId);
+
+    int deletePerson(UUID personId);
 }

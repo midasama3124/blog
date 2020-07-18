@@ -6,7 +6,7 @@ public enum TableFields {
     PERSON_LAST_NAME("El apellido del usuario"),
     PERSON_GENDER("El género del usuario"),
     PERSON_AGE("La edad del usuario"),
-    PERSON_EMAIL("El email del usuario"),
+    PERSON_EMAIL("El email"),
     PERSON_PASSWORD("La contraseña del usuario"),
     PERSON_REGISTERED_AT("La fecha de registro del usuario"),
     PERSON_LAST_LOGIN("La fecha de último ingreso del usuario"),
