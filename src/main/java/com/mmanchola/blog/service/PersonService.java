@@ -20,83 +20,106 @@ import java.util.function.Predicate;
 
 import static com.mmanchola.blog.config.security.ApplicationUserRole.ADMIN;
 import static com.mmanchola.blog.exception.ExceptionMessage.*;
+import static com.mmanchola.blog.model.PersonGender.OTHER;
 import static com.mmanchola.blog.model.TableFields.*;
 
 @Service
 public class PersonService {
-  private final PersonDataAccessService personDas;
-  private final EmailValidator emailValidator;
-  private final PasswordEncoder passwordEncoder;
-  private final RoleDataAccessService roleDas;
-  private final PersonRoleDataAccessService personRoleDas;
-  private final ServiceChecker checker;
+    private final PersonDataAccessService personDas;
+    private final EmailValidator emailValidator;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleDataAccessService roleDas;
+    private final PersonRoleDataAccessService personRoleDas;
+    private final ServiceChecker checker;
 
-  @Autowired
-  public PersonService(PersonDataAccessService personDas,
-      EmailValidator emailValidator,
-      PasswordEncoder passwordEncoder, RoleDataAccessService roleDas,
-      PersonRoleDataAccessService personRoleDas, ServiceChecker checker) {
-    this.personDas = personDas;
-    this.emailValidator = emailValidator;
-    this.passwordEncoder = passwordEncoder;
-    this.roleDas = roleDas;
-    this.personRoleDas = personRoleDas;
-    this.checker = checker;
-  }
+    @Autowired
+    public PersonService(PersonDataAccessService personDas,
+                         EmailValidator emailValidator,
+                         PasswordEncoder passwordEncoder, RoleDataAccessService roleDas,
+                         PersonRoleDataAccessService personRoleDas, ServiceChecker checker) {
+        this.personDas = personDas;
+        this.emailValidator = emailValidator;
+        this.passwordEncoder = passwordEncoder;
+        this.roleDas = roleDas;
+        this.personRoleDas = personRoleDas;
+        this.checker = checker;
+    }
 
-  // Check given person email in terms of correctness
-  private Optional<String> checkEmailCorrectness(String email) {
-    return Optional.ofNullable(email)
-        .filter(emailValidator::test);
-  }
+    // Check given person email in terms of correctness
+    private Optional<String> checkEmailCorrectness(String email) {
+        return Optional.ofNullable(email)
+                .filter(emailValidator::test);
+    }
 
-  // Check given person email in terms of availability for POST operations
-  private Optional<String> checkEmailAvailability(String email) {
-    return Optional.ofNullable(email)
-        .filter(Predicate.not(personDas::isEmailTaken));
-  }
+    // Check given person email in terms of availability for POST operations
+    private Optional<String> checkEmailAvailability(String email) {
+        return Optional.ofNullable(email)
+                .filter(Predicate.not(personDas::isEmailTaken));
+    }
 
-  // Check given person email in terms of availability for PUT operations
-  private Optional<String> checkEmailAvailability(String email, UUID exclusiveId) {
-    return Optional.ofNullable(email)
-        .filter(e -> !personDas.isEmailTakenBySomeoneElse(exclusiveId, e));
-  }
+    // Check given person email in terms of availability for PUT operations
+    private Optional<String> checkEmailAvailability(String email, UUID exclusiveId) {
+        return Optional.ofNullable(email)
+                .filter(e -> !personDas.isEmailTakenBySomeoneElse(exclusiveId, e));
+    }
 
-  // Add new person to database
-  public int add(Person person) {
-    // Check first name
-    checker.checkPersonName(person.getFirstName())
-        .ifPresent(person::setFirstName);
-    // Check last name
-    checker.checkPersonName(person.getLastName())
-        .ifPresent(person::setLastName);
-    // Check gender
-    checker.checkGender(person.getGender())
-        .ifPresent(person::setGender);
-    // Check email
-    String email = checkEmailCorrectness(person.getEmail())
-        .orElseThrow(() -> new ApiRequestException(MISSING_INVALID.getMsg(PERSON_EMAIL.toString())));
-    checkEmailAvailability(email)
-        .orElseThrow(() -> new ApiRequestException(UNAVAILABLE.getMsg(PERSON_EMAIL.toString())));
-    // Check password hash
-    checker.checkNotEmpty(person.getPasswordHash())
-        .ifPresentOrElse(password ->
-            // Encrypt password
-            person.setPasswordHash(passwordEncoder.encode(password)
-        ),
-            () -> { throw new ApiRequestException(MISSING.getMsg(PERSON_PASSWORD.toString())); }
-        );
-    return personDas.save(person);
-  }
+    // Add new person to database
+    public int add(Person person) {
+        // Check first name
+        checker.checkPersonName(person.getFirstName())
+                .ifPresent(person::setFirstName);
+        // Check last name
+        checker.checkPersonName(person.getLastName())
+                .ifPresent(person::setLastName);
+        // Check gender
+        checker.checkGender(person.getGender())
+                .ifPresentOrElse(
+                        person::setGender,
+                        () -> person.setGender(OTHER.toString())
+                );
+        // Check email
+        String email = checkEmailCorrectness(person.getEmail())
+                .orElseThrow(() -> new ApiRequestException(MISSING_INVALID.getMsg(PERSON_EMAIL.toString())));
+        checkEmailAvailability(email)
+                .orElseThrow(() -> new ApiRequestException(UNAVAILABLE.getMsg(PERSON_EMAIL.toString())));
+        // Check password hash
+        checker.checkNotEmpty(person.getPasswordHash())
+                .ifPresentOrElse(password ->
+                                // Encrypt password
+                                person.setPasswordHash(passwordEncoder.encode(password)
+                                ),
+                        () -> {
+                            throw new ApiRequestException(MISSING.getMsg(PERSON_PASSWORD.toString()));
+                        }
+                );
+        return personDas.save(person);
+    }
 
-  // Add role to given user by his/her email
-  public int addRole(String userEmail, String roleName) {
-      UUID userId = personDas.findIdByEmail(userEmail)
-              .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
-      short roleId = roleDas.findIdByName(roleName)
-              .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(ROLE_NAME.toString())));
-      return personRoleDas.save(userId, roleId);
-  }
+    // Add role to given user by his/her email
+    public int addRole(String userEmail, String roleName) {
+        UUID userId = personDas.findIdByEmail(userEmail)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+        short roleId = roleDas.findIdByName(roleName)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(ROLE_NAME.toString())));
+        return personRoleDas.save(userId, roleId);
+    }
+
+    // Remove role to given user by his/her email
+    public int removeRole(String userEmail, String roleName) {
+        UUID userId = personDas.findIdByEmail(userEmail)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+        short roleId = roleDas.findIdByName(roleName)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(ROLE_NAME.toString())));
+        return personRoleDas.deleteSingleEntry(userId, roleId);
+    }
+
+    // Check if user is admin
+    public boolean isAdmin(String email) {
+        UUID personId = personDas.findIdByEmail(email)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+        short roleId = roleDas.findIdByName(ADMIN.toString()).get();
+        return personRoleDas.hasRole(personId, roleId);
+    }
 
     // Get all people on database
     public List<Person> getAll() {
@@ -122,60 +145,70 @@ public class PersonService {
         return personDas.findByEmail(email);
     }
 
+    // Get person by his/her email
+    public Optional<Person> getById(UUID id) {
+        return personDas.findById(id);
+    }
+
     // Update member email
-    public void updateEmail(String newEmail, String prevEmail) {
-        UUID memberId = personDas.findIdByEmail(prevEmail)
+    private void updateEmail(UUID memberId, String newEmail) {
+        String updateEmail = checkEmailCorrectness(newEmail)
+                .orElseThrow(() -> new ApiRequestException(MISSING_INVALID.getMsg(PERSON_EMAIL.toString())));
+        checkEmailAvailability(updateEmail, memberId)
+                .ifPresentOrElse(
+                        em -> personDas.updateEmail(memberId, em),
+                        () -> {
+                            throw new ApiRequestException(UNAVAILABLE.getMsg(PERSON_EMAIL.toString()));
+                        }
+                );
+    }
+
+    // Update member password
+    private void updatePassword(UUID memberId, String password) {
+        checker.checkNotEmpty(password)
+                .ifPresent(
+                        // Encode password
+                        passwordHash ->
+                                personDas.updatePasswordHash(memberId, passwordEncoder.encode(passwordHash))
+                );
+    }
+
+    public void update(String email, Person person) {
+        // Retrieve id from database
+        UUID id = personDas.findIdByEmail(email)
                 .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
-    String updateEmail = checkEmailCorrectness(newEmail)
-        .orElseThrow(() -> new ApiRequestException(MISSING_INVALID.getMsg(PERSON_EMAIL.toString())));
-    checkEmailAvailability(updateEmail, memberId)
-        .ifPresentOrElse(
-            em -> personDas.updateEmail(memberId, em),
-            () -> { throw new ApiRequestException(UNAVAILABLE.getMsg(PERSON_EMAIL.toString())); }
-        );
-  }
+        // Check first name
+        checker.checkPersonName(person.getFirstName())
+                .ifPresent(firstName -> personDas.updateFirstName(id, firstName));
+        // Check last name
+        checker.checkPersonName(person.getLastName())
+                .ifPresent(lastName -> personDas.updateLastName(id, lastName));
+        // Check gender
+        checker.checkGender(person.getGender())
+                .ifPresent(gender -> personDas.updateGender(id, gender));
+        // Check age
+        checker.checkAge(person.getAge())
+                .ifPresent(age -> personDas.updateAge(id, age));
+        // Change password
+        updatePassword(id, person.getPasswordHash());
+        // Change email if different
+        if (!email.equals(person.getEmail())) {
+            updateEmail(id, person.getEmail());
+        }
+    }
 
-  // Update member password
-  public void updatePassword(String password, String email) {
-    UUID memberId = personDas.findIdByEmail(email)
-        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
-    checker.checkNotEmpty(password)
-        .ifPresentOrElse(
-            // Encode password
-            passwordHash ->
-                personDas.updatePasswordHash(memberId, passwordEncoder.encode(passwordHash)),
-            () -> { throw new ApiRequestException(MISSING.getMsg(PERSON_PASSWORD.toString())); }
-        );
-  }
+    public void updateLastLogin(String email) {
+        UUID id = personDas.findIdByEmail(email)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+        personDas.updateLastLogin(id, new Timestamp(System.currentTimeMillis()));
+    }
 
-  public void updatePersonalInfo(String email, Person person) {
-    // Retrieve id from database
-    UUID id = personDas.findIdByEmail(email)
-        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
-    // Check first name
-    checker.checkPersonName(person.getFirstName())
-        .ifPresent(firstName -> personDas.updateFirstName(id, firstName));
-    // Check last name
-    checker.checkPersonName(person.getLastName())
-        .ifPresent(lastName -> personDas.updateLastName(id, lastName));
-    // Check gender
-    checker.checkGender(person.getGender())
-        .ifPresent(gender -> personDas.updateGender(id, gender));
-    // Check age
-    checker.checkAge(person.getAge())
-        .ifPresent(age -> personDas.updateAge(id, age));
-  }
-
-  public void updateLastLogin(String email) {
-    UUID id = personDas.findIdByEmail(email)
-        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
-    personDas.updateLastLogin(id, new Timestamp(System.currentTimeMillis()));
-  }
-
-  public int deleteByEmail(String email) {
-    UUID id = personDas.findIdByEmail(email)
-        .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
-    return personDas.delete(id);
-  }
+    public int deleteByEmail(String email) {
+        UUID id = personDas.findIdByEmail(email)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+        // First delete all roles
+        personRoleDas.deletePerson(id);
+        return personDas.delete(id);
+    }
 
 }

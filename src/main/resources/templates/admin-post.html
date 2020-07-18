@@ -18,7 +18,8 @@
     <div class="hipsum">
         <div class="jumbotron">
             <h1>Posts</h1>
-            <h2 id="hello,-world!">Hola, First Name<a class="anchorjs-link" href="#hello,-world!"><span
+            <h2 id="hello,-world!">Hola, <span th:text="${member.getFirstName()}"></span><a class="anchorjs-link"
+                                                                                            href="#hello,-world!"><span
                     class="anchorjs-icon"></span></a></h2>
             <p>Esta página está destinada a la creación y edición de tus posts.</p>
             <p><a class="btn btn-secondary" role="button" th:href="@{post/new}">Crear nuevo post</a></p>

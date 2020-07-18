@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
 
 <head>
     <meta charset="UTF-8">
@@ -18,7 +20,8 @@
     <div class="hipsum">
         <div class="jumbotron">
             <h1>Usuarios</h1>
-            <h2 id="hello,-world!">Hola, First Name<a class="anchorjs-link" href="#hello,-world!"><span
+            <h2 id="hello,-world!">Hola, <span th:text="${member.getFirstName()}"></span><a class="anchorjs-link"
+                                                                                            href="#hello,-world!"><span
                     class="anchorjs-icon"></span></a></h2>
             <p>Esta página está destinada a la asignación de administradores y la eliminación de usuarios indeseados.
             </p>
@@ -38,49 +41,44 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
+            <tr th:each="person : ${people}">
                 <td>
                     <div class="btn-group">
-                        <button class="btn btn-sm btn-secondary" type="button">Administrador</button>
+                        <form th:action="${adminMap.get(person.getEmail())} ?
+                                @{'user/reader/{email}'(email=${person.getEmail()})} :
+                                @{'user/admin/{email}'(email=${person.getEmail()})}"
+                              th:method="post">
+                            <input name="_method" type="hidden" value="delete"/>
+                            <button class="btn btn-sm btn-secondary"
+                                    onClick="return confirm('¿Está seguro de modificar los permisos de este usuario?')"
+                                    type="submit">
+                                <span th:text="${adminMap.get(person.getEmail())} ? 'Quitar permisos' : 'Administrador'"></span>
+                            </button>
+                        </form>
                         <button aria-expanded="false" aria-haspopup="true"
                                 class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split"
                                 data-toggle="dropdown" type="button">
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Eliminar</a>
+                            <form th:action="@{'user/delete/{email}'(email=${person.getEmail()})}"
+                                  th:method="post">
+                                <input name="_method" type="hidden" value="delete"/>
+                                <button class="btn btn-tertiary dropdown-item"
+                                        onClick="return confirm('¿Está seguro de eliminar este usuario?')"
+                                        type="submit">Eliminar
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </td>
-                <td class="truncated-text">midasama3124@gmail.com</td>
-                <td>Miguel</td>
-                <td>Manchola</td>
-                <td>Hombre</td>
-                <td>24</td>
-                <td>2020-01-19 12:23:07</td>
-                <td>2020-01-19 12:23:07</td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="btn-group">
-                        <button class="btn btn-sm btn-secondary" type="button">Administrador</button>
-                        <button aria-expanded="false" aria-haspopup="true"
-                                class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split"
-                                data-toggle="dropdown" type="button">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Eliminar</a>
-                        </div>
-                    </div>
-                </td>
-                <td class="truncated-text">angelammanchola@gmail.com</td>
-                <td>Ángela</td>
-                <td>Sánchez Manchola</td>
-                <td>Mujer</td>
-                <td>35</td>
-                <td>2020-01-19 12:23:07</td>
-                <td>2020-01-19 12:23:07</td>
+                <td class="truncated-text" th:text="${person.getEmail()}"></td>
+                <td th:text="${person.getFirstName()}"></td>
+                <td th:text="${person.getLastName()}"></td>
+                <td th:text="${genderMap.get(person.getGender())}"></td>
+                <td th:text="${person.getAge()}"></td>
+                <td th:text="${person.getRegisteredAt()}"></td>
+                <td th:text="${person.getLastLogin()}"></td>
             </tr>
             </tbody>
             <tfoot>

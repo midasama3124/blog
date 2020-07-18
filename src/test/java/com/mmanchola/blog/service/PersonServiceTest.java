@@ -21,33 +21,31 @@ public class PersonServiceTest {
 
     @Test
     public void canPerformCrudWhenValidUser() {
-    Person person = new Person();
-    person.setFirstName("James");
-    person.setLastName("Bond");
-    person.setEmail("james-bond@gmail.com");
-    person.setGender("MALE");
-    person.setAge((short)45);
-    person.setPasswordHash("123");
+        Person person = new Person();
+        person.setFirstName("James");
+        person.setLastName("Bond");
+        person.setEmail("james-bond@gmail.com");
+        person.setGender("MALE");
+        person.setAge((short) 45);
+        person.setPasswordHash("123");
 
-    // Create
-    int rowsAffected = personService.add(person);
-    assertEquals(1, rowsAffected);
+        // Create
+        int rowsAffected = personService.add(person);
+        assertEquals(1, rowsAffected);
 
-    // Read
-    Person personRetrieved = personService.getByEmail(person.getEmail()).orElse(null);
-    assert personRetrieved.equals(personRetrieved);
+        // Read
+        Person personRetrieved = personService.getByEmail(person.getEmail()).orElse(null);
+        assert personRetrieved.equals(personRetrieved);
 
-    // Update
-    String prevEmail = person.getEmail();
-    person.setFirstName("Katharina");
-    person.setLastName("Nielsen");
-    person.setEmail("katha_nielsen@hotmail.com");
-    person.setGender("OTHER");
-    person.setAge((short)38);
-    person.setPasswordHash("345");
-    personService.updateEmail(person.getEmail(), prevEmail);
-        personService.updatePassword(person.getPasswordHash(), person.getEmail());
-        personService.updatePersonalInfo(person.getEmail(), person);
+        // Update
+        String prevEmail = person.getEmail();
+        person.setFirstName("Katharina");
+        person.setLastName("Nielsen");
+        person.setEmail("katha_nielsen@hotmail.com");
+        person.setGender("OTHER");
+        person.setAge((short) 38);
+        person.setPasswordHash("345");
+        personService.update(person.getEmail(), person);
         personRetrieved = personService.getByEmail(person.getEmail()).orElse(null);
         assert person.equals(personRetrieved);
 

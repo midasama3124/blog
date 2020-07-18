@@ -16,16 +16,16 @@ public class PersonRoleDataAccessService implements PersonRoleDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-  @Override
-  public int save(UUID personId, short roleId) {
-    String sqlQuery = "INSERT INTO person_role ("
-        + "person_id, "
-        + "role_id) "
-        + "VALUES (?, ?)";
-    // Issue a single SQL update operation (such as an insert, update or delete statement)
-    // Returns number of rows affected
-    return jdbcTemplate.update(sqlQuery, personId, roleId);
-  }
+    @Override
+    public int save(UUID personId, short roleId) {
+        String sqlQuery = "INSERT INTO person_role ("
+                + "person_id, "
+                + "role_id) "
+                + "VALUES (?, ?)";
+        // Issue a single SQL update operation (such as an insert, update or delete statement)
+        // Returns number of rows affected
+        return jdbcTemplate.update(sqlQuery, personId, roleId);
+    }
 
     @Override
     public List<Short> findRoles(UUID personId) {
@@ -56,7 +56,23 @@ public class PersonRoleDataAccessService implements PersonRoleDao {
     }
 
     @Override
-    public int delete(UUID personId, short roleId) {
+    public boolean hasRole(UUID personId, short roleId) {
+        String sqlQuery = "SELECT EXISTS (" +
+                "SELECT 1 FROM person_role " +
+                "WHERE person_id = ? " +
+                "AND " +
+                "role_id = ?" +
+                ")";
+        // Retrieve a single object
+        return jdbcTemplate.queryForObject(
+                sqlQuery,
+                new Object[]{personId, roleId},
+                (resultSet, i) -> resultSet.getBoolean(1)
+        );
+    }
+
+    @Override
+    public int deleteSingleEntry(UUID personId, short roleId) {
         String sqlQuery = "DELETE FROM person_role "
                 + "WHERE "
                 + "person_id = ? "
@@ -64,5 +80,14 @@ public class PersonRoleDataAccessService implements PersonRoleDao {
                 + "role_id = ?";
         // Issue a single SQL update operation (such as an insert, update or delete statement)
         return jdbcTemplate.update(sqlQuery, new Object[]{personId, roleId});
-  }
+    }
+
+    @Override
+    public int deletePerson(UUID personId) {
+        String sqlQuery = "DELETE FROM person_role "
+                + "WHERE "
+                + "person_id = ? ";
+        // Issue a single SQL update operation (such as an insert, update or delete statement)
+        return jdbcTemplate.update(sqlQuery, new Object[]{personId});
+    }
 }
