@@ -1,9 +1,10 @@
 package com.mmanchola.blog.dao;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class PostTagDataAccessService implements PostTagDao {
@@ -41,13 +42,31 @@ public class PostTagDataAccessService implements PostTagDao {
   }
 
   @Override
-  public int delete(int postId, int tagId) {
+  public int deleteSingle(int postId, int tagId) {
     String sqlQuery = "DELETE FROM post_tag "
-        + "WHERE "
-        + "post_id = ? "
-        + "AND "
-        + "tag_id = ?";
+            + "WHERE "
+            + "post_id = ? "
+            + "AND "
+            + "tag_id = ?";
     // Issue a single SQL update operation (such as an insert, update or delete statement)
-    return jdbcTemplate.update(sqlQuery, new Object[] {postId, tagId});
+    return jdbcTemplate.update(sqlQuery, new Object[]{postId, tagId});
+  }
+
+  @Override
+  public int deleteByPost(int postId) {
+    String sqlQuery = "DELETE FROM post_tag "
+            + "WHERE "
+            + "post_id = ? ";
+    // Issue a single SQL update operation (such as an insert, update or delete statement)
+    return jdbcTemplate.update(sqlQuery, new Object[]{postId});
+  }
+
+  @Override
+  public int deleteByTag(int tagId) {
+    String sqlQuery = "DELETE FROM post_tag "
+            + "WHERE "
+            + "tag_id = ?";
+    // Issue a single SQL update operation (such as an insert, update or delete statement)
+    return jdbcTemplate.update(sqlQuery, new Object[]{tagId});
   }
 }

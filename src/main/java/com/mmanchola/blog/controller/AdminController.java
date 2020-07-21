@@ -1,12 +1,10 @@
 package com.mmanchola.blog.controller;
 
 import com.mmanchola.blog.exception.ApiRequestException;
-import com.mmanchola.blog.model.Category;
-import com.mmanchola.blog.model.Person;
-import com.mmanchola.blog.model.Post;
-import com.mmanchola.blog.model.Tag;
+import com.mmanchola.blog.model.*;
 import com.mmanchola.blog.service.CategoryService;
 import com.mmanchola.blog.service.PersonService;
+import com.mmanchola.blog.service.PostService;
 import com.mmanchola.blog.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.mmanchola.blog.config.security.ApplicationUserRole.ADMIN;
+import static com.mmanchola.blog.model.PostStatus.DRAFT;
 
 @Controller
 @RequestMapping("admin")
@@ -29,12 +28,14 @@ public class AdminController {
     private final PersonService personService;
     private final TagService tagService;
     private final CategoryService categoryService;
+    private final PostService postService;
 
     @Autowired
-    public AdminController(PersonService personService, TagService tagService, CategoryService categoryService) {
+    public AdminController(PersonService personService, TagService tagService, CategoryService categoryService, PostService postService) {
         this.personService = personService;
         this.tagService = tagService;
         this.categoryService = categoryService;
+        this.postService = postService;
     }
 
     @ModelAttribute("member")
@@ -49,6 +50,15 @@ public class AdminController {
         map.put("MALE", "Hombre");
         map.put("FEMALE", "Mujer");
         map.put("OTHER", "Otro");
+        return map;
+    }
+
+    @ModelAttribute("statusMap")
+    public Map<String, String> mapStatusToSpanish() {
+        Map<String, String> map = new HashMap<>();
+        map.put("draft", "Edición");
+        map.put("outdated", "Baja");
+        map.put("published", "Publicado");
         return map;
     }
 
@@ -97,9 +107,12 @@ public class AdminController {
     @PostMapping("category/delete/{slug}")
     public String deleteCategory(@PathVariable("slug") String slug, Model model, RedirectAttributes redirectAttributes) {
         try {
+            categoryService.removePosts(slug);
             categoryService.delete(slug);
         } catch (DataIntegrityViolationException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Parece que estás intentando eliminar una categoría padre. Elimina primero todas las categorías asociadas para hacer esto.");
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Parece que estás intentando eliminar una categoría padre. " +
+                            "Elimina primero todas las categorías asociadas para hacer esto.");
         } catch (ApiRequestException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
@@ -130,15 +143,106 @@ public class AdminController {
     }
 
     @GetMapping("post")
-    public String displayAdminPost(@ModelAttribute("member") Person user, Model model) {
+    public String displayAdminPost(@ModelAttribute("member") Person user,
+                                   @ModelAttribute("statusMap") Map<String, String> statusMap,
+                                   Model model) {
         model.addAttribute("member", user);
+        model.addAttribute("statusMap", statusMap);
+        List<Post> posts = postService.getAll();
+        Map<Integer, String> parentMap = new HashMap<>();
+        for (Post p : posts) {
+            parentMap.put(p.getId(), p.getSlug());
+        }
+        model.addAttribute("posts", posts);
+        model.addAttribute("parentMap", parentMap);
         return "admin-post";
     }
 
     @GetMapping("post/new")
     public String showNewPostForm(Model model) {
-        model.addAttribute("post", new Post());
+        PostForm postForm = new PostForm();
+        model.addAttribute("postForm", postForm);
+        model.addAttribute("posts", postService.getAll());
+        model.addAttribute("categories", categoryService.getAll());
+        model.addAttribute("tags", tagService.getAll());
         return "admin-create-post";
+    }
+
+    @PostMapping("post/new")
+    public String saveNewPost(@ModelAttribute("member") Person member,
+                              PostForm postForm,
+                              Model model,
+                              RedirectAttributes redirectAttributes) {
+        model.addAttribute("method", "POST");
+        model.addAttribute("post", postForm);
+        try {
+            Post post = postForm.getPost();
+            int categoryId = postForm.getCategoryId();
+            List<Integer> tagIds = postForm.getTagIds();
+            post.setStatus(DRAFT.toString());
+            postService.add(post, member.getEmail());
+            postService.addCategory(post.getSlug(), categoryId);
+            postService.addTags(post.getSlug(), tagIds);
+        } catch (ApiRequestException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin-create-post";
+        }
+        redirectAttributes.addFlashAttribute("message", "El nuevo post fue guardado exitosamente");
+        return "redirect:/admin/post";
+    }
+
+    @PostMapping("post/delete/{slug}")
+    public String deletePost(@PathVariable("slug") String slug, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            postService.removeTags(slug);
+            postService.removeCategory(slug);
+            postService.delete(slug);
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Parece que estás intentando eliminar un post padre. " +
+                            "Elimina primero todos los predecesores para levar a cabo esta acción.");
+        } catch (ApiRequestException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/admin/post";
+    }
+
+    @GetMapping("post/update/{slug}")
+    public String showUpdatePostForm(@PathVariable("slug") String slug, Model model) {
+        Post post = postService.getBySlug(slug).get();
+        List<Integer> tagIds = postService.getTags(slug);
+        int categoryId = postService.getCategory(slug).orElse(0);
+        PostForm postForm = new PostForm(post, tagIds, categoryId);
+        model.addAttribute("slug", slug);
+        model.addAttribute("postForm", postForm);
+        model.addAttribute("posts", postService.getAll());
+        model.addAttribute("categories", categoryService.getAll());
+        model.addAttribute("tags", tagService.getAll());
+        model.addAttribute("method", "PUT");
+        return "admin-create-post";
+    }
+
+    @PostMapping("post/update/{slug}")
+    public String updatePost(@PathVariable("slug") String slug,
+                             PostForm postForm,
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
+        model.addAttribute("postForm", postForm);
+        try {
+            Post post = postForm.getPost();
+            int categoryId = postForm.getCategoryId();
+            List<Integer> tagIds = postForm.getTagIds();
+            postService.removeCategory(slug);
+            postService.addCategory(slug, categoryId);
+            postService.removeTags(slug);
+            postService.addTags(slug, tagIds);
+            postService.update(slug, post);
+        } catch (ApiRequestException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return String.format("redirect:/admin/post/update/%s", slug);
+        }
+        redirectAttributes.addFlashAttribute("message", "El post fue actualizado exitosamente");
+        return "redirect:/admin/post";
     }
 
     @GetMapping("tag")
@@ -169,8 +273,20 @@ public class AdminController {
     }
 
     @PostMapping("tag/delete/{slug}")
-    public String deleteTag(@PathVariable("slug") String slug) {
-        tagService.delete(slug);
+    public String deleteTag(@PathVariable("slug") String slug,
+                            RedirectAttributes redirectAttributes) {
+        try {
+            tagService.removePosts(slug);
+            tagService.delete(slug);
+        } catch (DataIntegrityViolationException e) {
+            System.out.println("1st Exception");
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Parece que estás intentando eliminar un tag sin eliminar primero sus asociaciones. " +
+                            "Elimínalas primero para hacer esto.");
+        } catch (ApiRequestException e) {
+            System.out.println("2nd Exception");
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/admin/tag";
     }
 
