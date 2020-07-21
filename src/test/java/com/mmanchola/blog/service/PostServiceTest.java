@@ -1,17 +1,18 @@
 package com.mmanchola.blog.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.model.Post;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -50,14 +51,14 @@ public class PostServiceTest {
     // Create
     // Testing adding child post
     String newSlug = slug + "1";
-    post.setSlug(newSlug);
-    postService.add(
-        post,
-        authorEmail,
-        slug
-    );
-    postRetrieved = postService.getBySlug(newSlug).orElse(null);
-    assert postRetrieved.equals(post);
+//    post.setSlug(newSlug);
+//    postService.add(
+//        post,
+//        authorEmail,
+//        slug
+//    );
+//    postRetrieved = postService.getBySlug(newSlug).orElse(null);
+//    assert postRetrieved.equals(post);
 
     // Update
     // Test updating publication timestamp
@@ -67,12 +68,12 @@ public class PostServiceTest {
 
     // Save multiple posts to test finding methods with list output
     int numPosts = 5;
-    for (int i = 2; i <= numPosts; i++) {
-      String slugTmp = String.format("post-slug%s", i);
-      post.setSlug(slugTmp);
-      postService.add(post, authorEmail, slug);
-      postService.updatePublicationTime(slugTmp);
-    }
+//    for (int i = 2; i <= numPosts; i++) {
+//      String slugTmp = String.format("post-slug%s", i);
+//      post.setSlug(slugTmp);
+//      postService.add(post, authorEmail, slug);
+//      postService.updatePublicationTime(slugTmp);
+//    }
 
     // Read
     // Test finding most recent post (single result)
@@ -82,7 +83,7 @@ public class PostServiceTest {
     int numRecents = 3;
     List<Post> mostRecents = postService.getMostRecent(numRecents);
     for (int i = numPosts; i > numPosts - numRecents; i--)
-      Assert.assertEquals(String.format("post-slug%s", i), mostRecents.get(numPosts-i).getSlug());
+      Assert.assertEquals(String.format("post-slug%s", i), mostRecents.get(numPosts - i).getSlug());
     // Test finding all posts
     List<Post> allPosts = postService.getAll();
     Assert.assertEquals(6, allPosts.size());
@@ -100,9 +101,6 @@ public class PostServiceTest {
 
     // Update
     String updateSlug = slug + "1";
-    // Test updating parent ID
-    String parentSlug = "post-slug2";
-    postService.updateParent(updateSlug, parentSlug);
     // Test updating author
     String newAuthorEmail = "midasama3124@gmail.com";
     postService.updateAuthor(updateSlug, newAuthorEmail);
@@ -115,11 +113,9 @@ public class PostServiceTest {
     post.setTitle(newTitle);
     post.setMetatitle(newMetatitle);
     post.setContent(newContent);
-    postService.updatePost(updateSlug, post);
+    postService.update(updateSlug, post);
 
     postRetrieved = postService.getBySlug(newSlug).orElse(null);
-    Post parent = postService.getBySlug(parentSlug).orElse(null);
-    Assert.assertEquals(parent.getId(), postRetrieved.getParentId());
     Person author = personService.getByEmail(newAuthorEmail).orElse(null);
     Assert.assertEquals(author.getId(), postRetrieved.getPersonId());
     Assert.assertEquals(newTitle, postRetrieved.getTitle());
@@ -130,7 +126,7 @@ public class PostServiceTest {
     // Delete
     // Modify post id of parent post in order to delete it from subsequent cycle
     post.setSlug(slug + "1");
-    postService.updatePost(slug, post);
+    postService.update(slug, post);
     for (int i = 6; i > 0; i--) {
       String slugTmp = slug + i;
       rowsAffected = postService.delete(slugTmp);

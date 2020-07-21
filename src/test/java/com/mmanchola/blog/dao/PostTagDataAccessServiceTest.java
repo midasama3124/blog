@@ -1,13 +1,14 @@
 package com.mmanchola.blog.dao;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -40,12 +41,12 @@ public class PostTagDataAccessServiceTest {
     assertEquals(2, allTagIds.size());
 
     // Delete
-    rowsAffected = postTagDas.delete(
-        postId,
-        tagId1
+    rowsAffected = postTagDas.deleteSingle(
+            postId,
+            tagId1
     );
     assertEquals(1, rowsAffected);
-    rowsAffected = postTagDas.delete(postId, tagId2);
+    rowsAffected = postTagDas.deleteSingle(postId, tagId2);
     assertEquals(1, rowsAffected);
   }
 }
