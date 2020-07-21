@@ -10,5 +10,9 @@ public interface PostTagDao {
   List<Integer> find(int postId);
 
   // Delete
-  int delete(int postId, int tagId);
+  int deleteSingle(int postId, int tagId);
+
+  int deleteByPost(int postId);
+
+  int deleteByTag(int tagId);
 }
