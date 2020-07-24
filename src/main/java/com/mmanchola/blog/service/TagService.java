@@ -58,6 +58,11 @@ public class TagService {
         return tagDas.findAll();
     }
 
+    // Get tag by its ID
+    public Optional<Tag> get(int id) {
+        return tagDas.find(id);
+    }
+
     // Get tag by its slug
     public Optional<Tag> getBySlug(String slug) {
         String checkedSlug = checker.checkSlugCorrectness(slug)

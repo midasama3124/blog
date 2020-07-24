@@ -3,11 +3,11 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:th="http://www.thymeleaf.org">
 <body>
-<div class="bg-light navbar-container">
-    <div class="container" th:fragment="navbar">
+<div class="bg-light navbar-container" th:fragment="navbar">
+    <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light">
             <a class="navbar-brand" href="/">
-                <img alt="Blog logo" height="50" src="image/logo_bp.svg" width="150">
+                <img alt="Blog logo" height="50" src="/image/logo_bp.svg" width="150">
             </a>
             <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation"
                     class="navbar-toggler" data-target="#navbarNavDropdown" data-toggle="collapse" type="button">
@@ -16,7 +16,7 @@
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav w-100 justify-content-center">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Inicio</a>
+                        <a class="nav-link" th:href="@{/home}">Inicio</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"

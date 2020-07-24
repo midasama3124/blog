@@ -46,7 +46,15 @@
                 <tr th:each="post : ${posts}">
                     <td>
                         <div class="btn-group">
-                            <button class="btn btn-sm btn-secondary" type="button">(Pre)visualizar</button>
+                            <form th:action="${post.getStatus()} == 'published' ?
+                                @{'/post/{slug}'(slug=${post.getSlug()})} :
+                                @{'preview/{slug}'(slug=${post.getSlug()})}"
+                                  th:method="get">
+                                <button class="btn btn-sm btn-secondary"
+                                        type="submit">
+                                    <span th:text="${post.getStatus()} == 'published' ? 'Visualizar' : 'Previsualizar'"></span>
+                                </button>
+                            </form>
                             <button aria-expanded="false" aria-haspopup="true"
                                     class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split"
                                     data-toggle="dropdown" type="button">
@@ -55,6 +63,14 @@
                             <div class="dropdown-menu">
                                 <a class="dropdown-item"
                                    th:href="@{'post/update/{slug}'(slug=${post.getSlug()})}">Editar</a>
+                                <form th:action="@{'outdate/{slug}'(slug=${post.getSlug()})}"
+                                      th:if="${post.getStatus()} != 'outdated'"
+                                      th:method="post">
+                                    <button class="btn btn-tertiary dropdown-item"
+                                            onClick="return confirm('¿Está seguro de dar de baja este post?')"
+                                            type="submit">Dar de baja
+                                    </button>
+                                </form>
                                 <form th:action="@{'post/delete/{slug}'(slug=${post.getSlug()})}"
                                       th:method="post">
                                     <input name="_method" type="hidden" value="delete"/>

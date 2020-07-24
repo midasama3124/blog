@@ -7426,13 +7426,17 @@ a.text-dark:hover, a.text-dark:focus {
     border-collapse: collapse !important; }
     .table td,
     .table th {
-      background-color: #fff !important; }
-  .table-bordered th,
-  .table-bordered td {
-    border: 1px solid #dee2e6 !important; }
-  .table-dark {
-      color: inherit;
-  }
+        background-color: #fff !important;
+    }
+
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6 !important;
+    }
+
+    .table-dark {
+        color: inherit;
+    }
 
     .table-dark th,
     .table-dark td,
@@ -12683,14 +12687,16 @@ readers do not read off random characters that represent icons */
 
 .popular-post-likes {
   position: absolute;
-  top: .8em;
-  right: 1.2em;
-  background-color: rgba(27, 153, 139, 0.8);
-  padding: .5em .5em;
-  border-radius: 10px; }
+    top: .8em;
+    right: 1.2em;
+    background-color: rgba(27, 153, 139, 0.8);
+    padding: .5em .5em;
+    border-radius: 10px;
+}
 
 .popular-post-likes h4 {
-  margin: 0; }
+    margin: 0;
+}
 
 .media-button {
     display: flex;
@@ -12707,13 +12713,13 @@ readers do not read off random characters that represent icons */
 }
 
 .media-button-icon:hover {
-    color: rgba(43, 48, 58, 0.7);
     cursor: pointer;
 }
 
 .post-section {
-  background-color: rgba(215, 232, 186, 0.1);
-  font-family: "Lora"; }
+    background-color: rgba(215, 232, 186, 0.1);
+    font-family: "Lora";
+}
 
 .post-section h2 {
   font-weight: 600; }
@@ -12762,12 +12768,13 @@ readers do not read off random characters that represent icons */
   .post-content {
     padding: 1.5em 2em; } }
 
-.post-img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  padding-bottom: .6em;
-  max-width: 80%; }
+.post-text img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: .6em;
+    max-width: 80%;
+}
 
 .figure-label {
   text-align: center;
@@ -12862,10 +12869,11 @@ readers do not read off random characters that represent icons */
     top: 0;
     left: 0;
     background: #3498DB;
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  color: #fff; }
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    color: #fff;
+}
   .admin-header .logo {
     text-transform: uppercase;
     letter-spacing: 1px; }
@@ -12986,12 +12994,15 @@ readers do not read off random characters that represent icons */
     transform: rotate3d(0, 0, 1, 0deg); } }
 
 @keyframes swing {
-  20% {
-    transform: rotate3d(0, 0, 1, 15deg); }
-  40% {
-    transform: rotate3d(0, 0, 1, -10deg); }
-  60% {
-    transform: rotate3d(0, 0, 1, 5deg); }
+    20% {
+        transform: rotate3d(0, 0, 1, 15deg);
+    }
+    40% {
+        transform: rotate3d(0, 0, 1, -10deg);
+    }
+    60% {
+        transform: rotate3d(0, 0, 1, 5deg);
+    }
     80% {
         transform: rotate3d(0, 0, 1, -5deg);
     }
@@ -13030,9 +13041,10 @@ readers do not read off random characters that represent icons */
     font-family: "Poppins", sans-serif;
     font-size: 1rem;
     font-weight: 400;
-  line-height: 1.4;
-  color: #f3f3f3;
-  margin: 0; }
+    line-height: 1.4;
+    color: #f3f3f3;
+    margin: 0;
+}
 
 /* mobile friendly alternative to using background-attachment: fixed */
 .member-body::before {

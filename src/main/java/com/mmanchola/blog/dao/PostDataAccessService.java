@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.mmanchola.blog.model.PostStatus.PUBLISHED;
+
 @Repository
 public class PostDataAccessService implements PostDao {
     private JdbcTemplate jdbcTemplate;
@@ -103,18 +105,16 @@ public class PostDataAccessService implements PostDao {
 
     @Override
     public List<Post> findMostRecent(int numPosts) {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "post "
-                + "ORDER BY "
-                + "published_at "
-                + "DESC "
-                + "NULLS LAST "
-                + "LIMIT ?";
+        String sqlQuery = "SELECT " +
+                "* " +
+                "FROM " +
+                "post " +
+                "WHERE status = ? " +
+                "ORDER BY published_at DESC " +
+                "NULLS LAST LIMIT ?";
         return jdbcTemplate.query(
                 sqlQuery,
-                new Object[]{numPosts},
+                new Object[]{PUBLISHED.toString(), numPosts},
                 new PostMapper()
         );
     }
