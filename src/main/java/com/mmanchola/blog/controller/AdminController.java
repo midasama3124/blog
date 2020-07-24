@@ -6,6 +6,8 @@ import com.mmanchola.blog.service.CategoryService;
 import com.mmanchola.blog.service.PersonService;
 import com.mmanchola.blog.service.PostService;
 import com.mmanchola.blog.service.TagService;
+import com.mmanchola.blog.util.MarkdownParser;
+import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
@@ -16,10 +18,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.mmanchola.blog.config.security.ApplicationUserRole.ADMIN;
-import static com.mmanchola.blog.model.PostStatus.DRAFT;
+import static com.mmanchola.blog.model.PostStatus.*;
 
 @Controller
 @RequestMapping("admin")
@@ -29,6 +33,7 @@ public class AdminController {
     private final TagService tagService;
     private final CategoryService categoryService;
     private final PostService postService;
+    private final PrettyTime prettyTime;
 
     @Autowired
     public AdminController(PersonService personService, TagService tagService, CategoryService categoryService, PostService postService) {
@@ -36,6 +41,7 @@ public class AdminController {
         this.tagService = tagService;
         this.categoryService = categoryService;
         this.postService = postService;
+        this.prettyTime = new PrettyTime(new Locale("es"));
     }
 
     @ModelAttribute("member")
@@ -242,6 +248,47 @@ public class AdminController {
             return String.format("redirect:/admin/post/update/%s", slug);
         }
         redirectAttributes.addFlashAttribute("message", "El post fue actualizado exitosamente");
+        return "redirect:/admin/post";
+    }
+
+    @GetMapping("preview/{slug}")
+    public String previewPost(@ModelAttribute("member") Person person,
+                              @PathVariable("slug") String slug,
+                              Model model) {
+        model.addAttribute("person", person);
+        model.addAttribute("status", "draft");
+        Post post = postService.getBySlug(slug).get();
+        post.setContent(MarkdownParser.parse(post.getContent()));
+        model.addAttribute("post", post);
+
+        // Retrieve author name
+        Person author = personService.getById(post.getPersonId()).get();
+        model.addAttribute("author", author);
+        // Compute moment ago in Spanish
+        String momentsAgo = prettyTime.format(post.getPublishedAt());
+        model.addAttribute("momentsAgo", momentsAgo);
+        // Compute estimated reading time based on content length
+        int readTime = post.getContent().split("\\W+").length / 200;
+        model.addAttribute("readTime", readTime);
+        // Post tags
+        List<Tag> tags = postService.getTags(post.getSlug())
+                .stream()
+                .map(id -> tagService.get(id).get())
+                .collect(Collectors.toList());
+        model.addAttribute("tags", tags);
+        return "post";
+    }
+
+    @PostMapping("publish/{slug}")
+    public String publishPost(@PathVariable("slug") String slug) {
+        postService.updateStatus(slug, PUBLISHED.toString());
+        postService.updatePublicationTime(slug);
+        return String.format("redirect:/post/%s", slug);
+    }
+
+    @PostMapping("outdate/{slug}")
+    public String outdatePost(@PathVariable("slug") String slug) {
+        postService.updateStatus(slug, OUTDATED.toString());
         return "redirect:/admin/post";
     }
 

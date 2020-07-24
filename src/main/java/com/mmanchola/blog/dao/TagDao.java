@@ -1,6 +1,7 @@
 package com.mmanchola.blog.dao;
 
 import com.mmanchola.blog.model.Tag;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,9 @@ public interface TagDao {
 
   // Read
   List<Tag> findAll();
+
+  Optional<Tag> find(int id);
+
   Optional<Tag> findBySlug(String slug);
   Optional<Integer> findIdBySlug(String slug);
   boolean isSlugTaken(String slug);
