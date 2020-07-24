@@ -3,7 +3,13 @@ package com.mmanchola.blog.controller;
 import com.mmanchola.blog.exception.ApiRequestException;
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.model.PersonGender;
+import com.mmanchola.blog.model.Post;
+import com.mmanchola.blog.model.Tag;
 import com.mmanchola.blog.service.PersonService;
+import com.mmanchola.blog.service.PostService;
+import com.mmanchola.blog.service.TagService;
+import com.mmanchola.blog.util.MarkdownParser;
+import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,21 +21,26 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.mmanchola.blog.config.security.ApplicationUserRole.READER;
+import static com.mmanchola.blog.model.PostStatus.PUBLISHED;
 
 @Controller
 @RequestMapping("/")
 public class HomeController {
     private PersonService personService;
+    private PostService postService;
+    private TagService tagService;
+    private PrettyTime prettyTime;
 
     @Autowired
-    public HomeController(PersonService personService) {
+    public HomeController(PersonService personService, PostService postService, TagService tagService) {
         this.personService = personService;
+        this.postService = postService;
+        this.tagService = tagService;
+        this.prettyTime = new PrettyTime(new Locale("es"));
     }
 
     @ModelAttribute("genderMap")
@@ -52,6 +63,13 @@ public class HomeController {
     @GetMapping(value = {"home", ""})
     public String showHome(@ModelAttribute("member") Person person, Model model) {
         model.addAttribute("person", person);
+        List<Post> mostRecent = postService.getMostRecent(6);
+        model.addAttribute("mostRecent", mostRecent);
+        Map<Integer, String> momentsAgo = new HashMap<>();
+        for (Post p : mostRecent) {
+            momentsAgo.put(p.getId(), prettyTime.format(p.getPublishedAt()));
+        }
+        model.addAttribute("momentsAgo", momentsAgo);
         return "index";
     }
 
@@ -127,8 +145,34 @@ public class HomeController {
         return "redirect:/home";
     }
 
-    @GetMapping("post")
-    public String displayPost() {
-        return "post";
+    @GetMapping("post/{slug}")
+    public String displayPost(@ModelAttribute("member") Person person,
+                              Model model,
+                              @PathVariable("slug") String slug) {
+        model.addAttribute("person", person);
+        Post post = postService.getBySlug(slug).orElse(null);
+        if (post != null && post.getStatus().equals(PUBLISHED.toString())) {
+            post.setContent(MarkdownParser.parse(post.getContent()));
+            model.addAttribute("status", "published");
+            model.addAttribute("post", post);
+            // Retrieve author name
+            Person author = personService.getById(post.getPersonId()).get();
+            model.addAttribute("author", author);
+            // Compute moment ago in Spanish
+            String momentsAgo = prettyTime.format(post.getPublishedAt());
+            model.addAttribute("momentsAgo", momentsAgo);
+            // Compute estimated reading time based on content length
+            int readTime = post.getContent().split("\\W+").length / 200;
+            model.addAttribute("readTime", readTime);
+            // Post tags
+            List<Tag> tags = postService.getTags(post.getSlug())
+                    .stream()
+                    .map(id -> tagService.get(id).get())
+                    .collect(Collectors.toList());
+            model.addAttribute("tags", tags);
+            // TODO: Retrieve comments
+            return "post";
+        }
+        return "error";   // TODO: Create html page for error prompts
     }
 }
