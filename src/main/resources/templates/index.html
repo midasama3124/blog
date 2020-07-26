@@ -21,9 +21,12 @@
                 <div class="col-sm-8 text-right">
                     <h1>Bellas Palabras</h1>
                     <p>El blog de una mamá al rescate del mundo</p>
-                    <form method="get" th:action="@{'/post/{slug}'(slug=${mostRecent.get(0).getSlug()})}">
-                        <button class="btn btn-primary custom-btn" type="submit"><span>Leer último post</span></button>
-                    </form>
+                    <div th:if="${not #lists.isEmpty(mostRecent)}">
+                        <form method="get" th:action="@{'/post/{slug}'(slug=${mostRecent.get(0).getSlug()})}">
+                            <button class="btn btn-primary custom-btn" type="submit"><span>Leer último post</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

@@ -2,6 +2,8 @@ package com.mmanchola.blog.service;
 
 import com.mmanchola.blog.dao.*;
 import com.mmanchola.blog.exception.ApiRequestException;
+import com.mmanchola.blog.model.Comment;
+import com.mmanchola.blog.model.Like;
 import com.mmanchola.blog.model.Post;
 import com.mmanchola.blog.util.ServiceChecker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +25,23 @@ public class PostService {
     private TagDataAccessService tagDas;
     private CategoryDataAccessService categoryDas;
     private PostCategoryDataAccessService postCategoryDas;
+    private CommentDataAccessService commentDas;
+    private LikeDataAccessService likeDas;
     private ServiceChecker checker;
 
     @Autowired
     public PostService(PostDataAccessService postDas,
                        PersonDataAccessService personDas, PostTagDataAccessService postTagDas,
                        TagDataAccessService tagDas, CategoryDataAccessService categoryDas,
-                       PostCategoryDataAccessService postCategoryDas, ServiceChecker checker) {
+                       PostCategoryDataAccessService postCategoryDas, CommentDataAccessService commentDas, LikeDataAccessService likeDas, ServiceChecker checker) {
         this.postDas = postDas;
         this.personDas = personDas;
         this.postTagDas = postTagDas;
         this.tagDas = tagDas;
         this.categoryDas = categoryDas;
         this.postCategoryDas = postCategoryDas;
+        this.commentDas = commentDas;
+        this.likeDas = likeDas;
         this.checker = checker;
     }
 
@@ -59,6 +65,11 @@ public class PostService {
         String status = checker.checkStatus(post.getStatus())
                 .orElseThrow(() -> new ApiRequestException(INVALID.getMsg(POST_STATUS.toString())));
         post.setStatus(status);
+        // Check social network links
+        checker.checkUrl(post.getSocialNetwork1())
+                .orElseThrow(() -> new ApiRequestException(INVALID.getMsg(POST_SOCIAL_NETWORK1.toString())));
+        checker.checkUrl(post.getSocialNetwork2())
+                .orElseThrow(() -> new ApiRequestException(INVALID.getMsg(POST_SOCIAL_NETWORK2.toString())));
     }
 
     // Add new parent post to database
@@ -98,6 +109,36 @@ public class PostService {
         return postCategoryDas.save(postId, categoryId);
     }
 
+    // Add comment to post
+    public int addComment(Comment comment, int postId, String memberEmail) {
+        UUID authorId = personDas.findIdByEmail(memberEmail)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+        // Check number of comments posted
+        int commentThresh = 2;      // Only 2 comments are allowed per user on every post
+        int numComments = commentDas.findByReaderAndPost(authorId, postId).size();
+        if (numComments >= commentThresh) {
+            throw new ApiRequestException(EXCEEDED.getMsg(COMMENT_THRESHOLD.toString()));
+        }
+        // Check content
+        String content = comment.getContent();
+        if (content.length() > 500)
+            throw new ApiRequestException(EXCEEDED.getMsg(COMMENT_CONTENT.toString()));
+        // Set post and author IDs
+        comment.setPostId(postId);
+        comment.setPersonId(authorId);
+        return commentDas.save(comment);
+    }
+
+    // Add like to post
+    public int addLike(Like like, int postId, String memberEmail) {
+        like.setPostId(postId);
+        UUID authorId = personDas.findIdByEmail(memberEmail)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+        like.setPersonId(authorId);
+        if (!likeDas.exists(postId, authorId)) return likeDas.save(like);
+        return 0;
+    }
+
     // Get all posts
     public List<Post> getAll() {
         return postDas.findAll();
@@ -117,6 +158,29 @@ public class PostService {
         return postCategoryDas.find(postId);
     }
 
+    // Get all comments corresponding to given post
+    public List<Comment> getComments(String slug) {
+        int postId = postDas.findIdBySlug(slug)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(POST_SLUG.toString())));
+        return commentDas.findByPost(postId);
+    }
+
+    // Get number of likes of given post
+    public int getLikes(String slug) {
+        int postId = postDas.findIdBySlug(slug)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(POST_SLUG.toString())));
+        return likeDas.findLikesByPost(postId);
+    }
+
+    // Has the corresponding post already been liked by given reader
+    public boolean isAlreadyLiked(String postSlug, String memberEmail) {
+        int postId = postDas.findIdBySlug(postSlug)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(POST_SLUG.toString())));
+        UUID personId = personDas.findIdByEmail(memberEmail)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
+        return likeDas.exists(postId, personId);
+    }
+
     // Get post(s) by its/their status
     public List<Post> getByStatus(String status) {
         String checkedStatus = checker.checkStatus(status)
@@ -125,10 +189,17 @@ public class PostService {
     }
 
     // Get post by its slug
-    public Optional<Post> getBySlug(String slug) {
+    public Post getBySlug(String slug) {
         String checkedSlug = checker.checkSlugCorrectness(slug)
                 .orElseThrow(() -> new ApiRequestException(MISSING.getMsg(POST_SLUG.toString())));
-        return postDas.findBySlug(checkedSlug);
+        return postDas.findBySlug(checkedSlug)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(POST_SLUG.toString())));
+    }
+
+    // Get post slug by its ID
+    public String getSlugById(int postId) {
+        return postDas.findSlugById(postId)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(POST_ID.toString())));
     }
 
     // Get most recent post
@@ -205,6 +276,13 @@ public class PostService {
         if (post.getParentId() != 0) {
             postDas.updateParentId(postId, post.getParentId());
         }
+        // Update social network links
+        checker.checkUrl(post.getSocialNetwork1())
+                .ifPresent(socialNetwork -> postDas.updateSocialNetwork1(postId, socialNetwork));
+        checker.checkUrl(post.getSocialNetwork2())
+                .ifPresent(socialNetwork -> postDas.updateSocialNetwork2(postId, socialNetwork));
+        checker.checkUrl(post.getSocialNetwork3())
+                .ifPresent(socialNetwork -> postDas.updateSocialNetwork3(postId, socialNetwork));
     }
 
     // Delete post
@@ -227,5 +305,4 @@ public class PostService {
                 .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(POST_SLUG.toString())));
         return postCategoryDas.deleteByPost(postId);
     }
-
 }

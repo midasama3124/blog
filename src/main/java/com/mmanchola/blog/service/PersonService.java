@@ -1,8 +1,6 @@
 package com.mmanchola.blog.service;
 
-import com.mmanchola.blog.dao.PersonDataAccessService;
-import com.mmanchola.blog.dao.PersonRoleDataAccessService;
-import com.mmanchola.blog.dao.RoleDataAccessService;
+import com.mmanchola.blog.dao.*;
 import com.mmanchola.blog.exception.ApiRequestException;
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.util.EmailValidator;
@@ -30,18 +28,22 @@ public class PersonService {
     private final PasswordEncoder passwordEncoder;
     private final RoleDataAccessService roleDas;
     private final PersonRoleDataAccessService personRoleDas;
+    private final PostDataAccessService postDas;
+    private final CommentDataAccessService commentDas;
     private final ServiceChecker checker;
 
     @Autowired
     public PersonService(PersonDataAccessService personDas,
                          EmailValidator emailValidator,
                          PasswordEncoder passwordEncoder, RoleDataAccessService roleDas,
-                         PersonRoleDataAccessService personRoleDas, ServiceChecker checker) {
+                         PersonRoleDataAccessService personRoleDas, PostDataAccessService postDas, CommentDataAccessService commentDas, ServiceChecker checker) {
         this.personDas = personDas;
         this.emailValidator = emailValidator;
         this.passwordEncoder = passwordEncoder;
         this.roleDas = roleDas;
         this.personRoleDas = personRoleDas;
+        this.postDas = postDas;
+        this.commentDas = commentDas;
         this.checker = checker;
     }
 
@@ -82,6 +84,9 @@ public class PersonService {
                 .orElseThrow(() -> new ApiRequestException(MISSING_INVALID.getMsg(PERSON_EMAIL.toString())));
         checkEmailAvailability(email)
                 .orElseThrow(() -> new ApiRequestException(UNAVAILABLE.getMsg(PERSON_EMAIL.toString())));
+        // Set username
+        String username = email.substring(0, email.indexOf('@'));
+        person.setUsername(username);
         // Check password hash
         checker.checkNotEmpty(person.getPasswordHash())
                 .ifPresentOrElse(password ->
@@ -133,7 +138,7 @@ public class PersonService {
         List<UUID> adminPersonIds = personRoleDas.findPeople(adminRoleId);
         List<Person> admins = new ArrayList<>();
         for (UUID personId : adminPersonIds) {
-            Person admin = personDas.findById(personId)
+            Person admin = personDas.find(personId)
                     .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_ID.toString())));
             admins.add(admin);
         }
@@ -141,13 +146,13 @@ public class PersonService {
     }
 
     // Get person by his/her email
-    public Optional<Person> getByEmail(String email) {
-        return personDas.findByEmail(email);
+    public Optional<Person> get(String email) {
+        return personDas.find(email);
     }
 
     // Get person by his/her email
-    public Optional<Person> getById(UUID id) {
-        return personDas.findById(id);
+    public Optional<Person> get(UUID id) {
+        return personDas.find(id);
     }
 
     // Update member email
@@ -191,9 +196,12 @@ public class PersonService {
                 .ifPresent(age -> personDas.updateAge(id, age));
         // Change password
         updatePassword(id, person.getPasswordHash());
-        // Change email if different
+        // Change email and username if different
         if (!email.equals(person.getEmail())) {
-            updateEmail(id, person.getEmail());
+            String newEmail = person.getEmail();
+            updateEmail(id, newEmail);
+            String newUsername = email.substring(0, email.indexOf('@'));
+            personDas.updateUsername(id, newUsername);
         }
     }
 

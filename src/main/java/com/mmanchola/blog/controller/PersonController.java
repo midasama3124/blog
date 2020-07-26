@@ -45,7 +45,7 @@ public class PersonController {
   @GetMapping(path = "{email}")
   @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
   public Person getPersonByEmail(@PathVariable("email") String email) {
-    return personService.getByEmail(email)
-        .orElse(null);
+    return personService.get(email)
+            .orElse(null);
   }
 }

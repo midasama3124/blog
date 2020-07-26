@@ -32,13 +32,17 @@ public class PostDataAccessService implements PostDao {
                 + "slug, "
                 + "status, "
                 + "updated_at, "
-                + "content) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                + "content, "
+                + "social_network1, "
+                + "social_network2, "
+                + "social_network3) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         // Issue a single SQL update operation (such as an insert, update or delete statement)
         // Returns number of rows affected
         return jdbcTemplate.update(sqlQuery, post.getPersonId(), post.getTitle(),
                 post.getMetatitle(), post.getSlug(), post.getStatus(),
-                current, post.getContent());
+                current, post.getContent(), post.getSocialNetwork1(), post.getSocialNetwork2(),
+                post.getSocialNetwork3());
     }
 
     @Override
@@ -52,13 +56,17 @@ public class PostDataAccessService implements PostDao {
                 + "slug, "
                 + "status, "
                 + "updated_at, "
-                + "content) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                + "content, "
+                + "social_network1, "
+                + "social_network2, "
+                + "social_network3) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         // Issue a single SQL update operation (such as an insert, update or delete statement)
         // Returns number of rows affected
         return jdbcTemplate.update(sqlQuery, post.getPersonId(), post.getParentId(),
                 post.getTitle(), post.getMetatitle(), post.getSlug(), post.getStatus(),
-                current, post.getContent());
+                current, post.getContent(), post.getSocialNetwork1(), post.getSocialNetwork2(),
+                post.getSocialNetwork3());
     }
 
     @Override
@@ -129,6 +137,20 @@ public class PostDataAccessService implements PostDao {
                         sqlQuery,
                         new Object[]{slug},
                         (resultSet, i) -> resultSet.getInt("id")
+                )
+        );
+    }
+
+    @Override
+    public Optional<String> findSlugById(int postId) {
+        String sqlQuery = "SELECT * FROM post "
+                + "WHERE id = ?";
+        // Retrieve a single object
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        sqlQuery,
+                        new Object[]{postId},
+                        (resultSet, i) -> resultSet.getString("slug")
                 )
         );
     }
@@ -246,6 +268,36 @@ public class PostDataAccessService implements PostDao {
                 + "content = ? "
                 + "WHERE id = ?";
         Object[] args = {content, postId};
+        // Issue a single SQL update operation (such as an insert, update or delete statement)
+        return jdbcTemplate.update(sqlQuery, args);
+    }
+
+    @Override
+    public int updateSocialNetwork1(int postId, String socialNetwork1) {
+        String sqlQuery = "UPDATE post SET "
+                + "social_network1 = ? "
+                + "WHERE id = ?";
+        Object[] args = {socialNetwork1, postId};
+        // Issue a single SQL update operation (such as an insert, update or delete statement)
+        return jdbcTemplate.update(sqlQuery, args);
+    }
+
+    @Override
+    public int updateSocialNetwork2(int postId, String socialNetwork2) {
+        String sqlQuery = "UPDATE post SET "
+                + "social_network2 = ? "
+                + "WHERE id = ?";
+        Object[] args = {socialNetwork2, postId};
+        // Issue a single SQL update operation (such as an insert, update or delete statement)
+        return jdbcTemplate.update(sqlQuery, args);
+    }
+
+    @Override
+    public int updateSocialNetwork3(int postId, String socialNetwork3) {
+        String sqlQuery = "UPDATE post SET "
+                + "social_network3 = ? "
+                + "WHERE id = ?";
+        Object[] args = {socialNetwork3, postId};
         // Issue a single SQL update operation (such as an insert, update or delete statement)
         return jdbcTemplate.update(sqlQuery, args);
     }
