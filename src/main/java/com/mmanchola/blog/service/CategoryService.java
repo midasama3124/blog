@@ -67,7 +67,7 @@ public class CategoryService {
     public Optional<Category> getBySlug(String slug) {
         String checkedSlug = checker.checkSlugCorrectness(slug)
                 .orElseThrow(() -> new ApiRequestException(MISSING.getMsg(CATEGORY_SLUG.toString())));
-        return categoryDas.findBySlug(checkedSlug);
+        return categoryDas.find(checkedSlug);
     }
 
     // Update category-related fields

@@ -14,9 +14,9 @@ public interface PersonDao {
     // R: Read
     List<Person> findAll();
 
-    Optional<Person> findByEmail(String email);
+    Optional<Person> find(String email);
 
-    Optional<Person> findById(UUID id);
+    Optional<Person> find(UUID id);
 
     Optional<UUID> findIdByEmail(String email);
 
@@ -30,6 +30,8 @@ public interface PersonDao {
     int updateAge(UUID id, short age);
 
     int updateEmail(UUID id, String email);
+
+    int updateUsername(UUID id, String username);
 
     int updatePasswordHash(UUID id, String passwordHash);
 

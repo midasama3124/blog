@@ -1,6 +1,7 @@
 package com.mmanchola.blog.util;
 
 import com.mmanchola.blog.model.PostStatus;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -12,6 +13,12 @@ import static com.mmanchola.blog.model.PersonGender.*;
 
 @Component
 public class ServiceChecker {
+
+    private UrlValidator urlValidator;
+
+    public ServiceChecker() {
+        this.urlValidator = new UrlValidator();
+    }
 
     // Capitalize every word on String
     public String capitalizeFully(String string) {
@@ -87,6 +94,13 @@ public class ServiceChecker {
                 .filter(Predicate.not(String::isEmpty))
                 .map(String::toLowerCase)
                 .filter(PostStatus::contains);    // Must be contained in PostStatus enum
+    }
+
+    public Optional<String> checkUrl(String url) {
+        if (url != null && url.isEmpty())
+            return Optional.of(url);
+        return Optional.ofNullable(url)
+                .filter(urlValidator::isValid);
     }
 
 }

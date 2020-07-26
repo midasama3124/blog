@@ -1,15 +1,16 @@
 package com.mmanchola.blog.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import com.mmanchola.blog.model.Category;
-import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -43,7 +44,7 @@ public class CategoryDataAccessServiceTest {
 
     // Read
     // Test finding tag by slug
-    Category retrievedTag = categoryDas.findBySlug(slug + "1").orElse(null);
+    Category retrievedTag = categoryDas.find(slug + "1").orElse(null);
     assert retrievedTag.equals(category);
     // Adding more tags so methods with list output can be assessed
     int numCategories = 5;
@@ -77,7 +78,7 @@ public class CategoryDataAccessServiceTest {
     categoryDas.updateMetatitle(parentId, newMetatitle);
     categoryDas.updateSlug(parentId, newSlug);
     categoryDas.updateContent(parentId, newContent);
-    retrievedTag = categoryDas.findBySlug(newSlug).orElse(null);
+    retrievedTag = categoryDas.find(newSlug).orElse(null);
     assert retrievedTag.equals(category);
 
     // Delete

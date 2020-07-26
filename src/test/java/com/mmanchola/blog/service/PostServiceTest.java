@@ -45,7 +45,7 @@ public class PostServiceTest {
 
     // Read
     // Test getting post by slug
-    Post postRetrieved = postService.getBySlug(slug).orElse(null);
+    Post postRetrieved = postService.getBySlug(slug);
     assert postRetrieved.equals(post);
 
     // Create
@@ -63,7 +63,7 @@ public class PostServiceTest {
     // Update
     // Test updating publication timestamp
     postService.updatePublicationTime(slug);
-    postRetrieved = postService.getBySlug(slug).orElse(null);
+    postRetrieved = postService.getBySlug(slug);
     assertNotEquals(0, postRetrieved.getPublishedAt().compareTo(postRetrieved.getUpdatedAt()));
 
     // Save multiple posts to test finding methods with list output
@@ -91,7 +91,7 @@ public class PostServiceTest {
     // Update
     // Test updating post status
     postService.updateStatus(slug, "draft");
-    postRetrieved = postService.getBySlug(slug).orElse(null);
+    postRetrieved = postService.getBySlug(slug);
     assert postRetrieved.getStatus().equals("draft");
 
     // Read
@@ -115,8 +115,8 @@ public class PostServiceTest {
     post.setContent(newContent);
     postService.update(updateSlug, post);
 
-    postRetrieved = postService.getBySlug(newSlug).orElse(null);
-    Person author = personService.getByEmail(newAuthorEmail).orElse(null);
+    postRetrieved = postService.getBySlug(newSlug);
+    Person author = personService.get(newAuthorEmail).orElse(null);
     Assert.assertEquals(author.getId(), postRetrieved.getPersonId());
     Assert.assertEquals(newTitle, postRetrieved.getTitle());
     Assert.assertEquals(newMetatitle, postRetrieved.getMetatitle());

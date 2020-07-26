@@ -34,7 +34,7 @@ public class PersonServiceTest {
         assertEquals(1, rowsAffected);
 
         // Read
-        Person personRetrieved = personService.getByEmail(person.getEmail()).orElse(null);
+        Person personRetrieved = personService.get(person.getEmail()).orElse(null);
         assert personRetrieved.equals(personRetrieved);
 
         // Update
@@ -46,7 +46,7 @@ public class PersonServiceTest {
         person.setAge((short) 38);
         person.setPasswordHash("345");
         personService.update(person.getEmail(), person);
-        personRetrieved = personService.getByEmail(person.getEmail()).orElse(null);
+        personRetrieved = personService.get(person.getEmail()).orElse(null);
         assert person.equals(personRetrieved);
 
         // Delete

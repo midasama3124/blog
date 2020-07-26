@@ -1,6 +1,7 @@
 package com.mmanchola.blog.dao;
 
 import com.mmanchola.blog.model.Category;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +12,9 @@ public interface CategoryDao {
 
   // Read
   List<Category> findAll();
-  Optional<Category> findBySlug(String slug);
+
+  Optional<Category> find(String slug);
+
   Optional<Integer> findIdBySlug(String slug);
   boolean isSlugTaken(String slug);
   boolean isSlugTakenByOther(String newSlug, int categoryId);
