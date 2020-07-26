@@ -10,7 +10,8 @@ public enum ExceptionMessage {
     MISSING_UNAVAILABLE("está faltando o ya está ocupado"),
     INVALID_UNAVAILABLE("es inválido o no está disponible"),
     ALL("está faltando, es inválido o no está disponible"),
-    NOT_FOUND("no se encuentra registrado");
+    NOT_FOUND("no se encuentra registrado"),
+    EXCEEDED("fue excedido");
 
     private String message;
 

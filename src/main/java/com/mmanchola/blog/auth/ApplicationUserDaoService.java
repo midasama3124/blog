@@ -34,7 +34,7 @@ public class ApplicationUserDaoService implements ApplicationUserDao {
 
     @Override
     public Optional<ApplicationUser> selectApplicationUserByUsername(String username) {
-        Person person = personDas.findByEmail(username)
+        Person person = personDas.find(username)
                 .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
 
         // Authorities / Permissions

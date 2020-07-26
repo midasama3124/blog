@@ -104,6 +104,11 @@
             <artifactId>prettytime</artifactId>
             <version>4.0.5.Final</version>
         </dependency>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.6</version>
+        </dependency>
     </dependencies>
 
 	<build>

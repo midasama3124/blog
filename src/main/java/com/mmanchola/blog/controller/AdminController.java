@@ -47,7 +47,7 @@ public class AdminController {
     @ModelAttribute("member")
     public Person findLoggedUser(Authentication authentication) {
         String username = authentication.getName();
-        return personService.getByEmail(username).get();
+        return personService.get(username).get();
     }
 
     @ModelAttribute("genderMap")
@@ -214,8 +214,14 @@ public class AdminController {
     }
 
     @GetMapping("post/update/{slug}")
-    public String showUpdatePostForm(@PathVariable("slug") String slug, Model model) {
-        Post post = postService.getBySlug(slug).get();
+    public String showUpdatePostForm(@PathVariable("slug") String slug, Model model, RedirectAttributes redirectAttributes) {
+        Post post;
+        try {
+            post = postService.getBySlug(slug);
+        } catch (ApiRequestException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "error";
+        }
         List<Integer> tagIds = postService.getTags(slug);
         int categoryId = postService.getCategory(slug).orElse(0);
         PostForm postForm = new PostForm(post, tagIds, categoryId);
@@ -257,12 +263,12 @@ public class AdminController {
                               Model model) {
         model.addAttribute("person", person);
         model.addAttribute("status", "draft");
-        Post post = postService.getBySlug(slug).get();
+        Post post = postService.getBySlug(slug);
         post.setContent(MarkdownParser.parse(post.getContent()));
         model.addAttribute("post", post);
 
         // Retrieve author name
-        Person author = personService.getById(post.getPersonId()).get();
+        Person author = personService.get(post.getPersonId()).get();
         model.addAttribute("author", author);
         // Compute moment ago in Spanish
         String momentsAgo = prettyTime.format(post.getPublishedAt());

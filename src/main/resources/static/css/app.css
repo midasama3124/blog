@@ -7416,14 +7416,23 @@ a.text-dark:hover, a.text-dark:focus {
     size: a3; }
   body {
     min-width: 992px !important; }
-  .container {
-    min-width: 992px !important; }
-  .navbar {
-    display: none; }
-  .badge {
-    border: 1px solid #000; }
-  .table {
-    border-collapse: collapse !important; }
+
+    .container {
+        min-width: 992px !important;
+    }
+
+    .navbar {
+        display: none;
+    }
+
+    .badge {
+        border: 1px solid #000;
+    }
+
+    .table {
+        border-collapse: collapse !important;
+    }
+
     .table td,
     .table th {
         background-color: #fff !important;
@@ -12686,7 +12695,7 @@ readers do not read off random characters that represent icons */
     font-size: 1.3em; } }
 
 .popular-post-likes {
-  position: absolute;
+    position: absolute;
     top: .8em;
     right: 1.2em;
     background-color: rgba(27, 153, 139, 0.8);
@@ -12831,6 +12840,17 @@ readers do not read off random characters that represent icons */
 
 .media-comment {
     margin-top: 20px;
+}
+
+.comment-text > a {
+    color: rgba(27, 153, 139, 0.8);
+    text-decoration: underline;
+}
+
+.comment-text > a:hover {
+    color: #a1c6ea;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 *,

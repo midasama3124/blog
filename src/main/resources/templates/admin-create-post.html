@@ -61,7 +61,7 @@
         <div class="form-group">
             <label for="post-category">Categoría</label>
             <select class="selectpicker form-control" data-live-search="true" data-style="btn-tertiary"
-                    id="post-category" th:field="*{categoryId}">
+                    id="post-category" required th:field="*{categoryId}">
                 <option disabled selected="selected" value="0">Escoja una categoría</option>
                 <option th:each="c : ${categories}" th:selected="${c.getId() == postForm.categoryId}"
                         th:text="${c.getTitle()}" th:value="${c.getId()}"></option>
@@ -70,12 +70,15 @@
         <div class="form-group">
             <label for="post-tags">Tag(s)</label>
             <select class="selectpicker form-control" data-live-search="true" data-style="btn-tertiary" id="post-tags"
-                    multiple th:field="*{tagIds}" title="Escoja uno o más tags">
+                    multiple required th:field="*{tagIds}" title="Escoja al menos un tag">
                 <!--                TODO: Select previously selected tags-->
                 <!--                th:selected="selected"-->
                 <option th:each="t : ${tags}"
                         th:text="${t.getTitle()}" th:value="${t.getId()}"></option>
             </select>
+            <div class="invalid-feedback">
+                Hace falta al menos un tag
+            </div>
         </div>
         <div class="form-group">
             <label for="post-parent">Post padre (Si aplica)</label>
@@ -85,6 +88,28 @@
                 <option th:each="p : ${posts}" th:selected="${p.getId() == postForm.post.getParentId()}"
                         th:text="${p.getTitle()}" th:value="${p.getId()}"></option>
             </select>
+        </div>
+        <div class="form-group">
+            <label for="post-social-network1">Link de Facebook</label>
+            <input class="form-control"
+                   id="post-social-network1"
+                   placeholder="Ingrese el link para compartir en Facebook"
+                   required
+                   th:field="*{post.socialNetwork1}"
+                   type="text"
+            />
+            <div class="invalid-feedback">
+                Hace falta el link de Facebook
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="post-social-network2">Link de Instagram</label>
+            <input class="form-control"
+                   id="post-social-network2"
+                   placeholder="Ingrese el link para compartir en Instagram"
+                   th:field="*{post.socialNetwork2}"
+                   type="text"
+            />
         </div>
         <div class="form-group">
             <label for="post-content">Contenido</label>
