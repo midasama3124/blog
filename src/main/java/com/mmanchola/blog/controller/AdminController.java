@@ -282,6 +282,9 @@ public class AdminController {
                 .map(id -> tagService.get(id).get())
                 .collect(Collectors.toList());
         model.addAttribute("tags", tags);
+        // Post likes
+        model.addAttribute("isAlreadyLiked", postService.isAlreadyLiked(slug, person.getEmail()));
+        model.addAttribute("numLikes", postService.getLikes(slug));
         return "post";
     }
 

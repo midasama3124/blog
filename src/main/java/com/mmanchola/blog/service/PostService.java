@@ -4,6 +4,7 @@ import com.mmanchola.blog.dao.*;
 import com.mmanchola.blog.exception.ApiRequestException;
 import com.mmanchola.blog.model.Comment;
 import com.mmanchola.blog.model.Like;
+import com.mmanchola.blog.model.PopularPost;
 import com.mmanchola.blog.model.Post;
 import com.mmanchola.blog.util.ServiceChecker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,6 +171,11 @@ public class PostService {
         int postId = postDas.findIdBySlug(slug)
                 .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(POST_SLUG.toString())));
         return likeDas.findLikesByPost(postId);
+    }
+
+    // Get popular posts (i.e., based on number likes received)
+    public List<PopularPost> getPopular(int numPosts) {
+        return postDas.findPopular(numPosts);
     }
 
     // Has the corresponding post already been liked by given reader
