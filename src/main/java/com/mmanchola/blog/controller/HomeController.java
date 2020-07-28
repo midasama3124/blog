@@ -2,10 +2,7 @@ package com.mmanchola.blog.controller;
 
 import com.mmanchola.blog.exception.ApiRequestException;
 import com.mmanchola.blog.model.*;
-import com.mmanchola.blog.service.CommentService;
-import com.mmanchola.blog.service.PersonService;
-import com.mmanchola.blog.service.PostService;
-import com.mmanchola.blog.service.TagService;
+import com.mmanchola.blog.service.*;
 import com.mmanchola.blog.util.MarkdownParser;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +30,16 @@ public class HomeController {
     private PostService postService;
     private TagService tagService;
     private CommentService commentService;
+    private CategoryService categoryService;
     private PrettyTime prettyTime;
 
     @Autowired
-    public HomeController(PersonService personService, PostService postService, TagService tagService, CommentService commentService) {
+    public HomeController(PersonService personService, PostService postService, TagService tagService, CommentService commentService, CategoryService categoryService) {
         this.personService = personService;
         this.postService = postService;
         this.tagService = tagService;
         this.commentService = commentService;
+        this.categoryService = categoryService;
         this.prettyTime = new PrettyTime(new Locale("es"));
     }
 
@@ -64,6 +63,7 @@ public class HomeController {
     @GetMapping(value = {"home", ""})
     public String showHome(@ModelAttribute("member") Person person, Model model) {
         model.addAttribute("person", person);
+        // Get recent posts
         List<Post> mostRecent = postService.getMostRecent(6);
         model.addAttribute("mostRecent", mostRecent);
         Map<Integer, String> momentsAgo = new HashMap<>();
@@ -71,6 +71,8 @@ public class HomeController {
             momentsAgo.put(p.getId(), prettyTime.format(p.getPublishedAt()));
         }
         model.addAttribute("momentsAgo", momentsAgo);
+        // Get parent categories
+        model.addAttribute("categories", categoryService.getParents());
         return "index";
     }
 
@@ -152,6 +154,7 @@ public class HomeController {
                               @PathVariable("slug") String slug,
                               RedirectAttributes redirectAttributes) {
         model.addAttribute("person", person);
+        model.addAttribute("categories", categoryService.getParents());
         Post post;
         try {
             post = postService.getBySlug(slug);
@@ -200,6 +203,10 @@ public class HomeController {
             boolean isAlreadyLiked = person != null ? postService.isAlreadyLiked(slug, person.getEmail()) : false;
             model.addAttribute("isAlreadyLiked", isAlreadyLiked);
             model.addAttribute("numLikes", postService.getLikes(slug));
+            // Popular posts for sidebar
+            model.addAttribute("popularPosts", postService.getPopular(3));
+            // Popular tags for sidebar
+            model.addAttribute("popularTags", tagService.getPopular(5));
             return "post";
         }
         redirectAttributes.addFlashAttribute("errorMessage", "No pudo encontrarse esta página");

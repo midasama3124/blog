@@ -1,5 +1,6 @@
 package com.mmanchola.blog.dao;
 
+import com.mmanchola.blog.model.PopularPost;
 import com.mmanchola.blog.model.Post;
 
 import java.sql.Timestamp;
@@ -18,7 +19,10 @@ public interface PostDao {
   Optional<Post> findBySlug(String slug);
   List<Post> findMostRecent();
   List<Post> findMostRecent(int numPosts);
+
   Optional<Integer> findIdBySlug(String slug);
+
+  List<PopularPost> findPopular(int numPosts);
 
   Optional<String> findSlugById(int postId);
 

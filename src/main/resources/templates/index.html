@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
-    <title>Bellas Palabras - Blog Website</title>
+    <title>Con Bellas Palabras - Blog Website</title>
     <link href="css/app.css" rel="stylesheet">
 </head>
 
@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-sm-4"></div>
                 <div class="col-sm-8 text-right">
-                    <h1>Bellas Palabras</h1>
+                    <h1>Con Bellas Palabras</h1>
                     <p>El blog de una mamá al rescate del mundo</p>
                     <div th:if="${not #lists.isEmpty(mostRecent)}">
                         <form method="get" th:action="@{'/post/{slug}'(slug=${mostRecent.get(0).getSlug()})}">

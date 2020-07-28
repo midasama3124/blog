@@ -49,10 +49,15 @@ public class CategoryDataAccessService implements CategoryDao {
 
     @Override
     public List<Category> findAll() {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "category";
+        String sqlQuery = "SELECT * FROM category";
+        return jdbcTemplate.query(sqlQuery, new CategoryMapper());  // Retrieve multiple results
+    }
+
+    @Override
+    public List<Category> findParents() {
+        String sqlQuery = "SELECT * FROM category " +
+                "WHERE parent_path = 'root' " +
+                "ORDER BY title asc";
         return jdbcTemplate.query(sqlQuery, new CategoryMapper());  // Retrieve multiple results
     }
 

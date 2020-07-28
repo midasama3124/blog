@@ -63,6 +63,11 @@ public class CategoryService {
         return categoryDas.findAll();
     }
 
+    // Get parent categories
+    public List<Category> getParents() {
+        return categoryDas.findParents();
+    }
+
     // Get category by its slug
     public Optional<Category> getBySlug(String slug) {
         String checkedSlug = checker.checkSlugCorrectness(slug)
