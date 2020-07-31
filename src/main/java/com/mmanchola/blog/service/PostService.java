@@ -6,7 +6,7 @@ import com.mmanchola.blog.model.Comment;
 import com.mmanchola.blog.model.Like;
 import com.mmanchola.blog.model.PopularPost;
 import com.mmanchola.blog.model.Post;
-import com.mmanchola.blog.util.ServiceChecker;
+import com.mmanchola.blog.util.FieldChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.mmanchola.blog.exception.ExceptionMessage.*;
 import static com.mmanchola.blog.model.TableFields.*;
@@ -28,13 +29,13 @@ public class PostService {
     private PostCategoryDataAccessService postCategoryDas;
     private CommentDataAccessService commentDas;
     private LikeDataAccessService likeDas;
-    private ServiceChecker checker;
+    private FieldChecker checker;
 
     @Autowired
     public PostService(PostDataAccessService postDas,
                        PersonDataAccessService personDas, PostTagDataAccessService postTagDas,
                        TagDataAccessService tagDas, CategoryDataAccessService categoryDas,
-                       PostCategoryDataAccessService postCategoryDas, CommentDataAccessService commentDas, LikeDataAccessService likeDas, ServiceChecker checker) {
+                       PostCategoryDataAccessService postCategoryDas, CommentDataAccessService commentDas, LikeDataAccessService likeDas, FieldChecker checker) {
         this.postDas = postDas;
         this.personDas = personDas;
         this.postTagDas = postTagDas;
@@ -156,7 +157,7 @@ public class PostService {
     public Optional<Integer> getCategory(String slug) {
         int postId = postDas.findIdBySlug(slug)
                 .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(POST_SLUG.toString())));
-        return postCategoryDas.find(postId);
+        return postCategoryDas.findByPost(postId);
     }
 
     // Get all comments corresponding to given post
@@ -176,6 +177,16 @@ public class PostService {
     // Get popular posts (i.e., based on number likes received)
     public List<PopularPost> getPopular(int numPosts) {
         return postDas.findPopular(numPosts);
+    }
+
+    // Get posts by category slug
+    public List<Post> getByCategory(String categorySlug) {
+        int categoryId = categoryDas.findIdBySlug(categorySlug)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(CATEGORY_SLUG.toString())));
+        List<Post> posts = postCategoryDas.findByCategory(categoryId)
+                .stream().map(id -> postDas.find(id).get())
+                .collect(Collectors.toList());
+        return posts;
     }
 
     // Has the corresponding post already been liked by given reader

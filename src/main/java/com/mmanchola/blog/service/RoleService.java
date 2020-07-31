@@ -1,25 +1,26 @@
 package com.mmanchola.blog.service;
 
+import com.mmanchola.blog.dao.RoleDataAccessService;
+import com.mmanchola.blog.exception.ApiRequestException;
+import com.mmanchola.blog.model.Role;
+import com.mmanchola.blog.util.FieldChecker;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
 import static com.mmanchola.blog.exception.ExceptionMessage.MISSING_INVALID;
 import static com.mmanchola.blog.exception.ExceptionMessage.NOT_FOUND;
 import static com.mmanchola.blog.model.TableFields.ROLE_NAME;
 
-import com.mmanchola.blog.dao.RoleDataAccessService;
-import com.mmanchola.blog.exception.ApiRequestException;
-import com.mmanchola.blog.model.Role;
-import com.mmanchola.blog.util.ServiceChecker;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 @Service
 public class RoleService {
   private RoleDataAccessService roleDas;
-  private ServiceChecker checker;
+  private FieldChecker checker;
 
   @Autowired
   public RoleService(RoleDataAccessService roleDas,
-      ServiceChecker checker) {
+                     FieldChecker checker) {
     this.roleDas = roleDas;
     this.checker = checker;
   }
