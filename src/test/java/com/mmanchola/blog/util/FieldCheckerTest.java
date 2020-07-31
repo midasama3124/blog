@@ -8,10 +8,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ServiceCheckerTest {
+public class FieldCheckerTest {
 
     @Autowired
-    ServiceChecker checker;
+    FieldChecker checker;
 
     @Test
     public void checkValidUrl() {

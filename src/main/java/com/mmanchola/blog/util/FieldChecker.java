@@ -12,11 +12,11 @@ import java.util.function.Predicate;
 import static com.mmanchola.blog.model.PersonGender.*;
 
 @Component
-public class ServiceChecker {
+public class FieldChecker {
 
     private UrlValidator urlValidator;
 
-    public ServiceChecker() {
+    public FieldChecker() {
         this.urlValidator = new UrlValidator();
     }
 

@@ -3,8 +3,9 @@ package com.mmanchola.blog.service;
 import com.mmanchola.blog.dao.PostTagDataAccessService;
 import com.mmanchola.blog.dao.TagDataAccessService;
 import com.mmanchola.blog.exception.ApiRequestException;
+import com.mmanchola.blog.model.PopularTag;
 import com.mmanchola.blog.model.Tag;
-import com.mmanchola.blog.util.ServiceChecker;
+import com.mmanchola.blog.util.FieldChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +21,10 @@ public class TagService {
 
     private TagDataAccessService tagDas;
     private PostTagDataAccessService postTagDas;
-    private ServiceChecker checker;
+    private FieldChecker checker;
 
     @Autowired
-    public TagService(TagDataAccessService tagDas, PostTagDataAccessService postTagDas, ServiceChecker checker) {
+    public TagService(TagDataAccessService tagDas, PostTagDataAccessService postTagDas, FieldChecker checker) {
         this.tagDas = tagDas;
         this.postTagDas = postTagDas;
         this.checker = checker;
@@ -56,6 +57,11 @@ public class TagService {
     // Get all tags
     public List<Tag> getAll() {
         return tagDas.findAll();
+    }
+
+    // Get popular tags
+    public List<PopularTag> getPopular(int numTags) {
+        return tagDas.findPopular(numTags);
     }
 
     // Get tag by its ID

@@ -6,26 +6,39 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CategoryDao {
-  // Create
-  int saveParent(Category category);
-  int saveChild(Category category);
+    // Create
+    int saveParent(Category category);
 
-  // Read
-  List<Category> findAll();
+    int saveChild(Category category);
 
-  Optional<Category> find(String slug);
+    // Read
+    List<Category> findAll();
 
-  Optional<Integer> findIdBySlug(String slug);
-  boolean isSlugTaken(String slug);
-  boolean isSlugTakenByOther(String newSlug, int categoryId);
+    List<Category> findParents();
 
-  // Update
-  int updateParentId(int categoryId, int parentId);
-  int updateTitle(int categoryId, String title);
-  int updateMetatitle(int categoryId, String metatitle);
-  int updateSlug(int categoryId, String slug);
-  int updateContent(int categoryId, String content);
+    List<Category> findChildren(int parentId);
 
-  // Delete
-  int delete(int categoryId);
+    Optional<Category> find(int id);
+
+    Optional<Category> findBySlug(String slug);
+
+    Optional<Integer> findIdBySlug(String slug);
+
+    boolean isSlugTaken(String slug);
+
+    boolean isSlugTakenByOther(String newSlug, int categoryId);
+
+    // Update
+    int updateParentId(int categoryId, int parentId);
+
+    int updateTitle(int categoryId, String title);
+
+    int updateMetatitle(int categoryId, String metatitle);
+
+    int updateSlug(int categoryId, String slug);
+
+    int updateContent(int categoryId, String content);
+
+    // Delete
+    int delete(int categoryId);
 }

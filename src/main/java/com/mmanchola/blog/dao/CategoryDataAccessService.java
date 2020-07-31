@@ -49,21 +49,43 @@ public class CategoryDataAccessService implements CategoryDao {
 
     @Override
     public List<Category> findAll() {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "category";
+        String sqlQuery = "SELECT * FROM category";
         return jdbcTemplate.query(sqlQuery, new CategoryMapper());  // Retrieve multiple results
     }
 
     @Override
-    public Optional<Category> find(String slug) {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "category "
-                + "WHERE "
-                + "slug = ?";
+    public List<Category> findParents() {
+        String sqlQuery = "SELECT * FROM category " +
+                "WHERE parent_path = 'root' " +
+                "ORDER BY title asc";
+        return jdbcTemplate.query(sqlQuery, new CategoryMapper());  // Retrieve multiple results
+    }
+
+    @Override
+    public List<Category> findChildren(int parentId) {
+        String sqlQuery = "SELECT * FROM category " +
+                "WHERE parent_id = ? " +
+                "ORDER BY title asc";
+        return jdbcTemplate.query(sqlQuery,
+                new Object[]{parentId},
+                new CategoryMapper()
+        );  // Retrieve multiple results
+    }
+
+    @Override
+    public Optional<Category> find(int id) {
+        String sqlQuery = "SELECT * FROM category "
+                + "WHERE id = ?";
+        // Retrieve a single object
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new CategoryMapper())
+        );
+    }
+
+    @Override
+    public Optional<Category> findBySlug(String slug) {
+        String sqlQuery = "SELECT * FROM category "
+                + "WHERE slug = ?";
         // Retrieve a single object
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(sqlQuery, new Object[]{slug}, new CategoryMapper())

@@ -1,6 +1,8 @@
 package com.mmanchola.blog.dao;
 
+import com.mmanchola.blog.mapper.PopularTagMapper;
 import com.mmanchola.blog.mapper.TagMapper;
+import com.mmanchola.blog.model.PopularTag;
 import com.mmanchola.blog.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -81,6 +83,21 @@ public class TagDataAccessService implements TagDao {
                         new Object[]{slug},
                         (resultSet, i) -> resultSet.getInt("id")
                 )
+        );
+    }
+
+    @Override
+    public List<PopularTag> findPopular(int numTags) {
+        String sqlQuery = "SELECT tag.*, COUNT(post_tag.post_id) AS num_tags " +
+                "FROM tag LEFT JOIN post_tag " +
+                "ON (tag.id = post_tag.tag_id) " +
+                "GROUP BY tag.id " +
+                "ORDER BY num_tags DESC " +
+                "LIMIT ?";
+        return jdbcTemplate.query(
+                sqlQuery,
+                new Object[]{numTags},
+                new PopularTagMapper()
         );
     }
 

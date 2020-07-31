@@ -7407,15 +7407,22 @@ a.text-dark:hover, a.text-dark:focus {
   p,
   h2,
   h3 {
-    orphans: 3;
-    widows: 3; }
-  h2,
-  h3 {
-    page-break-after: avoid; }
-  @page {
-    size: a3; }
-  body {
-    min-width: 992px !important; }
+      orphans: 3;
+      widows: 3;
+  }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+
+    @page {
+        size: a3;
+    }
+
+    body {
+        min-width: 992px !important;
+    }
 
     .container {
         min-width: 992px !important;
@@ -12630,30 +12637,59 @@ readers do not read off random characters that represent icons */
   color: rgba(43, 48, 58, 0.7); }
 
 .post-header {
-  width: 100%;
-  min-height: 95vh;
-  background-image: url(/image/post_background3.jpg);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover; }
+    width: 100%;
+    min-height: 95vh;
+    background-image: url(/image/post_background.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
 
 .post-header:before {
-  content: '';
-  width: 100%;
-  min-height: 95vh;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-image: linear-gradient(60deg, rgba(161, 198, 234, 0.1), rgba(215, 218, 229, 0.5)); }
+    content: '';
+    width: 100%;
+    min-height: 95vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: linear-gradient(60deg, rgba(161, 198, 234, 0.1), rgba(215, 218, 229, 0.5));
+}
+
+.category-tag-header {
+    width: 100%;
+    min-height: 95vh;
+    background-image: url(/image/category-tag-background.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.category-tag-header:before {
+    content: '';
+    width: 100%;
+    min-height: 95vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: linear-gradient(60deg, rgba(161, 198, 234, 0.1), rgba(215, 218, 229, 0.5));
+}
+
+.category-tag-header h1 {
+    font-family: "Dancing Script";
+    font-size: 4em;
+    font-weight: 900;
+}
 
 .post-text-header {
-  min-height: 95vh;
-  color: #2B303A; }
+    min-height: 95vh;
+    color: #2B303A;
+}
 
 .post-text-header h1 {
-  font-family: "Lobster";
-  font-size: 4em;
-  margin-bottom: .4em; }
+    font-family: "Lobster";
+    font-size: 4em;
+    margin-bottom: .4em;
+}
 
 .post-text-header p {
   font-size: 1.1em;

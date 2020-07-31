@@ -1,5 +1,6 @@
 package com.mmanchola.blog.dao;
 
+import com.mmanchola.blog.model.PopularTag;
 import com.mmanchola.blog.model.Tag;
 
 import java.util.List;
@@ -15,7 +16,11 @@ public interface TagDao {
   Optional<Tag> find(int id);
 
   Optional<Tag> findBySlug(String slug);
+
   Optional<Integer> findIdBySlug(String slug);
+
+  List<PopularTag> findPopular(int numTags);
+
   boolean isSlugTaken(String slug);
   boolean isSlugTakenByOther(String newSlug, int tagId);
 

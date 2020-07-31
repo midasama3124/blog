@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
-    <title>Bellas Palabras - Admin Website</title>
+    <title>Con Bellas Palabras - Admin Website</title>
     <link href="css/app.css" rel="stylesheet">
 </head>
 
@@ -22,7 +22,7 @@
                     class="anchorjs-icon"></span></a></h1>
             <p>Esta página está destinada a la administración de tu blog. Aquí podrás crear y editar los posts y los
                 privilegios de tus usuarios, entre otras cosas.</p>
-            <p><a class="btn btn-secondary" href="#" role="button">Crear nuevo post</a></p>
+            <p><a class="btn btn-secondary" role="button" th:href="@{/admin/post/new}">Crear nuevo post</a></p>
         </div>
         <div th:if="${not #lists.isEmpty(admins)}">
             <h4>Administradores</h4>

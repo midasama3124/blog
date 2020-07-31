@@ -35,7 +35,7 @@ public class CategoryServiceTest {
 
     // Read
     // Test getting category by slug
-    Category categoryRetrieved = categoryService.getBySlug(slug).orElse(null);
+    Category categoryRetrieved = categoryService.getBySlug(slug);
     assert categoryRetrieved.equals(category);
 
 //    // Create

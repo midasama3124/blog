@@ -1,6 +1,8 @@
 package com.mmanchola.blog.dao;
 
+import com.mmanchola.blog.mapper.PopularPostMapper;
 import com.mmanchola.blog.mapper.PostMapper;
+import com.mmanchola.blog.model.PopularPost;
 import com.mmanchola.blog.model.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -79,13 +81,19 @@ public class PostDataAccessService implements PostDao {
     }
 
     @Override
+    public Optional<Post> find(int id) {
+        String sqlQuery = "SELECT * FROM post "
+                + "WHERE id = ?";
+        // Retrieve a single object
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new PostMapper())
+        );
+    }
+
+    @Override
     public List<Post> findByStatus(String status) {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "post "
-                + "WHERE "
-                + "status = ?";
+        String sqlQuery = "SELECT * FROM post "
+                + "WHERE status = ?";
         return jdbcTemplate.query(
                 sqlQuery,
                 new Object[]{status},
@@ -94,12 +102,8 @@ public class PostDataAccessService implements PostDao {
 
     @Override
     public Optional<Post> findBySlug(String slug) {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "post "
-                + "WHERE "
-                + "slug = ?";
+        String sqlQuery = "SELECT * FROM post "
+                + "WHERE slug = ?";
         // Retrieve a single object
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(sqlQuery, new Object[]{slug}, new PostMapper())
@@ -138,6 +142,21 @@ public class PostDataAccessService implements PostDao {
                         new Object[]{slug},
                         (resultSet, i) -> resultSet.getInt("id")
                 )
+        );
+    }
+
+    @Override
+    public List<PopularPost> findPopular(int numPosts) {
+        String sqlQuery = "SELECT post.*, COUNT(likes.post_id) AS num_likes " +
+                "FROM post LEFT JOIN likes " +
+                "ON (post.id = likes.post_id) " +
+                "GROUP BY post.id " +
+                "ORDER BY num_likes DESC " +
+                "LIMIT ?";
+        return jdbcTemplate.query(
+                sqlQuery,
+                new Object[]{numPosts},
+                new PopularPostMapper()
         );
     }
 

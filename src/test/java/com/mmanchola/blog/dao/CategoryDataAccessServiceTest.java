@@ -44,7 +44,7 @@ public class CategoryDataAccessServiceTest {
 
     // Read
     // Test finding tag by slug
-    Category retrievedTag = categoryDas.find(slug + "1").orElse(null);
+    Category retrievedTag = categoryDas.findBySlug(slug + "1").orElse(null);
     assert retrievedTag.equals(category);
     // Adding more tags so methods with list output can be assessed
     int numCategories = 5;
@@ -77,8 +77,8 @@ public class CategoryDataAccessServiceTest {
     categoryDas.updateTitle(parentId, newTitle);
     categoryDas.updateMetatitle(parentId, newMetatitle);
     categoryDas.updateSlug(parentId, newSlug);
-    categoryDas.updateContent(parentId, newContent);
-    retrievedTag = categoryDas.find(newSlug).orElse(null);
+      categoryDas.updateContent(parentId, newContent);
+      retrievedTag = categoryDas.findBySlug(newSlug).orElse(null);
     assert retrievedTag.equals(category);
 
     // Delete
