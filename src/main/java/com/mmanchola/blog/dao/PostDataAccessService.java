@@ -81,13 +81,19 @@ public class PostDataAccessService implements PostDao {
     }
 
     @Override
+    public Optional<Post> find(int id) {
+        String sqlQuery = "SELECT * FROM post "
+                + "WHERE id = ?";
+        // Retrieve a single object
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new PostMapper())
+        );
+    }
+
+    @Override
     public List<Post> findByStatus(String status) {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "post "
-                + "WHERE "
-                + "status = ?";
+        String sqlQuery = "SELECT * FROM post "
+                + "WHERE status = ?";
         return jdbcTemplate.query(
                 sqlQuery,
                 new Object[]{status},
@@ -96,12 +102,8 @@ public class PostDataAccessService implements PostDao {
 
     @Override
     public Optional<Post> findBySlug(String slug) {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "post "
-                + "WHERE "
-                + "slug = ?";
+        String sqlQuery = "SELECT * FROM post "
+                + "WHERE slug = ?";
         // Retrieve a single object
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(sqlQuery, new Object[]{slug}, new PostMapper())

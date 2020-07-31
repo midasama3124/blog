@@ -4,7 +4,7 @@ import com.mmanchola.blog.dao.*;
 import com.mmanchola.blog.exception.ApiRequestException;
 import com.mmanchola.blog.model.Person;
 import com.mmanchola.blog.util.EmailValidator;
-import com.mmanchola.blog.util.ServiceChecker;
+import com.mmanchola.blog.util.FieldChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,13 +30,13 @@ public class PersonService {
     private final PersonRoleDataAccessService personRoleDas;
     private final PostDataAccessService postDas;
     private final CommentDataAccessService commentDas;
-    private final ServiceChecker checker;
+    private final FieldChecker checker;
 
     @Autowired
     public PersonService(PersonDataAccessService personDas,
                          EmailValidator emailValidator,
                          PasswordEncoder passwordEncoder, RoleDataAccessService roleDas,
-                         PersonRoleDataAccessService personRoleDas, PostDataAccessService postDas, CommentDataAccessService commentDas, ServiceChecker checker) {
+                         PersonRoleDataAccessService personRoleDas, PostDataAccessService postDas, CommentDataAccessService commentDas, FieldChecker checker) {
         this.personDas = personDas;
         this.emailValidator = emailValidator;
         this.passwordEncoder = passwordEncoder;

@@ -16,7 +16,11 @@ public interface CategoryDao {
 
     List<Category> findParents();
 
-    Optional<Category> find(String slug);
+    List<Category> findChildren(int parentId);
+
+    Optional<Category> find(int id);
+
+    Optional<Category> findBySlug(String slug);
 
     Optional<Integer> findIdBySlug(String slug);
 

@@ -4,12 +4,11 @@ import com.mmanchola.blog.dao.CategoryDataAccessService;
 import com.mmanchola.blog.dao.PostCategoryDataAccessService;
 import com.mmanchola.blog.exception.ApiRequestException;
 import com.mmanchola.blog.model.Category;
-import com.mmanchola.blog.util.ServiceChecker;
+import com.mmanchola.blog.util.FieldChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.mmanchola.blog.exception.ExceptionMessage.*;
 import static com.mmanchola.blog.model.TableFields.CATEGORY_SLUG;
@@ -20,11 +19,11 @@ public class CategoryService {
 
     private CategoryDataAccessService categoryDas;
     private PostCategoryDataAccessService postCategoryDas;
-    private ServiceChecker checker;
+    private FieldChecker checker;
 
     @Autowired
     public CategoryService(CategoryDataAccessService categoryDas,
-                           PostCategoryDataAccessService postCategoryDas, ServiceChecker checker) {
+                           PostCategoryDataAccessService postCategoryDas, FieldChecker checker) {
         this.categoryDas = categoryDas;
         this.postCategoryDas = postCategoryDas;
         this.checker = checker;
@@ -69,10 +68,19 @@ public class CategoryService {
     }
 
     // Get category by its slug
-    public Optional<Category> getBySlug(String slug) {
+    public Category getBySlug(String slug) {
         String checkedSlug = checker.checkSlugCorrectness(slug)
                 .orElseThrow(() -> new ApiRequestException(MISSING.getMsg(CATEGORY_SLUG.toString())));
-        return categoryDas.find(checkedSlug);
+        Category category = categoryDas.findBySlug(checkedSlug)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(CATEGORY_SLUG.toString())));
+        return category;
+    }
+
+    // Get children
+    public List<Category> getChildren(String slug) {
+        int parentId = categoryDas.findIdBySlug(slug)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(CATEGORY_SLUG.toString())));
+        return categoryDas.findChildren(parentId);
     }
 
     // Update category-related fields

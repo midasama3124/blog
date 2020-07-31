@@ -1,5 +1,6 @@
 package com.mmanchola.blog.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PostCategoryDao {
@@ -7,7 +8,9 @@ public interface PostCategoryDao {
     int save(int postId, int categoryId);
 
     // Read
-    Optional<Integer> find(int postId);
+    Optional<Integer> findByPost(int postId);
+
+    List<Integer> findByCategory(int categoryId);
 
     // Delete
     int deleteSingle(int postId, int categoryId);

@@ -265,4 +265,33 @@ public class HomeController {
         return String.format("redirect:/post/%s#post-interaction", slug);
     }
 
+    @GetMapping("category/{slug}")
+    public String displayCategoryPage(@PathVariable String slug,
+                                      Model model,
+                                      RedirectAttributes redirectAttributes,
+                                      @ModelAttribute("member") Person person) {
+        model.addAttribute("person", person);
+        model.addAttribute("categories", categoryService.getParents());
+        try {
+            // Get category
+            Category category = categoryService.getBySlug(slug);
+            model.addAttribute("ctag", category);
+            // Get posts
+            List<Post> posts = postService.getByCategory(slug);
+            model.addAttribute("posts", posts);
+            // Get moments ago
+            Map<Integer, String> momentsAgo = new HashMap<>();
+            for (Post p : posts) {
+                momentsAgo.put(p.getId(), prettyTime.format(p.getPublishedAt()));
+            }
+            model.addAttribute("momentsAgo", momentsAgo);
+            // Get children
+            model.addAttribute("children", categoryService.getChildren(slug));
+        } catch (ApiRequestException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.toString());
+            return "redirect:/error";
+        }
+        return "category-tag";
+    }
+
 }

@@ -9,51 +9,59 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PostDao {
-  // Create
-  int saveParent(Post post);
-  int saveChild(Post post);
+    // Create
+    int saveParent(Post post);
 
-  // Read
-  List<Post> findAll();
-  List<Post> findByStatus(String status);
-  Optional<Post> findBySlug(String slug);
-  List<Post> findMostRecent();
-  List<Post> findMostRecent(int numPosts);
+    int saveChild(Post post);
 
-  Optional<Integer> findIdBySlug(String slug);
+    // Read
+    List<Post> findAll();
 
-  List<PopularPost> findPopular(int numPosts);
+    Optional<Post> find(int id);
 
-  Optional<String> findSlugById(int postId);
+    List<Post> findByStatus(String status);
 
-  boolean isSlugTaken(String slug);
-  boolean isSlugTakenByOther(String slug, int id);
+    Optional<Post> findBySlug(String slug);
 
-  // Update
-  int updatePersonId(int postId, UUID personId);
+    List<Post> findMostRecent();
 
-  int updateParentId(int postId, int parentId);
+    List<Post> findMostRecent(int numPosts);
 
-  int updateTitle(int postId, String title);
+    Optional<Integer> findIdBySlug(String slug);
 
-  int updateMetatitle(int postId, String metatitle);
+    List<PopularPost> findPopular(int numPosts);
 
-  int updateSlug(int postId, String slug);
+    Optional<String> findSlugById(int postId);
 
-  int updateStatus(int postId, String status);
+    boolean isSlugTaken(String slug);
 
-  int updatePublishedAt(int postId, Timestamp publishedAt);
+    boolean isSlugTakenByOther(String slug, int id);
 
-  int updateUpdatedAt(int postId, Timestamp updatedAt);
+    // Update
+    int updatePersonId(int postId, UUID personId);
 
-  int updateContent(int postId, String content);
+    int updateParentId(int postId, int parentId);
 
-  int updateSocialNetwork1(int postId, String socialNetwork1);
+    int updateTitle(int postId, String title);
 
-  int updateSocialNetwork2(int postId, String socialNetwork2);
+    int updateMetatitle(int postId, String metatitle);
 
-  int updateSocialNetwork3(int postId, String socialNetwork3);
+    int updateSlug(int postId, String slug);
 
-  // Delete
-  int delete(int postId);
+    int updateStatus(int postId, String status);
+
+    int updatePublishedAt(int postId, Timestamp publishedAt);
+
+    int updateUpdatedAt(int postId, Timestamp updatedAt);
+
+    int updateContent(int postId, String content);
+
+    int updateSocialNetwork1(int postId, String socialNetwork1);
+
+    int updateSocialNetwork2(int postId, String socialNetwork2);
+
+    int updateSocialNetwork3(int postId, String socialNetwork3);
+
+    // Delete
+    int delete(int postId);
 }
