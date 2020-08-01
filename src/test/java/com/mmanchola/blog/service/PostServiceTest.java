@@ -116,7 +116,7 @@ public class PostServiceTest {
     postService.update(updateSlug, post);
 
     postRetrieved = postService.getBySlug(newSlug);
-    Person author = personService.get(newAuthorEmail).orElse(null);
+    Person author = personService.get(newAuthorEmail);
     Assert.assertEquals(author.getId(), postRetrieved.getPersonId());
     Assert.assertEquals(newTitle, postRetrieved.getTitle());
     Assert.assertEquals(newMetatitle, postRetrieved.getMetatitle());

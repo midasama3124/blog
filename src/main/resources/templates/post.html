@@ -27,7 +27,8 @@
                     </p>
                     <div class="post-tags">
                         <i class="fas fa-tags fa-1x tags-icon"></i>
-                        <a class="tag-anchor" href="#" th:each="tag : ${tags}" th:text="${tag.getTitle()}"></a>
+                        <a class="tag-anchor" th:each="tag : ${tags}" th:href="@{'/tag/{slug}'(slug=${tag.getSlug()})}"
+                           th:text="${tag.getTitle()}"></a>
                     </div>
                 </div>
             </div>

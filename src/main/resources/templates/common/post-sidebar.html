@@ -26,7 +26,8 @@
         <div class="row popular-tags">
             <div class="col-lg-4 col-md-6 d-flex justify-content-center popular-tag"
                  th:each="popularTag : ${popularTags}">
-                <a class="tag-anchor" href="#" th:text="${popularTag.getTag().getTitle()}"></a>
+                <a class="tag-anchor" th:href="@{'/tag/{slug}'(slug=${popularTag.getTag().getSlug()})}"
+                   th:text="${popularTag.getTag().getTitle()}"></a>
             </div>
         </div>
     </div>
