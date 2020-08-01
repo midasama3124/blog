@@ -3,6 +3,7 @@ package com.mmanchola.blog.dao;
 import com.mmanchola.blog.mapper.CategoryMapper;
 import com.mmanchola.blog.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -77,9 +78,13 @@ public class CategoryDataAccessService implements CategoryDao {
         String sqlQuery = "SELECT * FROM category "
                 + "WHERE id = ?";
         // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new CategoryMapper())
-        );
+        Category category;
+        try {
+            category = jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new CategoryMapper());
+        } catch (IncorrectResultSizeDataAccessException e) {
+            category = null;
+        }
+        return Optional.ofNullable(category);
     }
 
     @Override
@@ -87,9 +92,13 @@ public class CategoryDataAccessService implements CategoryDao {
         String sqlQuery = "SELECT * FROM category "
                 + "WHERE slug = ?";
         // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(sqlQuery, new Object[]{slug}, new CategoryMapper())
-        );
+        Category category;
+        try {
+            category = jdbcTemplate.queryForObject(sqlQuery, new Object[]{slug}, new CategoryMapper());
+        } catch (IncorrectResultSizeDataAccessException e) {
+            category = null;
+        }
+        return Optional.ofNullable(category);
     }
 
     @Override
@@ -97,13 +106,17 @@ public class CategoryDataAccessService implements CategoryDao {
         String sqlQuery = "SELECT * FROM category "
                 + "WHERE slug = ?";
         // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                        sqlQuery,
-                        new Object[]{slug},
-                        (resultSet, i) -> resultSet.getInt("id")
-                )
-        );
+        Integer id;
+        try {
+            id = jdbcTemplate.queryForObject(
+                    sqlQuery,
+                    new Object[]{slug},
+                    (resultSet, i) -> resultSet.getInt("id")
+            );
+        } catch (IncorrectResultSizeDataAccessException e) {
+            id = null;
+        }
+        return Optional.ofNullable(id);
     }
 
     @Override

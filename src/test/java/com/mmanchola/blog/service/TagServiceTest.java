@@ -1,24 +1,25 @@
 package com.mmanchola.blog.service;
 
-import static org.junit.Assert.assertEquals;
-
 import com.mmanchola.blog.model.Tag;
-import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TagServiceTest {
 
-  @Autowired
-  private TagService tagService;
+    @Autowired
+    private TagService tagService;
 
-  @Test
-  public void canPerformCRUDWhenValidTag() {
+    @Test
+    public void canPerformCRUDWhenValidTag() {
     String title = "Tag title";
     String metatitle = "Tag metatitle";
     String slug = "tag-slug";
@@ -35,7 +36,7 @@ public class TagServiceTest {
 
     // Read
     // Test finding tag by slug
-    Tag retrievedTag = tagService.getBySlug(slug).orElse(null);
+        Tag retrievedTag = tagService.getBySlug(slug);
     assert retrievedTag.equals(tag);
     // Adding more tags so methods with list output can be assessed
     int numTags = 5;
@@ -57,8 +58,8 @@ public class TagServiceTest {
     tag.setMetatitle(newMetatitle);
     tag.setSlug(newSlug);
     tag.setContent(newContent);
-    tagService.update(slug, tag);
-    retrievedTag = tagService.getBySlug(newSlug).orElse(null);
+        tagService.update(slug, tag);
+        retrievedTag = tagService.getBySlug(newSlug);
     assert retrievedTag.equals(tag);
 
     // Delete

@@ -5,6 +5,7 @@ import com.mmanchola.blog.mapper.TagMapper;
 import com.mmanchola.blog.model.PopularTag;
 import com.mmanchola.blog.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -37,53 +38,54 @@ public class TagDataAccessService implements TagDao {
 
     @Override
     public List<Tag> findAll() {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "tag";
+        String sqlQuery = "SELECT * FROM tag";
         return jdbcTemplate.query(sqlQuery, new TagMapper());  // Retrieve multiple results
     }
 
     @Override
     public Optional<Tag> find(int id) {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "tag "
-                + "WHERE "
-                + "id = ?";
-        // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new TagMapper())
-        );
+        String sqlQuery = "SELECT * FROM tag "
+                + "WHERE id = ?";
+        Tag tag;
+        try {
+            // Retrieve a single object
+            tag = jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new TagMapper());
+        } catch (IncorrectResultSizeDataAccessException e) {
+            tag = null;
+        }
+        return Optional.ofNullable(tag);
     }
 
     @Override
     public Optional<Tag> findBySlug(String slug) {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "tag "
-                + "WHERE "
-                + "slug = ?";
+        String sqlQuery = "SELECT * FROM tag "
+                + "WHERE slug = ?";
         // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(sqlQuery, new Object[]{slug}, new TagMapper())
-        );
+        Tag tag;
+        try {
+            tag = jdbcTemplate.queryForObject(sqlQuery, new Object[]{slug}, new TagMapper());
+        } catch (IncorrectResultSizeDataAccessException e) {
+            tag = null;
+        }
+        return Optional.ofNullable(tag);
     }
 
     @Override
     public Optional<Integer> findIdBySlug(String slug) {
         String sqlQuery = "SELECT * FROM tag "
                 + "WHERE slug = ?";
-        // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                        sqlQuery,
-                        new Object[]{slug},
-                        (resultSet, i) -> resultSet.getInt("id")
-                )
-        );
+        Integer id;
+        try {
+            // Retrieve a single object
+            id = jdbcTemplate.queryForObject(
+                    sqlQuery,
+                    new Object[]{slug},
+                    (resultSet, i) -> resultSet.getInt("id")
+            );
+        } catch (IncorrectResultSizeDataAccessException e) {
+            id = null;
+        }
+        return Optional.ofNullable(id);
     }
 
     @Override

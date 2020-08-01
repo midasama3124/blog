@@ -3,16 +3,18 @@ package com.mmanchola.blog.dao;
 import java.util.List;
 
 public interface PostTagDao {
-  // Create
-  int save(int postId, int tagId);
+    // Create
+    int save(int postId, int tagId);
 
-  // Read
-  List<Integer> find(int postId);
+    // Read
+    List<Integer> findByPost(int postId);
 
-  // Delete
-  int deleteSingle(int postId, int tagId);
+    List<Integer> findByTag(int tagId);
 
-  int deleteByPost(int postId);
+    // Delete
+    int deleteSingle(int postId, int tagId);
 
-  int deleteByTag(int tagId);
+    int deleteByPost(int postId);
+
+    int deleteByTag(int tagId);
 }

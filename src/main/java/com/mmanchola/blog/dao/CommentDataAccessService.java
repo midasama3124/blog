@@ -3,6 +3,7 @@ package com.mmanchola.blog.dao;
 import com.mmanchola.blog.mapper.CommentMapper;
 import com.mmanchola.blog.model.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -46,15 +47,21 @@ public class CommentDataAccessService implements CommentDao {
 
     @Override
     public Optional<Comment> find(long commentId) {
-        String sqlQuery = "SELECT "
-                + "* "
-                + "FROM "
-                + "comment "
-                + "WHERE "
-                + "id = ?";
+        String sqlQuery = "SELECT * FROM comment "
+                + "WHERE id = ?";
         // Retrieve a single object
+        Comment comment;
+        try {
+            comment = jdbcTemplate.queryForObject(
+                    sqlQuery,
+                    new Object[]{commentId},
+                    new CommentMapper()
+            );
+        } catch (IncorrectResultSizeDataAccessException e) {
+            comment = null;
+        }
         return Optional.ofNullable(
-                jdbcTemplate.queryForObject(sqlQuery, new Object[]{commentId}, new CommentMapper())
+                comment
         );
     }
 
@@ -65,8 +72,18 @@ public class CommentDataAccessService implements CommentDao {
                 "AND " +
                 "personId = ?";
         // Retrieve a single object
+        Comment comment;
+        try {
+            comment = jdbcTemplate.queryForObject(
+                    sqlQuery,
+                    new Object[]{postId, personId},
+                    new CommentMapper()
+            );
+        } catch (IncorrectResultSizeDataAccessException e) {
+            comment = null;
+        }
         return Optional.ofNullable(
-                jdbcTemplate.queryForObject(sqlQuery, new Object[]{postId, personId}, new CommentMapper())
+                comment
         );
     }
 
