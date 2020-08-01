@@ -150,7 +150,7 @@ public class PostService {
     public List<Integer> getTags(String slug) {
         int postId = postDas.findIdBySlug(slug)
                 .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(POST_SLUG.toString())));
-        return postTagDas.find(postId);
+        return postTagDas.findByPost(postId);
     }
 
     // Get corresponding category
@@ -184,6 +184,16 @@ public class PostService {
         int categoryId = categoryDas.findIdBySlug(categorySlug)
                 .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(CATEGORY_SLUG.toString())));
         List<Post> posts = postCategoryDas.findByCategory(categoryId)
+                .stream().map(id -> postDas.find(id).get())
+                .collect(Collectors.toList());
+        return posts;
+    }
+
+    // Get posts by tag slug
+    public List<Post> getByTag(String tagSlug) {
+        int tagId = tagDas.findIdBySlug(tagSlug)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(TAG_SLUG.toString())));
+        List<Post> posts = postTagDas.findByTag(tagId)
                 .stream().map(id -> postDas.find(id).get())
                 .collect(Collectors.toList());
         return posts;

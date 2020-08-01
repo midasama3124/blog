@@ -5,6 +5,7 @@ import com.mmanchola.blog.mapper.PostMapper;
 import com.mmanchola.blog.model.PopularPost;
 import com.mmanchola.blog.model.Post;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -104,10 +105,14 @@ public class PostDataAccessService implements PostDao {
     public Optional<Post> findBySlug(String slug) {
         String sqlQuery = "SELECT * FROM post "
                 + "WHERE slug = ?";
+        Post post;
+        try {
+            post = jdbcTemplate.queryForObject(sqlQuery, new Object[]{slug}, new PostMapper());
+        } catch (IncorrectResultSizeDataAccessException e) {
+            post = null;
+        }
         // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(sqlQuery, new Object[]{slug}, new PostMapper())
-        );
+        return Optional.ofNullable(post);
     }
 
     @Override
@@ -136,13 +141,17 @@ public class PostDataAccessService implements PostDao {
         String sqlQuery = "SELECT * FROM post "
                 + "WHERE slug = ?";
         // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                        sqlQuery,
-                        new Object[]{slug},
-                        (resultSet, i) -> resultSet.getInt("id")
-                )
-        );
+        Integer id;
+        try {
+            id = jdbcTemplate.queryForObject(
+                    sqlQuery,
+                    new Object[]{slug},
+                    (resultSet, i) -> resultSet.getInt("id")
+            );
+        } catch (IncorrectResultSizeDataAccessException e) {
+            id = null;
+        }
+        return Optional.ofNullable(id);
     }
 
     @Override
@@ -165,13 +174,17 @@ public class PostDataAccessService implements PostDao {
         String sqlQuery = "SELECT * FROM post "
                 + "WHERE id = ?";
         // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                        sqlQuery,
-                        new Object[]{postId},
-                        (resultSet, i) -> resultSet.getString("slug")
-                )
-        );
+        String slug;
+        try {
+            slug = jdbcTemplate.queryForObject(
+                    sqlQuery,
+                    new Object[]{postId},
+                    (resultSet, i) -> resultSet.getString("slug")
+            );
+        } catch (IncorrectResultSizeDataAccessException e) {
+            slug = null;
+        }
+        return Optional.ofNullable(slug);
     }
 
     @Override

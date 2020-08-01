@@ -58,7 +58,7 @@ public class AdminController {
     @ModelAttribute("member")
     public Person findLoggedUser(Authentication authentication) {
         String username = authentication.getName();
-        return personService.get(username).get();
+        return personService.get(username);
     }
 
     @ModelAttribute("genderMap")
@@ -277,20 +277,17 @@ public class AdminController {
         Post post = postService.getBySlug(slug);
         post.setContent(MarkdownParser.parse(post.getContent()));
         model.addAttribute("post", post);
-
         // Retrieve author name
-        Person author = personService.get(post.getPersonId()).get();
-        model.addAttribute("author", author);
+        model.addAttribute("author", personService.get(post.getPersonId()));
         // Compute moment ago in Spanish
-        String momentsAgo = prettyTime.format(post.getPublishedAt());
-        model.addAttribute("momentsAgo", momentsAgo);
+        model.addAttribute("momentsAgo", prettyTime.format(post.getPublishedAt()));
         // Compute estimated reading time based on content length
-        int readTime = post.getContent().split("\\W+").length / 200;
-        model.addAttribute("readTime", readTime);
+        model.addAttribute("readTime",
+                post.getContent().split("\\W+").length / 200);
         // Post tags
         List<Tag> tags = postService.getTags(post.getSlug())
                 .stream()
-                .map(id -> tagService.get(id).get())
+                .map(id -> tagService.get(id))
                 .collect(Collectors.toList());
         model.addAttribute("tags", tags);
         // Post likes
@@ -359,7 +356,7 @@ public class AdminController {
 
     @GetMapping("tag/update/{slug}")
     public String showUpdateTagForm(@PathVariable("slug") String slug, Model model) {
-        Tag tag = tagService.getBySlug(slug).get();
+        Tag tag = tagService.getBySlug(slug);
         model.addAttribute("slug", slug);
         model.addAttribute("tag", tag);
         model.addAttribute("method", "PUT");

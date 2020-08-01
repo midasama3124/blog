@@ -37,7 +37,7 @@ public class PostTagDataAccessServiceTest {
     assertEquals(1, rowsAffected);
 
     // Read
-    List<Integer> allTagIds = postTagDas.find(postId);
+    List<Integer> allTagIds = postTagDas.findByPost(postId);
     assertEquals(2, allTagIds.size());
 
     // Delete

@@ -146,13 +146,15 @@ public class PersonService {
     }
 
     // Get person by his/her email
-    public Optional<Person> get(String email) {
-        return personDas.find(email);
+    public Person get(String email) {
+        return personDas.find(email)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_EMAIL.toString())));
     }
 
     // Get person by his/her email
-    public Optional<Person> get(UUID id) {
-        return personDas.find(id);
+    public Person get(UUID id) {
+        return personDas.find(id)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(PERSON_ID.toString())));
     }
 
     // Update member email

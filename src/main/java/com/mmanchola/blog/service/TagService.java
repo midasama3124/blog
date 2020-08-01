@@ -10,11 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.mmanchola.blog.exception.ExceptionMessage.*;
-import static com.mmanchola.blog.model.TableFields.TAG_SLUG;
-import static com.mmanchola.blog.model.TableFields.TAG_TITLE;
+import static com.mmanchola.blog.model.TableFields.*;
 
 @Service
 public class TagService {
@@ -65,15 +63,17 @@ public class TagService {
     }
 
     // Get tag by its ID
-    public Optional<Tag> get(int id) {
-        return tagDas.find(id);
+    public Tag get(int id) {
+        return tagDas.find(id)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(TAG_ID.toString())));
     }
 
     // Get tag by its slug
-    public Optional<Tag> getBySlug(String slug) {
+    public Tag getBySlug(String slug) {
         String checkedSlug = checker.checkSlugCorrectness(slug)
                 .orElseThrow(() -> new ApiRequestException(MISSING.getMsg(TAG_SLUG.toString())));
-        return tagDas.findBySlug(checkedSlug);
+        return tagDas.findBySlug(checkedSlug)
+                .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(TAG_SLUG.toString())));
     }
 
     // Update tag

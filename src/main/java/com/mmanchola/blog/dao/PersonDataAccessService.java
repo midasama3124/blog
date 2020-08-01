@@ -3,6 +3,7 @@ package com.mmanchola.blog.dao;
 import com.mmanchola.blog.mapper.PersonMapper;
 import com.mmanchola.blog.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -62,18 +63,26 @@ public class PersonDataAccessService implements PersonDao {
     public Optional<Person> find(String email) {
         String sqlQuery = "SELECT * FROM person WHERE email = ?";
         // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(sqlQuery, new Object[]{email}, new PersonMapper())
-        );
+        Person person;
+        try {
+            person = jdbcTemplate.queryForObject(sqlQuery, new Object[]{email}, new PersonMapper());
+        } catch (IncorrectResultSizeDataAccessException e) {
+            person = null;
+        }
+        return Optional.ofNullable(person);
     }
 
     @Override
     public Optional<Person> find(UUID id) {
         String sqlQuery = "SELECT * FROM person WHERE id = ?";
         // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new PersonMapper())
-        );
+        Person person;
+        try {
+            person = jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new PersonMapper());
+        } catch (IncorrectResultSizeDataAccessException e) {
+            person = null;
+        }
+        return Optional.ofNullable(person);
     }
 
     @Override
@@ -81,13 +90,17 @@ public class PersonDataAccessService implements PersonDao {
         String sqlQuery = "SELECT * FROM person "
                 + "WHERE email = ?";
         // Retrieve a single object
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                        sqlQuery,
-                        new Object[]{email},
-                        (resultSet, i) -> UUID.fromString(resultSet.getString("id"))
-                )
-        );
+        UUID id;
+        try {
+            id = jdbcTemplate.queryForObject(
+                    sqlQuery,
+                    new Object[]{email},
+                    (resultSet, i) -> UUID.fromString(resultSet.getString("id"))
+            );
+        } catch (IncorrectResultSizeDataAccessException e) {
+            id = null;
+        }
+        return Optional.ofNullable(id);
     }
 
     @Override

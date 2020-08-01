@@ -6,6 +6,7 @@ import com.mmanchola.blog.service.*;
 import com.mmanchola.blog.util.MarkdownParser;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -26,12 +28,12 @@ import static com.mmanchola.blog.model.PostStatus.PUBLISHED;
 @Controller
 @RequestMapping("/")
 public class HomeController {
-    private PersonService personService;
-    private PostService postService;
-    private TagService tagService;
-    private CommentService commentService;
-    private CategoryService categoryService;
-    private PrettyTime prettyTime;
+    private final PersonService personService;
+    private final PostService postService;
+    private final TagService tagService;
+    private final CommentService commentService;
+    private final CategoryService categoryService;
+    private final PrettyTime prettyTime;
 
     @Autowired
     public HomeController(PersonService personService, PostService postService, TagService tagService, CommentService commentService, CategoryService categoryService) {
@@ -56,7 +58,7 @@ public class HomeController {
     public Person findLoggedUser(Authentication authentication) {
         return Optional.ofNullable(authentication)
                 .map(Authentication::getName)
-                .flatMap(personService::get)
+                .map(personService::get)
                 .orElse(null);
     }
 
@@ -66,11 +68,8 @@ public class HomeController {
         // Get recent posts
         List<Post> mostRecent = postService.getMostRecent(6);
         model.addAttribute("mostRecent", mostRecent);
-        Map<Integer, String> momentsAgo = new HashMap<>();
-        for (Post p : mostRecent) {
-            momentsAgo.put(p.getId(), prettyTime.format(p.getPublishedAt()));
-        }
-        model.addAttribute("momentsAgo", momentsAgo);
+        // Get moments ago
+        model.addAttribute("momentsAgo", getMomentsAgoMap(mostRecent));
         // Get parent categories
         model.addAttribute("categories", categoryService.getParents());
         return "index";
@@ -113,7 +112,7 @@ public class HomeController {
     public String showUpdateUserForm(@PathVariable("id") UUID id,
                                      @ModelAttribute("genderMap") Map<String, String> genderMap,
                                      Model model) {
-        Person person = personService.get(id).get();
+        Person person = personService.get(id);
         model.addAttribute("id", id);
         model.addAttribute("person", person);
         model.addAttribute("genders", PersonGender.values());
@@ -134,7 +133,7 @@ public class HomeController {
         String password = person.getPasswordHash().isEmpty() ? auth.getCredentials().toString() :
                 person.getPasswordHash();
         try {
-            String email = personService.get(id).get().getEmail();
+            String email = personService.get(id).getEmail();
             personService.update(email, person);
         } catch (ApiRequestException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -160,25 +159,23 @@ public class HomeController {
             post = postService.getBySlug(slug);
         } catch (ApiRequestException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "error";
+            return "redirect:/error";
         }
         if (post.getStatus().equals(PUBLISHED.toString())) {
             post.setContent(MarkdownParser.parse(post.getContent()));
             model.addAttribute("status", "published");
             model.addAttribute("post", post);
             // Retrieve author name
-            Person author = personService.get(post.getPersonId()).get();
-            model.addAttribute("author", author);
+            model.addAttribute("author", personService.get(post.getPersonId()));
             // Compute moment ago in Spanish
-            String momentsAgo = prettyTime.format(post.getPublishedAt());
-            model.addAttribute("momentsAgo", momentsAgo);
+            model.addAttribute("momentsAgo", prettyTime.format(post.getPublishedAt()));
             // Compute estimated reading time based on content length
-            int readTime = post.getContent().split("\\W+").length / 200;
-            model.addAttribute("readTime", readTime);
+            model.addAttribute("readTime",
+                    post.getContent().split("\\W+").length / 200);
             // Post tags
             List<Tag> tags = postService.getTags(post.getSlug())
                     .stream()
-                    .map(id -> tagService.get(id).get())
+                    .map(tagService::get)
                     .collect(Collectors.toList());
             model.addAttribute("tags", tags);
             /* Post comments */
@@ -187,7 +184,7 @@ public class HomeController {
             HashMap<Long, String> commentPubMap = new HashMap<>();
             for (Comment c : comments) {
                 // Reader names
-                Person reader = personService.get(c.getPersonId()).get();
+                Person reader = personService.get(c.getPersonId());
                 String readerName = reader.getFirstName().isEmpty() ?
                         reader.getUsername() :
                         reader.getFirstName() + " " + reader.getLastName();
@@ -200,7 +197,7 @@ public class HomeController {
             model.addAttribute("authorNameMap", authorNameMap);
             model.addAttribute("commentPubMap", commentPubMap);
             // Post likes
-            boolean isAlreadyLiked = person != null ? postService.isAlreadyLiked(slug, person.getEmail()) : false;
+            boolean isAlreadyLiked = person != null && postService.isAlreadyLiked(slug, person.getEmail());
             model.addAttribute("isAlreadyLiked", isAlreadyLiked);
             model.addAttribute("numLikes", postService.getLikes(slug));
             // Popular posts for sidebar
@@ -210,7 +207,7 @@ public class HomeController {
             return "post";
         }
         redirectAttributes.addFlashAttribute("errorMessage", "No pudo encontrarse esta página");
-        return "error";   // TODO: Create html page for error prompts
+        return "redirect:/error";
     }
 
     @PostMapping("comment/new/{slug}")
@@ -235,14 +232,14 @@ public class HomeController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public String deleteComment(@PathVariable("id") long commentId,
                                 RedirectAttributes redirectAttributes) {
-        String postSlug = new String();
+        String postSlug;
         try {
             Comment comment = commentService.get(commentId);
             commentService.delete(comment.getId());
             postSlug = postService.getSlugById(comment.getPostId());
         } catch (ApiRequestException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "error";
+            return "redirect:/error";
         }
         return String.format("redirect:/post/%s#comment-list", postSlug);
     }
@@ -260,7 +257,7 @@ public class HomeController {
             postService.addLike(like, post.getId(), person.getEmail());
         } catch (ApiRequestException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "error";
+            return "redirect:/error";
         }
         return String.format("redirect:/post/%s#post-interaction", slug);
     }
@@ -280,11 +277,7 @@ public class HomeController {
             List<Post> posts = postService.getByCategory(slug);
             model.addAttribute("posts", posts);
             // Get moments ago
-            Map<Integer, String> momentsAgo = new HashMap<>();
-            for (Post p : posts) {
-                momentsAgo.put(p.getId(), prettyTime.format(p.getPublishedAt()));
-            }
-            model.addAttribute("momentsAgo", momentsAgo);
+            model.addAttribute("momentsAgo", getMomentsAgoMap(posts));
             // Get children
             model.addAttribute("children", categoryService.getChildren(slug));
         } catch (ApiRequestException e) {
@@ -292,6 +285,53 @@ public class HomeController {
             return "redirect:/error";
         }
         return "category-tag";
+    }
+
+    @GetMapping("tag/{slug}")
+    public String displayTagPage(@PathVariable String slug,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes,
+                                 @ModelAttribute("member") Person person) {
+        model.addAttribute("person", person);
+        model.addAttribute("categories", categoryService.getParents());
+        try {
+            // Get tag
+            Tag tag = tagService.getBySlug(slug);
+            model.addAttribute("ctag", tag);
+            // Get posts
+            List<Post> posts = postService.getByTag(slug);
+            model.addAttribute("posts", posts);
+            // Get moments ago
+            model.addAttribute("momentsAgo", getMomentsAgoMap(posts));
+        } catch (ApiRequestException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.toString());
+            return "redirect:/error";
+        }
+        return "category-tag";
+    }
+
+    // Get map with moments ago
+    private Map<Integer, String> getMomentsAgoMap(List<Post> posts) {
+        Map<Integer, String> momentsAgo = new HashMap<>();
+        for (Post p : posts) {
+            momentsAgo.put(p.getId(), prettyTime.format(p.getPublishedAt()));
+        }
+        return momentsAgo;
+    }
+
+    @GetMapping("error")
+    public String displayErrorPage(HttpServletRequest request,
+                                   Model model) {
+        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        if (status != null) {
+            int statusCode = Integer.parseInt(status.toString());
+            if (statusCode == HttpStatus.NOT_FOUND.value()) {
+                model.addAttribute("errorStatus", "404 Not Found");
+            } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+                model.addAttribute("errorStatus", "500 Internal Server Error");
+            }
+        }
+        return "error";
     }
 
 }
