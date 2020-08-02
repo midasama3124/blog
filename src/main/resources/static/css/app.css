@@ -7397,19 +7397,25 @@ a.text-dark:hover, a.text-dark:focus {
     white-space: pre-wrap !important; }
   pre,
   blockquote {
-    border: 1px solid #adb5bd;
-    page-break-inside: avoid; }
-  thead {
-    display: table-header-group; }
-  tr,
-  img {
-    page-break-inside: avoid; }
-  p,
-  h2,
-  h3 {
-      orphans: 3;
-      widows: 3;
+      border: 1px solid #adb5bd;
+      page-break-inside: avoid;
   }
+
+    thead {
+        display: table-header-group;
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
 
     h2,
     h3 {
@@ -13124,25 +13130,35 @@ readers do not read off random characters that represent icons */
 
 .member-description {
   font-size: 1.125rem;
-  font-style: italic;
-  font-weight: 200;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4); }
+    font-style: italic;
+    font-weight: 200;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
 
 .member-action-msg {
-  font-size: 1.125rem;
-  color: #b5446e;
-  font-weight: 800;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4); }
+    font-size: 1.125rem;
+    color: #b5446e;
+    font-weight: 800;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.member-success-msg {
+    font-size: 1.125rem;
+    color: #37af65;
+    font-weight: 800;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
 
 .member-title,
 .member-description {
-  margin-top: 0;
-  margin-bottom: 0.5rem; }
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
 
 label, .label-alone {
-  display: flex;
-  align-items: center;
-  font-size: 1.125rem;
+    display: flex;
+    align-items: center;
+    font-size: 1.125rem;
   margin-bottom: 0.5rem; }
 
 .member-container {
@@ -13224,23 +13240,37 @@ label, .label-alone {
   background: #37af65; }
 
 .signup-btn:hover {
-  background: #b5446e;
-  color: #f3f3f3;
-  text-decoration: none; }
+    background: #b5446e;
+    color: #f3f3f3;
+    text-decoration: none;
+}
 
 @media (max-width: 426px) {
-  .signup-btn {
-    margin-top: 1.25rem; } }
+    .signup-btn {
+        margin-top: 1.25rem;
+    }
+}
+
+.forgot-password {
+    color: #b5446e;
+}
+
+.forgot-password:hover {
+    color: rgba(181, 68, 110, 0.5);
+}
 
 html {
-  font-size: 100%;
-  font-family: "Noto Serif" "Mukta"; }
+    font-size: 100%;
+    font-family: "Noto Serif" "Mukta";
+}
 
 h1 {
-  font-size: 2.074em; }
+    font-size: 2.074em;
+}
 
 h2 {
-  font-size: 1.728em; }
+    font-size: 1.728em;
+}
 
 h3 {
   font-size: 1.44em; }

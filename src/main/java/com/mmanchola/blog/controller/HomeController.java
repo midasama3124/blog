@@ -6,7 +6,12 @@ import com.mmanchola.blog.service.*;
 import com.mmanchola.blog.util.MarkdownParser;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,14 +39,23 @@ public class HomeController {
     private final CommentService commentService;
     private final CategoryService categoryService;
     private final PrettyTime prettyTime;
+    private final JavaMailSender mailSender;
+    private final MessageSource messages;
+    private final Environment env;
 
     @Autowired
-    public HomeController(PersonService personService, PostService postService, TagService tagService, CommentService commentService, CategoryService categoryService) {
+    public HomeController(PersonService personService, PostService postService, TagService tagService,
+                          CommentService commentService, CategoryService categoryService,
+                          JavaMailSender mailSender, @Qualifier("messageSource") MessageSource messages,
+                          Environment env) {
         this.personService = personService;
         this.postService = postService;
         this.tagService = tagService;
         this.commentService = commentService;
         this.categoryService = categoryService;
+        this.mailSender = mailSender;
+        this.messages = messages;
+        this.env = env;
         this.prettyTime = new PrettyTime(new Locale("es"));
     }
 
@@ -141,7 +155,7 @@ public class HomeController {
         }
         // Change authentication credentials after successful update of username/password
         UsernamePasswordAuthenticationToken renewedAuth = new UsernamePasswordAuthenticationToken(username,
-                password, auth.getAuthorities());
+                password);
         SecurityContextHolder.getContext().setAuthentication(renewedAuth);
         redirectAttributes.addFlashAttribute("message", "Los datos del usuario fueron actualizado exitosamente");
         return "redirect:/home";
@@ -310,15 +324,6 @@ public class HomeController {
         return "category-tag";
     }
 
-    // Get map with moments ago
-    private Map<Integer, String> getMomentsAgoMap(List<Post> posts) {
-        Map<Integer, String> momentsAgo = new HashMap<>();
-        for (Post p : posts) {
-            momentsAgo.put(p.getId(), prettyTime.format(p.getPublishedAt()));
-        }
-        return momentsAgo;
-    }
-
     @GetMapping("error")
     public String displayErrorPage(HttpServletRequest request,
                                    Model model) {
@@ -332,6 +337,63 @@ public class HomeController {
             }
         }
         return "error";
+    }
+
+    @GetMapping("recover")
+    public String displayRecoverPwdForm(Model model) {
+        model.addAttribute("emailContainer", new EmailContainer());
+        return "recover-password";
+    }
+
+    @PostMapping("recover")
+    public String recoverPassword(EmailContainer emailContainer,
+                                  Model model,
+                                  RedirectAttributes redirectAttributes,
+                                  final HttpServletRequest request) {
+        Person person;
+        try {
+            String email = emailContainer.getEmail();
+            person = personService.get(email);
+        } catch (ApiRequestException e) {
+            model.addAttribute("errorMessage", "El email no se encuentra registrado");
+            return "recover-password";
+        }
+        mailSender.send(constructResetTokenEmail(getAppUrl(request),
+                new Locale("es", "ES"), person));
+        redirectAttributes.addFlashAttribute("message", "Un link de recuperación ha sido enviado a su correo");
+        return "redirect:/recover";
+    }
+
+    // ============== NON-API ============
+
+    // Get map with moments ago
+    private Map<Integer, String> getMomentsAgoMap(List<Post> posts) {
+        Map<Integer, String> momentsAgo = new HashMap<>();
+        for (Post p : posts) {
+            momentsAgo.put(p.getId(), prettyTime.format(p.getPublishedAt()));
+        }
+        return momentsAgo;
+    }
+
+    private SimpleMailMessage constructResetTokenEmail(
+            String contextPath, Locale locale, Person person) {
+        String url = contextPath + "/update/" + person.getId().toString();
+        String message = messages.getMessage("message.resetPassword",
+                null, locale);
+        return constructEmail("Recuperación de contraseña - Con Bellas Palabras", message + " \r\n" + url, person);
+    }
+
+    private SimpleMailMessage constructEmail(String subject, String body, Person person) {
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setSubject(subject);
+        email.setText(body);
+        email.setTo(person.getEmail());
+        email.setFrom(env.getProperty("support.email"));
+        return email;
+    }
+
+    private String getAppUrl(HttpServletRequest request) {
+        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 
 }
