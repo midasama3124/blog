@@ -41,7 +41,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       http
               .csrf().disable()
               .authorizeRequests()
-              .antMatchers("/", "/home", "/css/**", "/js/**", "/fonts/**", "/image/**", "/register", "/login*", "/post/**").permitAll()
+              .antMatchers("/", "/home", "/css/**", "/js/**", "/fonts/**", "/image/**", "/register",
+                      "/login", "/recover", "/update/**", "/post/**", "/category/**", "/tag/**").permitAll()
               // Order DOES matter
 //        .antMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(POST_WRITE.getPermission())
               .antMatchers(HttpMethod.GET, "/admin/**").hasAnyRole(ADMIN.name())
