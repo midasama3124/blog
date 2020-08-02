@@ -29,3 +29,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Files with sensitive information ###
+src/main/java/com/mmanchola/blog/config/EmailConfiguration.java
