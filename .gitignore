@@ -31,4 +31,4 @@ build/
 .vscode/
 
 ### Files with sensitive information ###
-src/main/java/com/mmanchola/blog/config/EmailConfiguration.java
+src/main/resources/credentials.yml
