@@ -31,4 +31,4 @@ build/
 .vscode/
 
 ### Files with sensitive information ###
-src/main/resources/application-credentials.yml
+src/main/resources/application-support.yml
