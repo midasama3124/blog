@@ -62,7 +62,10 @@
             <label for="category-parent">Categoría padre (Si aplica)</label>
             <select class="selectpicker form-control" data-live-search="true" data-style="btn-tertiary"
                     id="category-parent" th:field="*{parentId}">
-                <option disabled selected="selected" value="0">Escoja una categoría padre</option>
+                <option disabled selected="selected" th:unless="${method} == 'PUT'" value="0">Escoja una categoría
+                    padre
+                </option>
+                <option selected="selected" th:if="${method} == 'PUT'" value="0">Ninguna</option>
                 <option th:each="c : ${categories}" th:selected="${c.getId() == category.getParentId()}"
                         th:text="${c.getTitle()}" th:value="${c.getId()}"></option>
             </select>

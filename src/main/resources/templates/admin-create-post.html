@@ -84,7 +84,9 @@
             <label for="post-parent">Post padre (Si aplica)</label>
             <select class="selectpicker form-control" data-live-search="true" data-style="btn-tertiary" id="post-parent"
                     th:field="*{post.parentId}">
-                <option disabled selected="selected" value="0">Escoja un post padre</option>
+                <option disabled selected="selected" th:unless="${method} == 'PUT'" value="0">Escoja un post padre
+                </option>
+                <option selected="selected" th:if="${method} == 'PUT'" value="0">Ninguna</option>
                 <option th:each="p : ${posts}" th:selected="${p.getId() == postForm.post.getParentId()}"
                         th:text="${p.getTitle()}" th:value="${p.getId()}"></option>
             </select>

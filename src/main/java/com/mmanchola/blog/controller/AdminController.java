@@ -293,6 +293,10 @@ public class AdminController {
         // Post likes
         model.addAttribute("isAlreadyLiked", postService.isAlreadyLiked(slug, person.getEmail()));
         model.addAttribute("numLikes", postService.getLikes(slug));
+        // Popular posts for sidebar
+        model.addAttribute("popularPosts", postService.getPopular(3));
+        // Popular tags for sidebar
+        model.addAttribute("popularTags", tagService.getPopular(5));
         return "post";
     }
 

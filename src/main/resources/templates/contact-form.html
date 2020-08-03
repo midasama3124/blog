@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Bellas Palabras - Contact Form</title>
+    <link href="/css/app.css" rel="stylesheet">
+</head>
+
+<body class="member-body">
+
+<div class="container member-container">
+    <header class="member-header">
+        <h1 class="member-title text-center">Con Bellas Palabras</h1>
+        <p class="member-description text-center">
+            <span>Contáctanos llenando el siguiente formulario</span>
+        </p>
+        <p class="member-action-msg text-center" th:text="${errorMessage}"></p>
+        <p class="member-success-msg text-center" th:text="${message}"></p>
+    </header>
+
+    <form class="member-form needs-validation"
+          method="post"
+          novalidate
+          th:action="@{/contact}"
+          th:method="post"
+          th:object="${contactForm}">
+
+        <div class="form-group">
+            <label for="name">Nombre Completo <span class="clue">*</span></label>
+            <input
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    placeholder="Ingresa tu nombre completo"
+                    required
+                    th:field="*{name}"
+                    type="text"
+            />
+            <div class="invalid-feedback">
+                Hace falta tu nombre completo
+            </div>
+        </div>
+
+        <div class="form-group" sec:authorize="!isAuthenticated()">
+            <label for="email" id="email-label">Email <span class="clue">*</span></label>
+            <input
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    placeholder="Ingresa tu dirección de correo electrónico"
+                    required
+                    th:field="*{email}"
+                    type="email"
+            />
+            <div class="invalid-feedback">
+                Hace falta tu email
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="subject">Asunto <span class="clue">*</span></label>
+            <input
+                    class="form-control"
+                    id="subject"
+                    name="subject"
+                    placeholder="Ingresa el asunto de tu mensaje"
+                    required
+                    th:field="*{subject}"
+                    type="text"
+            />
+            <div class="invalid-feedback">
+                Hace falta el asunto del mensaje
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="content">Mensaje <span class="clue">*</span></label>
+            <textarea class="form-control"
+                      id="content"
+                      placeholder="Ingrese aquí tu mensaje"
+                      required
+                      rows="5"
+                      th:field="*{content}"
+            ></textarea>
+            <div class="invalid-feedback">
+                Hace falta tu mensaje
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button class="signup-btn" id="submit" type="submit">
+                <span>Enviar</span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

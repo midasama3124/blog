@@ -157,6 +157,16 @@ public class CategoryDataAccessService implements CategoryDao {
     }
 
     @Override
+    public int updateParentIdToNull(int categoryId) {
+        String sqlQuery = "UPDATE category SET "
+                + "parent_id = NULL "
+                + "WHERE id = ?";
+        Object[] args = {categoryId};
+        // Issue a single SQL update operation (such as an insert, update or delete statement)
+        return jdbcTemplate.update(sqlQuery, args);
+    }
+
+    @Override
     public int updateTitle(int categoryId, String title) {
         String sqlQuery = "UPDATE category SET "
                 + "title = ? "

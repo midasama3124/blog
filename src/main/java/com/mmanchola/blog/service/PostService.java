@@ -281,8 +281,7 @@ public class PostService {
         checker.checkNotEmpty(post.getTitle())
                 .ifPresent(title -> postDas.updateTitle(postId, title));
         // Update metatitle
-        checker.checkNotEmpty(post.getMetatitle())
-                .ifPresent(metatitle -> postDas.updateMetatitle(postId, metatitle));
+        postDas.updateMetatitle(postId, post.getMetatitle());
         // Update slug
         checker.checkSlugCorrectness(post.getSlug())
                 .ifPresent(
@@ -300,16 +299,14 @@ public class PostService {
         checker.checkNotEmpty(post.getContent())
                 .ifPresent(content -> postDas.updateContent(postId, content));
         // Update parent
-        if (post.getParentId() != 0) {
-            postDas.updateParentId(postId, post.getParentId());
-        }
+        int parentId = post.getParentId();
+        if (parentId == 0) postDas.updateParentIdToNull(postId);
+        else postDas.updateParentId(postId, parentId);
         // Update social network links
         checker.checkUrl(post.getSocialNetwork1())
                 .ifPresent(socialNetwork -> postDas.updateSocialNetwork1(postId, socialNetwork));
-        checker.checkUrl(post.getSocialNetwork2())
-                .ifPresent(socialNetwork -> postDas.updateSocialNetwork2(postId, socialNetwork));
-        checker.checkUrl(post.getSocialNetwork3())
-                .ifPresent(socialNetwork -> postDas.updateSocialNetwork3(postId, socialNetwork));
+        postDas.updateSocialNetwork2(postId, post.getSocialNetwork2());
+        postDas.updateSocialNetwork3(postId, post.getSocialNetwork3());
     }
 
     // Delete post

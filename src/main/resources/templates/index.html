@@ -39,7 +39,7 @@
         <div class="col-lg-4 col-md-6" th:each="post : ${mostRecent}">
             <div class="card">
                 <a th:href="@{'/post/{slug}'(slug=${post.getSlug()})}">
-                    <img alt="'image/' + ${post.getSlug()} + '0.jpg'" class="card-img-top"
+                    <img class="card-img-top" th:alt="'image/' + ${post.getSlug()} + '0.jpg'"
                          th:src="'image/' + ${post.getSlug()} + '0.jpg'">
                 </a>
                 <div class="card-body">
