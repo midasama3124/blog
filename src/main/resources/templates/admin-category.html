@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Con Bellas Palabras - Admin Website</title>
+    <link href="/css/app.css" rel="stylesheet">
+</head>
+
+<body class="admin-body">
+<!-- Admin sidebar -->
+<div th:replace="common/admin-sidebar::sidebar"></div>
+
+<!-- Admin content -->
+<section class="admin-main">
+    <div class="hipsum">
+        <div class="jumbotron">
+            <h1>Categorías</h1>
+            <h2 id="hello,-world!">Hola, <span th:text="${member.getFirstName()}"></span><a class="anchorjs-link"
+                                                                                            href="#hello,-world!"><span
+                    class="anchorjs-icon"></span></a></h2>
+            <p>Esta página está destinada a la creación y edición de tus categorías.</p>
+            <p><a class="btn btn-secondary" role="button" th:href="@{category/new}">Crear nueva categoría</a>
+            </p>
+            <div class="alert alert-success" role="alert" th:if="${message}" th:text="${message}"></div>
+            <div class="alert alert-danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(categories)}">
+            <table class="table table-striped table-bordered dt-responsive nowrap" id="sorting-table"
+                   style="width:100%">
+                <thead>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Título</th>
+                    <th>Metatítulo</th>
+                    <th>URL</th>
+                    <th>Padre</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="category : ${categories}">
+                    <td>
+                        <div class="btn-group">
+                            <form method="get" th:action="@{'/category/{slug}'(slug=${category.getSlug()})}">
+                                <button class="btn btn-sm btn-secondary" type="submit">Visualizar</button>
+                            </form>
+                            <button aria-expanded="false" aria-haspopup="true"
+                                    class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split"
+                                    data-toggle="dropdown" type="button">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item"
+                                   th:href="@{'category/update/{slug}'(slug=${category.getSlug()})}">Editar</a>
+                                <form th:action="@{'category/delete/{slug}'(slug=${category.getSlug()})}"
+                                      th:method="post">
+                                    <input name="_method" type="hidden" value="delete"/>
+                                    <button class="btn btn-tertiary dropdown-item"
+                                            onClick="return confirm('¿Está seguro de eliminar esta categoría?')"
+                                            type="submit">Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                    <td th:text="${category.getTitle()}"></td>
+                    <td th:text="${category.getMetatitle()}"></td>
+                    <td th:text="${category.getSlug()}"></td>
+                    <td th:text="${parentMap.get(category.getParentId())}"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>Categoría</th>
+                    <th>Título</th>
+                    <th>Metatítulo</th>
+                    <th>URL</th>
+                    <th>Padre</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <p class="pt-4">Puedes agregar estas categorías al crear un post accediendo a la sección de <a
+                class="admin-hyperlink"
+                th:href="@{post}">Posts</a>.</p>
+    </div>
+</section>
+
+<script src="/js/app.js"></script>
+</body>
+
+</html>

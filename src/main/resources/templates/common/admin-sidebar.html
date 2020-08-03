@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="sidebar">
+
+    <!-- Admin header -->
+    <header class="admin-header">
+        <a href="#" id="menu-action">
+            <i class="fa fa-bars"></i>
+            <span>Cerrar</span>
+        </a>
+        <div class="row justify-content-between px-3">
+            <div class="col-xs-6 logo">
+                Administración
+            </div>
+            <div class="col-xs-6 logo">
+                <a th:href="@{/home}">Con bellas palabras</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin sidebar -->
+    <div class="admin-sidebar">
+        <ul>
+            <li><a th:href="@{/admin}"><i class="fa fa-desktop sidebar-icon"></i><span>Inicio</span></a></li>
+            <li><a th:href="@{/admin/post}"><i class="fa fa-book sidebar-icon"></i><span>Posts</span></a></li>
+            <li><a th:href="@{/admin/category}"><i
+                    class="fa fa-puzzle-piece sidebar-icon"></i><span>Categorías</span></a>
+            </li>
+            <li><a th:href="@{/admin/tag}"><i class="fa fa-tags sidebar-icon"></i><span>Tags</span></a></li>
+            <li><a th:href="@{/admin/image}"><i class="far fa-images sidebar-icon"></i><span>Imágenes</span></a></li>
+            <li><a th:href="@{/admin/user}"><i class="fas fa-users sidebar-icon"></i><span>Usuarios</span></a></li>
+        </ul>
+    </div>
+
+</div>
+</body>
+
+</html>

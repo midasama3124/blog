@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Bellas Palabras - Login Form</title>
+    <link href="css/app.css" rel="stylesheet">
+</head>
+
+<body class="member-body">
+<div class="container member-container">
+    <header class="member-header">
+        <h1 class="member-title text-center" id="member-title">Bellas Palabras</h1>
+        <p class="member-description text-center" id="member-description">
+            Por favor ingresa tus datos si eres un usuario registrado
+        </p>
+        <p class="member-action-msg text-center" th:if="${param.error}">
+            Usuario o contraseña inválida
+        </p>
+    </header>
+    <form class="member-form" method="post" th:action="@{/login}">
+        <div class="form-group">
+            <label for="email" id="email-label">Email</label>
+            <input
+                    class="form-control"
+                    id="email"
+                    name="username"
+                    placeholder="Ingresa tu dirección de correo electrónico"
+                    required
+                    type="email"
+            />
+        </div>
+        <div class="form-group">
+            <label for="password" id="password-label">Contraseña</label>
+            <input
+                    class="form-control password"
+                    id="password"
+                    name="password"
+                    placeholder="Ingresa tu contraseña"
+                    required
+                    type="password"
+            />
+            <label
+            ><input
+                    class="input-checkbox show-password"
+                    name="display-psw"
+                    type="checkbox"
+                    value="show-password"
+            /> <small>Mostrar contraseña</small>
+            </label>
+            <label
+            ><input
+                    class="input-checkbox"
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+            /> <small>Recuérdame</small>
+            </label>
+        </div>
+
+        <div class="form-group text-center">
+            <a class="forgot-password" th:href="@{/recover}">¿Olvidó su contraseña?</a>
+        </div>
+
+        <div class="form-group auth-buttons">
+            <div class="row">
+                <div class="col-sm-6">
+                    <button class="login-btn" id="login" type="submit">
+                        <i class="fas fa-sign-in-alt"></i> Ingresar
+                    </button>
+                </div>
+                <div class="col-sm-6">
+                    <a class="signup-btn text-center" href="/register">
+                        <i class="fas fa-user-plus"></i> Regístrate
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title th:text="${post.getMetatitle()}"></title>
+    <link href="/css/app.css" rel="stylesheet">
+</head>
+
+<body class="home">
+<!-- Blog website header -->
+<header class="post-header">
+    <!-- Navbar -->
+    <div th:replace="common/navbar::navbar"></div>
+    <div class="post-text-header d-flex align-items-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <h1 th:text="${post.getTitle()}"></h1>
+                    <p th:text="${author.getFirstName() + ' ' + author.getLastName() +
+                        ' // Publicado ' + momentsAgo +
+                        ' // ' + readTime + ' min'}">
+                    </p>
+                    <div class="post-tags">
+                        <i class="fas fa-tags fa-1x tags-icon"></i>
+                        <a class="tag-anchor" th:each="tag : ${tags}" th:href="@{'/tag/{slug}'(slug=${tag.getSlug()})}"
+                           th:text="${tag.getTitle()}"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post content -->
+<section class="post-section container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-sm-12 post-content">
+            <div class="post-text" th:if="${post.getContent()}">
+                <div class="markdown-body" th:utext="${post.getContent()}"></div>
+            </div>
+            <!--Post interaction-->
+            <div class="post-interaction" id="post-interaction">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 align-self-center">
+                            <div class="row justify-content-center" th:if="${status} == 'published'">
+                                <form method="post" th:action="@{'/like/new/{slug}'(slug=${post.getSlug()})}">
+                                    <button class="btn btn-primary" type="submit"><i
+                                            class="fas fa-thumbs-up media-button-icon mr-1"></i>
+                                        <span th:text="${isAlreadyLiked} ? ${numLikes} : 'Me gusta'"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row justify-content-center">
+                                <p class="media-button">Compartir</p>
+                            </div>
+                            <div class="row justify-content-center">
+                                <form target="_blank"
+                                      th:action="${post.getSocialNetwork1()}"
+                                      th:if="${not #strings.isEmpty(post.getSocialNetwork1())}">
+                                    <button class="btn btn-primary btn-sm" type="submit">
+                                        <i class="fab fa-facebook media-button-icon mr-1"></i><span>Facebook</span>
+                                    </button>
+                                </form>
+                                <form target="_blank"
+                                      th:action="${post.getSocialNetwork2()}"
+                                      th:if="${not #strings.isEmpty(post.getSocialNetwork2())}">
+                                    <button class="btn btn-primary btn-sm ml-4" type="submit"><i
+                                            class="fab fa-instagram media-button-icon mr-1"></i> <span>Instagram</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Comment section-->
+                <div th:if="${status} == 'published'">
+                    <!-- Comment List -->
+                    <div id="comment-list" th:if="${not #lists.isEmpty(comments)}">
+                        <div class="media g-mb-30 media-comment" th:each="c : ${comments}">
+                            <!-- Auto-generated avatar -->
+                            <img alt="User avatar"
+                                 class="d-flex g-width-50 g-height-50 g-mt-3 g-mr-15 rounded-circle"
+                                 th:avatar="${authorNameMap.get(c.getPersonId())}">
+                            <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
+                                <form method="post"
+                                      sec:authorize="hasRole('ROLE_ADMIN')"
+                                      th:action="@{'/comment/delete/{id}'(id=${c.getId()})}">
+                                    <button aria-label="Close" class="close" type="submit">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </form>
+                                <div class="g-mb-15">
+                                    <h5 class="h5 g-color-gray-dark-v1 mb-0">
+                                        <span th:text="${authorNameMap.get(c.getPersonId())}"></span>
+                                    </h5>
+                                    <span class="g-color-gray-dark-v4 g-font-size-12"
+                                          th:text="${#strings.capitalize(commentPubMap.get(c.getId()))}"></span>
+                                </div>
+                                <!-- Comment content -->
+                                <div class="comment-text" th:id="${'comment-text' + c.getId()}">
+                                    <p class="read-more-text" th:text="${c.getContent()}"></p>
+                                    <a class="read-more-btn"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Comment submission -->
+                    <form class="needs-validation" method="post"
+                          novalidate th:action="@{'/comment/new/{slug}'(slug=${post.getSlug()})}"
+                          th:object="${comment}">
+                        <label class="pt-5" for="comment-content">Déjanos un comentario</label>
+                        <div class="form-group">
+                            <textarea class="comment-area"
+                                      id="comment-content"
+                                      name="comment"
+                                      placeholder="Escribe tu comentario aquí..."
+                                      required
+                                      rows="5"
+                                      th:field="*{content}"></textarea>
+                            <div class="invalid-feedback">
+                                El comentario parece estar vacío.
+                            </div>
+                        </div>
+                        <div class="alert alert-danger" role="alert" th:if="${errorMessage}"
+                             th:text="${errorMessage}"></div>
+                        <button class="btn btn-primary comment-submission-btn" value="submit">Comentar</button>
+                    </form>
+                </div>
+            </div>
+            <!--Preview publication-->
+            <div class="text-center pt-5" th:if="${status} != 'published'">
+                <form th:action="@{'/admin/publish/{slug}'(slug=${post.getSlug()})}"
+                      th:method="post">
+                    <button class="btn btn-primary comment-submission-btn"
+                            onClick="return confirm('¿Está seguro de publicar este post?')"
+                            type="submit">Publicar
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="post-sidebar col-md-4 col-sm-12">
+            <div th:replace="common/post-sidebar::post-sidebar"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog website footer -->
+<footer class="home-footer">
+    <div th:replace="common/footer::footer"></div>
+</footer>
+
+<script src="/js/app.js"></script>
+</body>
+
+</html>

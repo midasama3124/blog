@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Con Bellas Palabras - Blog Website</title>
+    <link href="css/app.css" rel="stylesheet">
+</head>
+
+<body class="home">
+<!-- Home header -->
+<header class="home-header">
+    <!-- Navbar -->
+    <div th:replace="common/navbar::navbar"></div>
+    <div class="text-header d-flex align-items-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-8 text-right">
+                    <h1>Con Bellas Palabras</h1>
+                    <p>El blog de una mamá al rescate del mundo</p>
+                    <div th:if="${not #lists.isEmpty(mostRecent)}">
+                        <form method="get" th:action="@{'/post/{slug}'(slug=${mostRecent.get(0).getSlug()})}">
+                            <button class="btn btn-primary custom-btn" type="submit"><span>Leer último post</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Home content -->
+<section class="home-content">
+    <div class="row blog-cards">
+        <div class="col-lg-4 col-md-6" th:each="post : ${mostRecent}">
+            <div class="card">
+                <a th:href="@{'/post/{slug}'(slug=${post.getSlug()})}">
+                    <img class="card-img-top" th:alt="'image/' + ${post.getSlug()} + '0.jpg'"
+                         th:src="'image/' + ${post.getSlug()} + '0.jpg'">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${post.getTitle()}"></h5>
+                    <p class="card-text" th:text="${post.getContent()}"></p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">
+                        <span th:text="${'Publicado ' + momentsAgo.get(post.getId())}"></span>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Home footer -->
+<footer class="home-footer">
+    <div th:replace="common/footer::footer"></div>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+
+</html>

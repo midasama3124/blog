@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Con Bellas Palabras - Error page</title>
+    <link href="/css/app.css" rel="stylesheet">
+</head>
+
+<body class="home" style="padding-top: 70px;">
+<div class="container">
+    <div class="jumbotron">
+        <div class="text-center"><i class="far fa-5x fa-frown" style="color:#d9534f;"></i></div>
+        <h1 class="text-center"><p th:text="${errorStatus}"></p>
+            <p><small class="text-center"> ¡Oh, no! Parece que algo salió mal</small></p></h1>
+        <p class="text-center" th:text="${errorMessage}"></p>
+        <p class="text-center" th:unless="${errorMessage}">Intenta regresando o presionando este botón.</p>
+        <p class="text-center"><a class="btn btn-primary" th:href="@{/home}"><i class="fa fa-home"></i> Llévame al
+            Inicio</a></p>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Con Bellas Palabras - Admin Website</title>
+    <link href="css/app.css" rel="stylesheet">
+</head>
+
+<body class="admin-body">
+<!--Admin sidebar-->
+<div th:replace="common/admin-sidebar::sidebar"></div>
+
+<!-- Admin content -->
+<section class="admin-main">
+    <div class="hipsum">
+        <div class="jumbotron">
+            <h1 id="hello,-world!">Hola, <span th:text="${member.getFirstName()}"></span><a class="anchorjs-link"
+                                                                                            href="#hello,-world!"><span
+                    class="anchorjs-icon"></span></a></h1>
+            <p>Esta página está destinada a la administración de tu blog. Aquí podrás crear y editar los posts y los
+                privilegios de tus usuarios, entre otras cosas.</p>
+            <p><a class="btn btn-secondary" role="button" th:href="@{/admin/post/new}">Crear nuevo post</a></p>
+        </div>
+        <div th:if="${not #lists.isEmpty(admins)}">
+            <h4>Administradores</h4>
+            <table class="table table-bordered table-striped table-responsive-sm">
+                <thead class="thead-light">
+                <tr>
+                    <th>Email</th>
+                    <th>Nombre(s)</th>
+                    <th>Apellido(s)</th>
+                    <th>Último Ingreso</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="admin : ${admins}">
+                    <th scope="row" th:text="${admin.getEmail()}"></th>
+                    <td th:text="${admin.getFirstName()}"></td>
+                    <td th:text="${admin.getLastName()}"></td>
+                    <td th:text="${admin.getLastLogin()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>Puedes otorgar permisos de administración a usuarios ya registrados accediendo a la sección de <a
+                class="admin-hyperlink" th:href="@{admin/user}">Usuarios</a>.</p>
+    </div>
+</section>
+
+<script src="/js/app.js"></script>
+</body>
+
+</html>

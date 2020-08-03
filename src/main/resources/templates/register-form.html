@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Bellas Palabras - Register Form</title>
+    <link href="/css/app.css" rel="stylesheet">
+</head>
+
+<body class="member-body">
+
+<div class="container member-container">
+    <header class="member-header">
+        <h1 class="member-title text-center">Con Bellas Palabras</h1>
+        <p class="member-description text-center">
+            <span th:text="${method} == 'PUT' ?
+                'Actualiza aquí tu información personal' :
+                'Ingresa tu correo y contraseña para registrarte'"
+            ></span>
+        </p>
+        <p class="member-action-msg text-center" th:if="${param.error}">
+            Email inválido o ya registrado
+        </p>
+        <p class="member-action-msg text-center" th:text="${errorMessage}"></p>
+    </header>
+
+    <form class="member-form needs-validation"
+          method="post"
+          novalidate
+          th:action="${method} == 'PUT' ? @{'/update/{id}'(id=${id})} : @{/register}"
+          th:object="${person}">
+
+        <div class="form-group">
+            <label for="email" id="email-label">Email <span class="clue">*</span></label>
+            <input
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    placeholder="Ingresa tu dirección de correo electrónico"
+                    required
+                    th:field="*{email}"
+                    type="email"
+            />
+            <div class="invalid-feedback">
+                Hace falta un email
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password" id="password-label">Contraseña <span class="clue">*</span></label>
+            <input
+                    class="form-control password"
+                    id="password"
+                    name="password"
+                    placeholder="Ingresa tu contraseña"
+                    required
+                    th:field="*{passwordHash}"
+                    type="password"
+            />
+            <label
+            ><input
+                    class="input-checkbox show-password"
+                    name="display-psw"
+                    type="checkbox"
+                    value="show-password"
+            /> <small>Mostrar contraseña</small>
+            </label>
+            <div class="invalid-feedback">
+                Hace falta una contraseña
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="clue text-center">Campos Opcionales</p>
+            <label for="first-name"
+            >Nombre(s)</span></label
+            >
+            <input
+                    class="form-control"
+                    id="first-name"
+                    name="first-name"
+                    placeholder="Ingresa tu(s) nombre(s)"
+                    th:field="*{firstName}"
+                    type="text"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="last-name"
+            >Apellido(s)</label
+            >
+            <input
+                    class="form-control"
+                    id="last-name"
+                    name="last-name"
+                    placeholder="Ingresa tu(s) apellido(s)"
+                    th:field="*{lastName}"
+                    type="text"
+            />
+        </div>
+
+        <div class="form-group">
+            <p class="label-alone">Género</p>
+            <label th:each="g : ${genders}" th:for="${g.toString()}">
+                <input
+                        class="input-radio"
+                        name="gender"
+                        th:field="*{gender}"
+                        type="radio"
+                        th:value="${g.toString()}"
+                />
+                <span th:text="${genderMap.get(g.toString())}"></span>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label for="age"
+            >Edad</label
+            >
+            <input
+                    class="form-control"
+                    id="age"
+                    max="99"
+                    min="0"
+                    name="age"
+                    th:field="*{age}"
+                    type="number"
+            />
+        </div>
+
+        <div class="form-group">
+            <button class="signup-btn" id="submit" type="submit">
+                <span th:text="${method} == 'PUT' ? 'Actualizar' : 'Registrar'"></span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

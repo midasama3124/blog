@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Bellas Palabras - Admin Website</title>
+    <link href="/css/app.css" rel="stylesheet">
+</head>
+
+<body class="admin-body">
+<!-- Admin sidebar -->
+<div th:replace="common/admin-sidebar::sidebar"></div>
+
+<!-- Admin content -->
+<section class="admin-main">
+    <h3 class="text-center"><i class="fa fa-tag bigger-icon"></i> <span
+            th:text="${method} == 'PUT' ? 'Actualizar Post' : 'Nuevo Post'"></span></h3>
+    <div class="alert alert-danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+    <form class="needs-validation" method="post"
+          novalidate th:action="${method} == 'PUT' ? @{'/admin/tag/update/{slug}'(slug=${slug})} : @{new}"
+          th:object="${tag}">
+        <div class="form-group">
+            <label for="tag-title">Título</label>
+            <input
+                    class="form-control"
+                    id="tag-title"
+                    placeholder="Ingrese el título del tag"
+                    required
+                    th:field="*{title}"
+                    type="text"
+            />
+            <div class="invalid-feedback">
+                Hace falta un título
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="tag-metatitle">Metatítulo</label>
+            <input
+                    class="form-control"
+                    id="tag-metatitle"
+                    placeholder="Ingrese el metatítulo del tag"
+                    th:field="*{metatitle}"
+                    type="text"
+            />
+        </div>
+        <div class="form-group">
+            <label for="tag-slug">URL</label>
+            <input
+                    class="form-control"
+                    id="tag-slug"
+                    placeholder="Ingrese el URL del tag"
+                    required
+                    th:field="*{slug}"
+                    type="text"
+            />
+            <div class="invalid-feedback">
+                Hace falta un URL
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="tag-content">Contenido</label>
+            <textarea
+                    class="form-control admin-textarea"
+                    id="tag-content"
+                    placeholder="Ingrese contenido que aparecerá como descripción de los posts que contiene este tag"
+                    rows="3"
+                    th:field="*{content}"
+            ></textarea>
+        </div>
+        <div class="row justify-content-center">
+            <button class="btn-lg btn-secondary" th:text="${method} == 'PUT' ? 'Actualizar' : 'Guardar'"
+                    type="submit"></button>
+        </div>
+    </form>
+</section>
+
+<script src="/js/app.js"></script>
+</body>
+
+</html>
