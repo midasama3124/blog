@@ -358,10 +358,37 @@ public class HomeController {
             model.addAttribute("errorMessage", "El email no se encuentra registrado");
             return "recover-password";
         }
-        mailSender.send(constructResetTokenEmail(getAppUrl(request),
+        mailSender.send(constructResetEmail(getAppUrl(request),
                 new Locale("es", "ES"), person));
         redirectAttributes.addFlashAttribute("message", "Un link de recuperación ha sido enviado a su correo");
         return "redirect:/recover";
+    }
+
+    @GetMapping("contact")
+    public String displayContactForm(Model model) {
+        model.addAttribute("contactForm", new ContactForm());
+        return "contact-form";
+    }
+
+    @PostMapping("contact")
+    public String sendContactForm(ContactForm contactForm,
+                                  RedirectAttributes redirectAttributes,
+                                  @ModelAttribute("member") Person person) {
+        if (person != null) {
+            if (!person.getFirstName().isEmpty())
+                contactForm.setName(person.getFirstName() + " " + person.getLastName());
+            contactForm.setEmail(person.getEmail());
+        }
+        try {
+            for (Person admin : personService.getAdmins())
+                mailSender.send(constructContactEmail(
+                        new Locale("es", "ES"), contactForm, admin)
+                );
+            redirectAttributes.addFlashAttribute("message", "Tu mensaje fue enviado con éxito");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Algo ha salido mal. Lo sentimos.");
+        }
+        return "redirect:/contact";
     }
 
     // ============== NON-API ============
@@ -375,19 +402,26 @@ public class HomeController {
         return momentsAgo;
     }
 
-    private SimpleMailMessage constructResetTokenEmail(
+    private SimpleMailMessage constructResetEmail(
             String contextPath, Locale locale, Person person) {
         String url = contextPath + "/update/" + person.getId().toString();
         String message = messages.getMessage("message.resetPassword",
                 null, locale);
-        return constructEmail("Recuperación de contraseña - Con Bellas Palabras", message + " \r\n" + url, person);
+        return constructEmail("Recuperación de contraseña - Con Bellas Palabras", message + " \r\n" + url, person.getEmail());
     }
 
-    private SimpleMailMessage constructEmail(String subject, String body, Person person) {
+    private SimpleMailMessage constructContactEmail(Locale locale, ContactForm contactForm, Person person) {
+        String subject = "Nuevo mensaje - " + contactForm.getSubject();
+        String message = messages.getMessage("message.newContactForm", null, locale) +
+                "\n\n" + contactForm.toString();
+        return constructEmail(subject, message, person.getEmail());
+    }
+
+    private SimpleMailMessage constructEmail(String subject, String body, String emailAddress) {
         SimpleMailMessage email = new SimpleMailMessage();
         email.setSubject(subject);
         email.setText(body);
-        email.setTo(person.getEmail());
+        email.setTo(emailAddress);
         email.setFrom(env.getProperty("support.email"));
         return email;
     }

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
-    <title>Bellas Palabras - Admin Website</title>
+    <title>Con Bellas Palabras - Admin Website</title>
     <link href="/css/app.css" rel="stylesheet">
 </head>
 
@@ -44,7 +44,9 @@
                 <tr th:each="category : ${categories}">
                     <td>
                         <div class="btn-group">
-                            <button class="btn btn-sm btn-secondary" type="button">Visualizar</button>
+                            <form method="get" th:action="@{'/category/{slug}'(slug=${category.getSlug()})}">
+                                <button class="btn btn-sm btn-secondary" type="submit">Visualizar</button>
+                            </form>
                             <button aria-expanded="false" aria-haspopup="true"
                                     class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split"
                                     data-toggle="dropdown" type="button">

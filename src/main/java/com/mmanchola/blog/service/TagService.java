@@ -85,8 +85,7 @@ public class TagService {
         checker.checkNotEmpty(tag.getTitle())
                 .ifPresent(title -> tagDas.updateTitle(tagId, title));
         // Update metatitle
-        checker.checkNotEmpty(tag.getMetatitle())
-                .ifPresent(metatitle -> tagDas.updateMetatitle(tagId, metatitle));
+        tagDas.updateMetatitle(tagId, tag.getMetatitle());
         // Update slug
         checker.checkSlugCorrectness(tag.getSlug())
                 .ifPresent(

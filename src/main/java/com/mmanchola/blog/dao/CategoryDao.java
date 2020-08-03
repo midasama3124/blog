@@ -31,6 +31,8 @@ public interface CategoryDao {
     // Update
     int updateParentId(int categoryId, int parentId);
 
+    int updateParentIdToNull(int categoryId);
+
     int updateTitle(int categoryId, String title);
 
     int updateMetatitle(int categoryId, String metatitle);

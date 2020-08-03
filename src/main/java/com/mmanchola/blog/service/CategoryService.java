@@ -92,8 +92,7 @@ public class CategoryService {
         checker.checkNotEmpty(category.getTitle())
                 .ifPresent(title -> categoryDas.updateTitle(categoryId, title));
         // Update metatitle
-        checker.checkNotEmpty(category.getMetatitle())
-                .ifPresent(metatitle -> categoryDas.updateMetatitle(categoryId, metatitle));
+        categoryDas.updateMetatitle(categoryId, category.getMetatitle());
         // Update slug
         checker.checkSlugCorrectness(category.getSlug())
                 .ifPresent(
@@ -109,8 +108,11 @@ public class CategoryService {
         checker.checkNotEmpty(category.getContent())
                 .ifPresent(content -> categoryDas.updateContent(categoryId, content));
         // Update parent category
-        if (category.getParentId() != categoryId)
-            categoryDas.updateParentId(categoryId, category.getParentId());
+        int parentId = category.getParentId();
+        if (parentId != categoryId)
+            // 'None' option to remove parent category
+            if (parentId == 0) categoryDas.updateParentIdToNull(categoryId);
+            else categoryDas.updateParentId(categoryId, parentId);
     }
 
     // Delete category

@@ -42,6 +42,8 @@ public interface PostDao {
 
     int updateParentId(int postId, int parentId);
 
+    int updateParentIdToNull(int postId);
+
     int updateTitle(int postId, String title);
 
     int updateMetatitle(int postId, String metatitle);

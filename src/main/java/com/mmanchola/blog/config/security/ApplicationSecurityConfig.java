@@ -42,7 +42,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
               .csrf().disable()
               .authorizeRequests()
               .antMatchers("/", "/home", "/css/**", "/js/**", "/fonts/**", "/image/**", "/register",
-                      "/login", "/recover", "/update/**", "/post/**", "/category/**", "/tag/**").permitAll()
+                      "/login", "/contact", "/recover", "/update/**", "/post/**", "/category/**", "/tag/**").permitAll()
               // Order DOES matter
 //        .antMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(POST_WRITE.getPermission())
               .antMatchers(HttpMethod.GET, "/admin/**").hasAnyRole(ADMIN.name())

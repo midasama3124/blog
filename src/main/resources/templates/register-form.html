@@ -14,18 +14,17 @@
 
 <div class="container member-container">
     <header class="member-header">
-        <h1 class="member-title text-center">Bellas Palabras</h1>
+        <h1 class="member-title text-center">Con Bellas Palabras</h1>
         <p class="member-description text-center">
             <span th:text="${method} == 'PUT' ?
                 'Actualiza aquí tu información personal' :
                 'Ingresa tu correo y contraseña para registrarte'"
             ></span>
-
         </p>
         <p class="member-action-msg text-center" th:if="${param.error}">
             Email inválido o ya registrado
         </p>
-        <p class="member-action-msg text-center" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+        <p class="member-action-msg text-center" th:text="${errorMessage}"></p>
     </header>
 
     <form class="member-form needs-validation"
