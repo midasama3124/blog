@@ -1,5 +1,5 @@
 /* Import SQL files using PostgreSQL on Windows 10
- * \i 'C:/Users/MDSM3/Documents/IdeaProjects/blog/src/main/resources/db/migration/V1__blog.sql'
+ * \i 'C:/Users/MDSM3/Documents/IdeaProjects/blog/src/main/resources/db/migration/V1__blogtest.sql'
  */
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -204,12 +204,12 @@ CREATE TABLE post_tag
 );
 
 /* Image table */
-CREATE TABLE image
-(
-    id       SERIAL PRIMARY KEY,
-    filepath TEXT NOT NULL,
-    caption  VARCHAR(200)
-);
+-- CREATE TABLE image
+-- (
+--     id       SERIAL PRIMARY KEY,
+--     filepath TEXT NOT NULL,
+--     caption  VARCHAR(200)
+-- );
 
 /* Post/Image table */
 -- CREATE TABLE post_image

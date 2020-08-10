@@ -1,6 +1,10 @@
+spring:
+  profiles:
+    active: @LocalProfile@
+
 app:
   datasource:
-    jdbc-url: jdbc:postgresql://localhost:5432/blog_test
+    jdbc-url: jdbc:postgresql://localhost:5432/blogtest
     username: postgres
     password: postgres
     pool-size: 30
