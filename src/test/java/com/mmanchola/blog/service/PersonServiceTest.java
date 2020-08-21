@@ -58,8 +58,7 @@ public class PersonServiceTest {
     public void getAllAdminUsers() {
         List<Person> admins = personService.getAdmins();
         assertEquals(2, admins.size());
-        List<String> emails = Arrays.asList("midasama3124@gmail.com",
-                "angelammanchola@gmail.com");
+        List<String> emails = Arrays.asList("angelamanch@gmail.com");
         for (Person admin : admins) {
             assert emails.contains(admin.getEmail());
         }
