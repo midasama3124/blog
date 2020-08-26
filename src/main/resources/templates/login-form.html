@@ -6,13 +6,16 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
-    <title>Bellas Palabras - Login Form</title>
+    <title>Con Bellas Palabras - Ingreso</title>
     <link href="css/app.css" rel="stylesheet">
 </head>
 
 <body class="member-body">
 <div class="container member-container">
     <header class="member-header">
+        <a class="return-btn" th:href="@{/home}">
+            <i class="fas fa-chevron-circle-left fa-2x"></i>
+        </a>
         <h1 class="member-title text-center" id="member-title">Bellas Palabras</h1>
         <p class="member-description text-center" id="member-description">
             Por favor ingresa tus datos si eres un usuario registrado
@@ -62,7 +65,7 @@
         </div>
 
         <div class="form-group text-center">
-            <a class="forgot-password" th:href="@{/recover}">¿Olvidó su contraseña?</a>
+            <a class="forgot-password" th:href="@{/recover}">¿Olvidaste tu contraseña?</a>
         </div>
 
         <div class="form-group auth-buttons">

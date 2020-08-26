@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
-    <title>Con Bellas Palabras - Blog Website</title>
+    <title>Con Bellas Palabras - Blog</title>
     <link href="css/app.css" rel="stylesheet">
 </head>
 
@@ -39,8 +39,8 @@
         <div class="col-lg-4 col-md-6" th:each="post : ${mostRecent}">
             <div class="card">
                 <a th:href="@{'/post/{slug}'(slug=${post.getSlug()})}">
-                    <img class="card-img-top" th:alt="'image/' + ${post.getSlug()} + '0.jpg'"
-                         th:src="'image/' + ${post.getSlug()} + '0.jpg'">
+                    <img class="card-img-top" th:alt="'image/' + ${post.getSlug()} + '.jpg'"
+                         th:src="'image/' + ${post.getSlug()} + '.jpg'">
                 </a>
                 <div class="card-body">
                     <h5 class="card-title" th:text="${post.getTitle()}"></h5>

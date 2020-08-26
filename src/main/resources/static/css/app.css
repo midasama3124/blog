@@ -7384,12 +7384,12 @@ a.text-dark:hover, a.text-dark:focus {
   visibility: hidden !important; }
 
 @media print {
-  *,
-  *::before,
-  *::after {
-      text-shadow: none !important;
-      box-shadow: none !important;
-  }
+    *,
+    *::before,
+    *::after {
+        text-shadow: none !important;
+        box-shadow: none !important;
+    }
 
     a:not(.btn) {
         text-decoration: underline;
@@ -13275,6 +13275,11 @@ label, .label-alone {
 
 .forgot-password:hover {
     color: rgba(181, 68, 110, 0.5);
+}
+
+.return-btn {
+    position: absolute;
+    color: #f3f3f3;
 }
 
 html {
