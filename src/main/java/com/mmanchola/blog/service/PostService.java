@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.mmanchola.blog.exception.ExceptionMessage.*;
+import static com.mmanchola.blog.model.PostStatus.PUBLISHED;
 import static com.mmanchola.blog.model.TableFields.*;
 
 @Service
@@ -185,6 +186,7 @@ public class PostService {
                 .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(CATEGORY_SLUG.toString())));
         List<Post> posts = postCategoryDas.findByCategory(categoryId)
                 .stream().map(id -> postDas.find(id).get())
+                .filter(p -> p.getStatus() == PUBLISHED.toString())
                 .collect(Collectors.toList());
         return posts;
     }
@@ -195,6 +197,7 @@ public class PostService {
                 .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(TAG_SLUG.toString())));
         List<Post> posts = postTagDas.findByTag(tagId)
                 .stream().map(id -> postDas.find(id).get())
+                .filter(p -> p.getStatus() == PUBLISHED.toString())
                 .collect(Collectors.toList());
         return posts;
     }

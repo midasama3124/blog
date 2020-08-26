@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Bellas Palabras - Register Form</title>
+    <title>Con Bellas Palabras - Registro</title>
     <link href="/css/app.css" rel="stylesheet">
 </head>
 
@@ -14,6 +14,9 @@
 
 <div class="container member-container">
     <header class="member-header">
+        <a class="return-btn" th:href="@{/home}">
+            <i class="fas fa-chevron-circle-left fa-2x"></i>
+        </a>
         <h1 class="member-title text-center">Con Bellas Palabras</h1>
         <p class="member-description text-center">
             <span th:text="${method} == 'PUT' ?

@@ -115,6 +115,7 @@ public class AdminController {
             categoryService.add(category);
         } catch (ApiRequestException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("categories", categoryService.getAll());
             return "admin-create-category";
         }
         redirectAttributes.addFlashAttribute("message", "La nueva categoría fue guardado exitosamente");
@@ -202,6 +203,8 @@ public class AdminController {
             postService.addTags(post.getSlug(), tagIds);
         } catch (ApiRequestException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("categories", categoryService.getAll());
+            model.addAttribute("tags", tagService.getAll());
             return "admin-create-post";
         }
         redirectAttributes.addFlashAttribute("message", "El nuevo post fue guardado exitosamente");

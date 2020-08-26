@@ -16,7 +16,7 @@
 <!-- Admin content -->
 <section class="admin-main">
     <h3 class="text-center"><i class="fa fa-tag bigger-icon"></i> <span
-            th:text="${method} == 'PUT' ? 'Actualizar Post' : 'Nuevo Post'"></span></h3>
+            th:text="${method} == 'PUT' ? 'Actualizar Tag' : 'Nuevo Tag'"></span></h3>
     <div class="alert alert-danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
     <form class="needs-validation" method="post"
           novalidate th:action="${method} == 'PUT' ? @{'/admin/tag/update/{slug}'(slug=${slug})} : @{new}"
