@@ -22,6 +22,7 @@ public class PostMapper implements RowMapper<Post> {
                 resultSet.getString("status"),
                 resultSet.getTimestamp("published_at"),
                 resultSet.getTimestamp("updated_at"),
+                resultSet.getString("description"),
                 resultSet.getString("content"),
                 resultSet.getString("social_network1"),
                 resultSet.getString("social_network2"),

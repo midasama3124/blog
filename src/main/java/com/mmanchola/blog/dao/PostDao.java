@@ -56,6 +56,8 @@ public interface PostDao {
 
     int updateUpdatedAt(int postId, Timestamp updatedAt);
 
+    int updateDescription(int postId, String description);
+
     int updateContent(int postId, String content);
 
     int updateSocialNetwork1(int postId, String socialNetwork1);

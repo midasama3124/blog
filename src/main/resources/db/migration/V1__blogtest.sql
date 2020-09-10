@@ -76,6 +76,7 @@ CREATE TABLE post
     status          VARCHAR(10)  NOT NULL,
     published_at    TIMESTAMP,
     updated_at      TIMESTAMP,
+    description     TEXT,
     content         TEXT,
     social_network1 VARCHAR(200),
     social_network2 VARCHAR(200),

@@ -23,6 +23,7 @@ public class PopularPostMapper implements RowMapper<PopularPost> {
                         rs.getString("status"),
                         rs.getTimestamp("published_at"),
                         rs.getTimestamp("updated_at"),
+                        rs.getString("description"),
                         rs.getString("content"),
                         rs.getString("social_network1"),
                         rs.getString("social_network2"),

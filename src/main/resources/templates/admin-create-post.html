@@ -114,6 +114,15 @@
             />
         </div>
         <div class="form-group">
+            <label for="post-description">Descripción</label>
+            <textarea class="form-control admin-textarea"
+                      id="post-description"
+                      placeholder="Ingrese descripción que aparecerá en la miniatura del post"
+                      rows="3"
+                      th:field="*{post.description}"
+            ></textarea>
+        </div>
+        <div class="form-group">
             <label for="post-content">Contenido</label>
             <textarea class="form-control admin-textarea"
                       id="post-content"
