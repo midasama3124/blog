@@ -177,7 +177,10 @@ public class PostService {
 
     // Get popular posts (i.e., based on number likes received)
     public List<PopularPost> getPopular(int numPosts) {
-        return postDas.findPopular(numPosts);
+        return postDas.findPopular(numPosts)
+                .stream()
+                .filter(p -> p.getPost().getStatus().equals(PUBLISHED.toString()))
+                .collect(Collectors.toList());
     }
 
     // Get posts by category slug
@@ -298,6 +301,9 @@ public class PostService {
                 );
         // Update update timestamp
         postDas.updateUpdatedAt(postId, new Timestamp(System.currentTimeMillis()));
+        // Update description
+        checker.checkNotEmpty(post.getDescription())
+                .ifPresent(desc -> postDas.updateDescription(postId, desc));
         // Update content
         checker.checkNotEmpty(post.getContent())
                 .ifPresent(content -> postDas.updateContent(postId, content));

@@ -14,6 +14,7 @@ public class Post {
     private String status;
     private Timestamp publishedAt;
     private Timestamp updatedAt;
+    private String description;
     private String content;
     private String socialNetwork1;
     private String socialNetwork2;
@@ -21,8 +22,8 @@ public class Post {
 
     public Post(int id, UUID personId, int parentId, String parentPath, String title,
                 String metatitle, String slug, String status, Timestamp publishedAt,
-                Timestamp updatedAt, String content, String socialNetwork1, String socialNetwork2,
-                String socialNetwork3) {
+                Timestamp updatedAt, String description, String content, String socialNetwork1,
+                String socialNetwork2, String socialNetwork3) {
         this.id = id;
         this.personId = personId;
         this.parentId = parentId;
@@ -33,6 +34,7 @@ public class Post {
         this.status = status;
         this.publishedAt = publishedAt;
         this.updatedAt = updatedAt;
+        this.description = description;
         this.content = content;
         this.socialNetwork1 = socialNetwork1;
         this.socialNetwork2 = socialNetwork2;
@@ -122,6 +124,14 @@ public class Post {
         this.updatedAt = updatedAt;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getContent() {
         return content;
     }
@@ -165,6 +175,7 @@ public class Post {
                 this.metatitle.equals(other.getMetatitle()) &&
                 this.slug.equals(other.getSlug()) &&
                 this.status.equals(other.getStatus()) &&
+                this.description.equals(other.getDescription()) &&
                 this.content.equals(other.getContent());
     }
 }

@@ -305,6 +305,16 @@ public class PostDataAccessService implements PostDao {
     }
 
     @Override
+    public int updateDescription(int postId, String description) {
+        String sqlQuery = "UPDATE post SET "
+                + "description = ? "
+                + "WHERE id = ?";
+        Object[] args = {description, postId};
+        // Issue a single SQL update operation (such as an insert, update or delete statement)
+        return jdbcTemplate.update(sqlQuery, args);
+    }
+
+    @Override
     public int updateContent(int postId, String content) {
         String sqlQuery = "UPDATE post SET "
                 + "content = ? "
