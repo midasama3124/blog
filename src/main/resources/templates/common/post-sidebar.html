@@ -8,8 +8,8 @@
     </div>
     <div class="card" th:each="popularPost : ${popularPosts}">
         <a th:href="@{'/post/{slug}'(slug=${popularPost.getPost().getSlug()})}">
-            <img class="card-img-top" th:alt="'/image/' + ${popularPost.getPost().getSlug()} + '.jpg'"
-                 th:src="'/image/' + ${popularPost.getPost().getSlug()} + '.jpg'">
+            <img class="card-img-top" th:alt="${popularPost.getPost().getSlug()} + '.jpg'"
+                 th:src="'/image/download/' + ${popularPost.getPost().getSlug()} + '.jpg'">
         </a>
         <div class="popular-post-likes">
             <h4><i class="fas fa-thumbs-up"></i> <span th:text="${popularPost.getNumLikes()}"></span></h4>

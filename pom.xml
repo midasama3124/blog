@@ -109,17 +109,22 @@
 			<artifactId>commons-validator</artifactId>
 			<version>1.6</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
-			<version>2.2.5.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>2.2.5.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>1.11.761</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
@@ -133,17 +138,17 @@
 	<profiles>
 		<profile>
 			<id>blog</id>
-			<properties>
-				<LocalProfile>
-					local
-				</LocalProfile>
-				<DevProfile>
-					dev
-				</DevProfile>
-				<EmailProfile>
-					support
-				</EmailProfile>
-			</properties>
+            <properties>
+                <LocalProfile>
+                    local
+                </LocalProfile>
+                <DevProfile>
+                    dev
+                </DevProfile>
+                <RestrictedProfile>
+                    credentials
+                </RestrictedProfile>
+            </properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,21 +40,25 @@ public class HomeController {
     private final TagService tagService;
     private final CommentService commentService;
     private final CategoryService categoryService;
+    private final ImageService imageService;
     private final PrettyTime prettyTime;
     private final JavaMailSender mailSender;
     private final MessageSource messages;
     private final Environment env;
 
     @Autowired
-    public HomeController(PersonService personService, PostService postService, TagService tagService,
-                          CommentService commentService, CategoryService categoryService,
-                          JavaMailSender mailSender, @Qualifier("messageSource") MessageSource messages,
+    public HomeController(PersonService personService, PostService postService,
+                          TagService tagService, CommentService commentService,
+                          CategoryService categoryService, ImageService imageService,
+                          JavaMailSender mailSender,
+                          @Qualifier("messageSource") MessageSource messages,
                           Environment env) {
         this.personService = personService;
         this.postService = postService;
         this.tagService = tagService;
         this.commentService = commentService;
         this.categoryService = categoryService;
+        this.imageService = imageService;
         this.mailSender = mailSender;
         this.messages = messages;
         this.env = env;
@@ -389,6 +395,16 @@ public class HomeController {
             redirectAttributes.addFlashAttribute("errorMessage", "Algo ha salido mal. Lo sentimos.");
         }
         return "redirect:/contact";
+    }
+
+    @GetMapping(
+            value = "image/download/{key}",
+            produces = MediaType.IMAGE_JPEG_VALUE
+    )
+    public @ResponseBody
+    byte[] downloadImage(@PathVariable("key") String key, Model model,
+                         HttpServletResponse response) {
+        return imageService.downloadImage(key);
     }
 
     // ============== NON-API ============
