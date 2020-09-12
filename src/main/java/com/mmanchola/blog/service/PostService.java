@@ -189,7 +189,7 @@ public class PostService {
                 .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(CATEGORY_SLUG.toString())));
         List<Post> posts = postCategoryDas.findByCategory(categoryId)
                 .stream().map(id -> postDas.find(id).get())
-                .filter(p -> p.getStatus() == PUBLISHED.toString())
+                .filter(p -> p.getStatus().equals(PUBLISHED.toString()))
                 .collect(Collectors.toList());
         return posts;
     }
@@ -200,7 +200,7 @@ public class PostService {
                 .orElseThrow(() -> new ApiRequestException(NOT_FOUND.getMsg(TAG_SLUG.toString())));
         List<Post> posts = postTagDas.findByTag(tagId)
                 .stream().map(id -> postDas.find(id).get())
-                .filter(p -> p.getStatus() == PUBLISHED.toString())
+                .filter(p -> p.getStatus().equals(PUBLISHED.toString()))
                 .collect(Collectors.toList());
         return posts;
     }

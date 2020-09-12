@@ -13,9 +13,9 @@ import java.util.Properties;
 @Configuration
 public class EmailConfiguration {
 
-    @Value("${credentials.username}")
+    @Value("${email-credentials.username}")
     private String username;
-    @Value("${credentials.password}")
+    @Value("${email-credentials.password}")
     private String password;
 
     @Bean

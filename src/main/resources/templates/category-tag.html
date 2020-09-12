@@ -26,8 +26,8 @@
                                 <a th:href="@{'/category/{slug}'(slug = ${child.getSlug()})}">
                                     <div class="card bg-dark text-white">
                                         <img class="card-img-top" style="opacity: .35;"
-                                             th:alt="'/image/' + ${child.getSlug()} + '.jpg'"
-                                             th:src="'/image/' + ${child.getSlug()} + '.jpg'">
+                                             th:alt="${child.getSlug()} + '.jpg'"
+                                             th:src="'/image/download/' + ${child.getSlug()} + '.jpg'">
                                         <div class="card-img-overlay d-flex align-items-center justify-content-center">
                                             <h2 class="card-title" th:text="${child.getTitle()}"></h2>
                                         </div>
@@ -48,8 +48,8 @@
         <div class="col-lg-4 col-md-6" th:each="post : ${posts}">
             <div class="card">
                 <a th:href="@{'/post/{slug}'(slug=${post.getSlug()})}">
-                    <img class="card-img-top" th:alt="'/image/' + ${post.getSlug()} + '.jpg'"
-                         th:src="'/image/' + ${post.getSlug()} + '.jpg'">
+                    <img class="card-img-top" th:alt="${post.getSlug()} + '.jpg'"
+                         th:src="'/image/download/' + ${post.getSlug()} + '.jpg'">
                 </a>
                 <div class="card-body">
                     <h5 class="card-title" th:text="${post.getTitle()}"></h5>

@@ -22,62 +22,68 @@
             </span><a class="anchorjs-link" href="#hello,-world!">
                 <span class="anchorjs-icon"></span></a></h2>
             <p>Esta página está destinada a la carga y eliminación de tus imágenes.</p>
-            <form enctype="multipart/form-data" method="POST" th:action="@{/admin/image}">
-                <div class="form-group mb-0">
-                    <label class="btn btn-primary btn-file">
-                        Cargar imágenes <input name="file" style="display: none;" type="file">
-                    </label>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-secondary" type="submit">Guardar nueva imagen</button>
-                </div>
-            </form>
+            <div id="dropzone">
+                <form class="dropzone needsclick dz-clickable" enctype="multipart/form-data" id="demo-upload"
+                      method="post"
+                      th:action="@{image/upload}">
+                    <div class="dz-message needsclick">
+                        <button class="dz-button" type="submit">
+                            <i class="far fa-images"></i> Arrastra tus imágenes aquí para subirlas al servidor.
+                        </button>
+                    </div>
+                </form>
+            </div>
 
             <div class="alert alert-success" role="alert" th:if="${message}" th:text="${message}"></div>
             <div class="alert alert-danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
         </div>
 
-        <div th:if="${not #lists.isEmpty(filenames)}">
+        <div th:if="${not #lists.isEmpty(imageSummaries)}">
             <table class="table table-striped table-bordered dt-responsive nowrap" id="sorting-table"
                    style="width:100%">
                 <thead>
                 <tr>
                     <th>Imagen</th>
                     <th>Ruta</th>
+                    <th>Tamaño</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="filename : ${filenames}">
+                <tr th:each="summary : ${imageSummaries}">
                     <td>
                         <div class="btn-group">
-                            <a class="btn btn-sm btn-secondary" th:href="@{'/image/{filename}'(filename=${filename})}">
-                                Previsualizar
-                            </a>
+                            <form th:action="@{'/image/download/{key}'(key=${summary.getKey()})}"
+                                  th:method="get">
+                                <button class="btn btn-sm btn-secondary"
+                                        type="submit">Visualizar
+                                </button>
+                            </form>
                             <button aria-expanded="false" aria-haspopup="true"
                                     class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split"
                                     data-toggle="dropdown" type="button">
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu">
-                                <form method="post" th:action="@{'image/delete/{filename}'(filename=${filename})}">
+                                <form method="post" th:action="@{'image/delete/{key}'(key=${summary.getKey()})}">
                                     <button class="btn btn-tertiary dropdown-item"
                                             onClick="return confirm('¿Está seguro de eliminar esta imagen?')"
                                             type="submit">Eliminar
                                     </button>
                                 </form>
-                                <button class="btn btn-tertiary dropdown-item" type="button">
-                                    <a style="text-decoration: none" th:href="${pathMap.get(filename)}">Descargar</a>
-                                </button>
                             </div>
                         </div>
                     </td>
-                    <td th:text="${filename}"></td>
+                    <td th:text="${summary.getKey()}"></td>
+                    <td th:text="${summary.getSize()/1000000} > 0 ?
+                        ${summary.getSize()/1000000} + ' MB' :
+                        ${summary.getSize()/1000} + ' KB'"></td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr>
                     <th>Imagen</th>
                     <th>Ruta</th>
+                    <th>Tamaño</th>
                 </tr>
                 </tfoot>
             </table>

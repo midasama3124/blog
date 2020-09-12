@@ -2,29 +2,19 @@ package com.mmanchola.blog.controller;
 
 import com.mmanchola.blog.exception.ApiRequestException;
 import com.mmanchola.blog.model.*;
-import com.mmanchola.blog.service.CategoryService;
-import com.mmanchola.blog.service.PersonService;
-import com.mmanchola.blog.service.PostService;
-import com.mmanchola.blog.service.TagService;
-import com.mmanchola.blog.storage.StorageException;
-import com.mmanchola.blog.storage.StorageService;
+import com.mmanchola.blog.service.*;
 import com.mmanchola.blog.util.MarkdownParser;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -42,16 +32,18 @@ public class AdminController {
     private final TagService tagService;
     private final CategoryService categoryService;
     private final PostService postService;
+    private final ImageService imageService;
     private final PrettyTime prettyTime;
-    private final StorageService storageService;
 
     @Autowired
-    public AdminController(PersonService personService, TagService tagService, CategoryService categoryService, PostService postService, StorageService storageService) {
+    public AdminController(PersonService personService, TagService tagService,
+                           CategoryService categoryService, PostService postService,
+                           ImageService imageService) {
         this.personService = personService;
         this.tagService = tagService;
         this.categoryService = categoryService;
         this.postService = postService;
-        this.storageService = storageService;
+        this.imageService = imageService;
         this.prettyTime = new PrettyTime(new Locale("es"));
     }
 
@@ -419,50 +411,36 @@ public class AdminController {
 
     @GetMapping("image")
     public String displayAdminImage(Model model) throws IOException {
-        Map<String, String> pathMap = new HashMap<>();
-        List<String> filenames = storageService.loadAll()
-                .map(path -> path.getFileName().toString())
-                .collect(Collectors.toList());
-        storageService.loadAll()
-                .forEach(path -> {
-                    String filename = path.getFileName().toString();
-                    String pathToUri = MvcUriComponentsBuilder.fromMethodName(AdminController.class,
-                            "serveFile", filename)
-                            .build().toUri().toString();
-                    pathMap.put(filename, pathToUri);
-                });
-        model.addAttribute("filenames", filenames);
-        model.addAttribute("pathMap", pathMap);
+        model.addAttribute("imageSummaries", imageService.getObjectSummaries());
         return "admin-image";
     }
 
-    @GetMapping("/image/{filename:.+}")
-    @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-        Resource file = storageService.loadAsResource(filename);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-    }
-
-    @PostMapping("image")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   Model model,
-                                   RedirectAttributes redirectAttributes,
-                                   @ModelAttribute("member") Person person) {
+    @PostMapping("image/upload")
+    public String uploadImage(@RequestParam("file") MultipartFile file,
+                              Model model,
+                              RedirectAttributes redirectAttributes,
+                              @ModelAttribute("member") Person person) {
         model.addAttribute("person", person);
-        storageService.store(file);
-        redirectAttributes.addFlashAttribute("message",
-                "La imagen " + file.getOriginalFilename() + " fue guardada satisfactoriamente.");
+        // Store file(s) into S3 bucket
+        try {
+            imageService.uploadImage(file);
+            redirectAttributes.addFlashAttribute("message",
+                    "La imagen " + file.getOriginalFilename() + " fue guardada satisfactoriamente.");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "La imagen " + file.getOriginalFilename() + "no pudo ser subida.");
+        }
         return "redirect:/admin/image";
     }
 
-    @PostMapping("image/delete/{file}")
-    public String deleteImage(@PathVariable Path file,
+    @PostMapping("image/delete/{key}")
+    public String deleteImage(@PathVariable String key,
                               RedirectAttributes redirectAttributes) {
         try {
-            storageService.delete(file);
+            // Delete image from S3 bucket
+            imageService.delete(key);
             redirectAttributes.addFlashAttribute("message", "La imagen fue eliminada satisfactoriamente.");
-        } catch (StorageException e) {
+        } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "La imagen no pudo ser eliminada");
         }
         return "redirect:/admin/image";
